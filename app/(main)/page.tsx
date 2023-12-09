@@ -69,7 +69,6 @@ const Dashboard = () => {
                 }
             }
         };
-
         setLineOptions(lineOptions);
     };
 
@@ -101,7 +100,6 @@ const Dashboard = () => {
                 }
             }
         };
-
         setLineOptions(lineOptions);
     };
 
