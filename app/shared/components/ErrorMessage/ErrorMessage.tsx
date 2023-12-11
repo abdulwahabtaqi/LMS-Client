@@ -1,6 +1,4 @@
 import React from 'react'
-import styles from './ErrorMessage.module.scss'
-
 
 export interface ErrorMessageProps {
   text: string | undefined
@@ -9,6 +7,7 @@ export interface ErrorMessageProps {
 export const ErrorMessage: React.FC<ErrorMessageProps> = (props) => {
   return (
     <>
-        {props?.text && <div className={`${styles['errorText']}`}>{props?.text}</div>}</>
+      {props?.text && <div className={`p-error`}>{props?.text}</div>}
+    </>
   )
 }

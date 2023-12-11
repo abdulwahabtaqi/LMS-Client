@@ -17,7 +17,6 @@ interface TextFieldProps {
 }
 
 export const TextField: React.FC<TextFieldProps> = (props) => {
-
   const handleNumberOnChange = (value: string) => {
     const containsOnlyDigits = /^\d+$/.test(value);
     if (containsOnlyDigits || value === '') { props?.onChange(value); }

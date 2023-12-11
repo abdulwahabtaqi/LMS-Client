@@ -5,7 +5,7 @@ interface PageHeaderProps {
 const PageHeader = ({ title }: PageHeaderProps) => {
     return (
         <div className="page-header">
-            <h1>{title}</h1>
+            <h6>{title}</h6>
         </div>
     )
 }

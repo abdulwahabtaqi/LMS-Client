@@ -14,7 +14,7 @@ const FormFieldWithLabel: React.FC<FormFieldWithLabelProps> = ({ label, formFiel
       <div className={`${styles["field"]}`}>
         <div className="flex justify-content-between">
           <label>
-            {label}
+           <b> {label}</b>
             {showOptionalText ? <span className={styles.optionalText}>{`optional`}</span> : null}
           </label>
           {showCharLimit ? <span className={styles.charCounter}>{charCount} / {maxChar}</span> : null}
