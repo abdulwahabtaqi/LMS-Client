@@ -17,9 +17,11 @@ import { LayoutContext } from "./context/layoutcontext";
 import { PrimeReactContext } from "primereact/api";
 import { ChildContainerProps, LayoutState, AppTopbarRef } from "../types/types";
 import { usePathname, useSearchParams } from "next/navigation";
+import _ from "lodash";
 
 
 const Layout = ({ children }: ChildContainerProps) => {
+  const router = useRouter();
   const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
   const { setRipple } = useContext(PrimeReactContext);
   const topbarRef = useRef<AppTopbarRef>(null);
@@ -142,7 +144,15 @@ const Layout = ({ children }: ChildContainerProps) => {
     "p-input-filled": layoutConfig.inputStyle === "filled",
     "p-ripple-disabled": !layoutConfig.ripple,
   });
-
+  const verifyLogin = () => {
+    const token = localStorage?.getItem("lms-token");
+    if (_?.isEmpty(token)) {
+      router?.push("/auth/login");
+    }
+  }
+  useEffect(()=>{
+    verifyLogin();
+  })
   return (
     <React.Fragment>
       <div className={containerClass}>

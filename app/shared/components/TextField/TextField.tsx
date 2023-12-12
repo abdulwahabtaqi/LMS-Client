@@ -14,6 +14,7 @@ interface TextFieldProps {
   className?: string
   dataAttribute?: string
   inputType?: React.HTMLInputTypeAttribute
+  type?: string
 }
 
 export const TextField: React.FC<TextFieldProps> = (props) => {
@@ -25,7 +26,7 @@ export const TextField: React.FC<TextFieldProps> = (props) => {
   return (
     <>
       <InputText
-        type="text"
+        type={props?.type ?? 'text'}
         value={props?.value ?? ""}
         className={` ${styles["inputText"]} ${props?.errorMessage ? "p-invalid" : ''} ${props?.className}`}
         placeholder={props?.placeholder}

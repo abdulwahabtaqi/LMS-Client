@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, createContext } from 'react';
+import { useGlobalContext } from '../../app/context/context';
 import { LayoutState, ChildContainerProps, LayoutConfig, LayoutContextProps } from '../../types/types';
 export const LayoutContext = createContext({} as LayoutContextProps);
 
@@ -57,3 +58,4 @@ export const LayoutProvider = ({ children }: ChildContainerProps) => {
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 };
+export const useAppContext = () => useGlobalContext();
