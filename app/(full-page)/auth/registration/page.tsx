@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button } from 'primereact/button';
 import { useForm, Controller, SubmitHandler, } from 'react-hook-form'
 import { LayoutContext } from '../../../../layout/context/layoutcontext';
@@ -10,45 +10,34 @@ import { classNames } from 'primereact/utils';
 import { User } from '../../../shared/types';
 import Link from 'next/link';
 import LoginHandler from '../../../context/server/user/auth/login';
-import PrimeReactToast from '../../../shared/components/Toast/toast';
 import LoadingBar from 'react-top-loading-bar';
-import { Toast } from 'primereact/toast';
-Toast
-const Registration = () => {
-    const toast = useRef<Toast>(null);
+
+const LoginPage = () => {
     const [pageLoading, setPageLoading] = useState<number>(0);
     const { layoutConfig } = useContext(LayoutContext);
-    const { control, handleSubmit, reset, setValue, formState: { errors: UserErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<User>({
-        mode: 'onBlur',
-    });
-    const router = useRouter();
-    const showSuccess = (severity: "success" | "error" | "warn" | "info", summary: string, detail: string) => {
-        toast?.current?.show({ severity, summary, detail, life: 3000 });
-    }
     const submitForm: SubmitHandler<User> = async (user: User) => {
         setPageLoading(40);
         try {
             const response = await LoginHandler(user);
             setPageLoading(70);
-            if (response?.status) {
-                const lmsToken = response?.result?.data as string;
-                localStorage.setItem('lms-token', lmsToken);
+            if(response?.status){
+              const lmsToken =  response?.result?.data as string;
+              localStorage.setItem('lms-token', lmsToken);
                 setPageLoading(100);
-                router.push('/');
+              router.push('/');
             }
-        } catch (error: any) {
-            console.log("LoginHandler :: error", JSON.stringify(error));
-            setPageLoading(100);
-            showSuccess('error', 'Error', error?.message);
+        } catch (error) {
+            
         }
     }
-    
-
+    const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
+    const { control, handleSubmit, reset, setValue, formState: { errors: UserErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<User>({
+        mode: 'onBlur',
+    });
     return (
         <div className={containerClassName}>
-            <Toast ref={toast} />
-            <LoadingBar
+             <LoadingBar
                 color="#0000FF"
                 progress={pageLoading}
                 onLoaderFinished={() => setPageLoading(0)}
@@ -66,10 +55,32 @@ const Registration = () => {
                         <div className="text-center mb-5">
                             <img src="/demo/images/login/avatar.png" alt="Image" height="50" className="mb-3" />
                             <div className="text-900 text-3xl font-medium mb-3">Welcome, To LMS!</div>
-                            <span className="text-600 font-medium">Sign Up to continue</span>
+                            <span className="text-600 font-medium">Sign in to continue</span>
                         </div>
 
                         <div>
+                            <div className="field p-fluid">
+
+                                <Controller
+                                    name='name'
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: "Name is required",
+                                    }}
+                                    render={({ field }) => (
+                                        <>
+                                            <label htmlFor="name" className="block text-900 text-xl font-medium mb-2">
+                                                Name
+                                            </label>
+                                            <InputText className={UserErrors?.name?.message ? "p-invalid" : ""} value={field?.value} onChange={field.onChange} />
+                                            <small id="username-help" className="p-error">
+                                                {UserErrors?.name?.message}
+                                            </small>
+                                        </>
+                                    )}
+                                />
+                            </div>
                             <div className="field p-fluid">
 
                                 <Controller
@@ -85,10 +96,10 @@ const Registration = () => {
                                     }}
                                     render={({ field }) => (
                                         <>
-                                            <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
+                                            <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">
                                                 Email
                                             </label>
-                                            <InputText className={UserErrors?.email?.message ? "p-invalid" : ""} value={field?.value} onChange={field.onChange} />
+                                            <InputText type='password' className={UserErrors?.email?.message ? "p-invalid" : ""} value={field?.value} onChange={field.onChange} />
                                             <small id="username-help" className="p-error">
                                                 {UserErrors?.email?.message}
                                             </small>
@@ -102,13 +113,13 @@ const Registration = () => {
                                     name='password'
                                     control={control}
                                     defaultValue=""
-                                    rules={{ required: "Password is required" }}
+                                    rules={{ required: "Password is required", maxLength: 10, minLength: 2, pattern: /^[A-Za-z]+$/i, }}
                                     render={({ field }) => (
                                         <>
                                             <label htmlFor="password" className="block text-900 text-xl font-medium mb-2">
                                                 Password
                                             </label>
-                                            <InputText type='password' className={UserErrors?.password?.message ? "p-invalid" : ""} value={field?.value} onChange={field.onChange} />
+                                            <InputText className={UserErrors?.password?.message ? "p-invalid w-100" : "w-100"} value={field?.value} onChange={field.onChange} />
                                             <small id="username-help" className="p-error">
                                                 {UserErrors?.password?.message}
                                             </small>
@@ -117,15 +128,17 @@ const Registration = () => {
                                 />
 
                             </div>
+                            <div></div>
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
                                 <div className="flex align-items-center">
-                                    <Link href={`./registration`}>Already Register</Link>
+                                  
+                                   <Link href={`./login`}>Sign Up</Link>
                                 </div>
                                 <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
                                     Forgot password?
                                 </a>
                             </div>
-                            <Button label="Sign In" className="w-full p-3 text-xl" onClick={handleSubmit(submitForm)} />
+                            <Button type="button" label="Sign In" className="w-full p-3 text-xl" onClick={handleSubmit(submitForm)}></Button>
                         </div>
                     </div>
                 </div>
@@ -134,4 +147,4 @@ const Registration = () => {
     );
 };
 
-export default Registration;
+export default LoginPage;

@@ -6,7 +6,7 @@ import { ApiResponse, ServiceResponse } from "../types";
 
 const postAndPutRequest = async (method: string, data: {} | [], url: string, type = "direct" as string, contentType = "application/json" as string):Promise<ServiceResponse> => {
     try {
-        const apiUrl = process?.env?.LOCAL_API_URL + url as string;
+        const apiUrl = "http://localhost:4040/api/v1" + url as string;
         pageLoader?.setPageLoading(30);
         const response = await fetch(apiUrl, {
             method,
@@ -29,11 +29,11 @@ const postAndPutRequest = async (method: string, data: {} | [], url: string, typ
         } else {
             if (type === "direct") {
                 if (result?.status) {
-                    PrimeReactToast({severity:'success', summary:'Congratulations!',detail:result?.message, life: 3000});
+                    // PrimeReactToast({severity:'success', summary:'Congratulations!',detail:result?.message, life: 3000});
                     pageLoader.setPrimeReactLoader(false);
                     pageLoader.setPageLoading(100);
                 } else {
-                    PrimeReactToast({severity:'warn', summary:'Warning!',detail:result?.message, life: 3000});
+                    // PrimeReactToast({severity:'warn', summary:'Warning!',detail:result?.message, life: 3000});
                     pageLoader.setPrimeReactLoader(false);
                     pageLoader.setPageLoading(100);
                 } 
@@ -61,7 +61,7 @@ const postAndPutRequest = async (method: string, data: {} | [], url: string, typ
         }
     } catch (error: any) {
         if (type === "direct") {
-            PrimeReactToast({severity:'error', summary:'Error!',detail:error?.message, life: 3000});
+            // PrimeReactToast({severity:'error', summary:'Error!',detail:error?.message, life: 3000});
             pageLoader.setPrimeReactLoader(false);
             pageLoader.setPageLoading(100);
             return {} as ServiceResponse;
