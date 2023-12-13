@@ -18,8 +18,8 @@ const AppMenu = () => {
         {
             label: 'School',
             items: [
-                { label: 'Add School', icon: 'pi pi-fw pi-id-card', to: '/app/school/add' },
-                { label: 'View Schools', icon: 'pi pi-fw pi-check-square', to: '/app/input' }
+                { label: 'School', icon: 'pi pi-fw pi-building', to: '/app/school/add' },
+                // { label: 'View Schools', icon: 'pi pi-fw pi-check-square', to: '/app/input' }
             ]
         },
         {

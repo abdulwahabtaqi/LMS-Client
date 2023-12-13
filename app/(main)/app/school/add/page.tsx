@@ -8,9 +8,9 @@ import ViewSchool from '../view/page';
 const AddSchool = () => {
     return (
         <div className="grid">
-            <PageHeader title="School / Add" />
+            <PageHeader title="School" />
             <div className="col-12">
-                <AddAndEditSchool isNew={false} />
+                <AddAndEditSchool isNew={true} />
             </div>
             <div className="col-12">
                 <ViewSchool />

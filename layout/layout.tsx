@@ -13,15 +13,20 @@ import AppFooter from "./AppFooter";
 import AppSidebar from "./AppSidebar";
 import AppTopbar from "./AppTopbar";
 import AppConfig from "./AppConfig";
-import { LayoutContext } from "./context/layoutcontext";
+import { LayoutContext, useAppContext } from "./context/layoutcontext";
 import { PrimeReactContext } from "primereact/api";
 import { ChildContainerProps, LayoutState, AppTopbarRef } from "../types/types";
 import { usePathname, useSearchParams } from "next/navigation";
 import _ from "lodash";
+import { Toast } from "primereact/toast";
+Toast
+
 
 
 const Layout = ({ children }: ChildContainerProps) => {
+  const g = useAppContext();
   const router = useRouter();
+  const toast = useRef<Toast>(null);
   const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
   const { setRipple } = useContext(PrimeReactContext);
   const topbarRef = useRef<AppTopbarRef>(null);
@@ -150,12 +155,22 @@ const Layout = ({ children }: ChildContainerProps) => {
       router?.push("/auth/login");
     }
   }
+  const showToast = (severity: "success" | "warn" | "info" | "error", summary: string, detail: string, life:number) => {
+    toast?.current?.show({ severity, summary, detail, life });
+    g?.setToaster({ } as any);
+  }
   useEffect(()=>{
     verifyLogin();
-  })
+  });
+  useEffect(() => {
+   if(g?.toaster?.severity && g?.toaster?.summary && g?.toaster?.detail && g?.toaster?.life){
+    showToast(g?.toaster?.severity, g?.toaster?.summary, g?.toaster?.detail, g?.toaster?.life)
+   }
+  }, [g?.toaster?.severity, g?.toaster?.summary, g?.toaster?.detail, g?.toaster?.life])
   return (
     <React.Fragment>
       <div className={containerClass}>
+        <Toast ref={toast} />
         <AppTopbar ref={topbarRef} />
         <div ref={sidebarRef} className="layout-sidebar">
           <AppSidebar />

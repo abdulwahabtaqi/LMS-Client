@@ -6,6 +6,7 @@ export interface School{
     grades:Grade[],
     createdAt:string,
     updatedAt:string,
+    action?:React.ReactNode
 }
 
 export interface Grade{
@@ -27,4 +28,12 @@ export interface DatatableWithSearchProps<T> {
     tableColumns: TableColumns[];
     data: T[];
     loading?: boolean;
+}
+
+export interface Toaster {
+    severity: "success" | "info" | "warn" | "error";
+    summary: string;
+    detail: string;
+    life?: number;
+
 }

@@ -28,13 +28,17 @@ const Registration = () => {
     const submitForm: SubmitHandler<User> = async (user: User) => {
         setPageLoading(40);
         try {
-            const response = await LoginHandler(user);
+            const response = await LoginHandler(user, "callback");
+            console.log("LoginHandler :: response", JSON.stringify(response));
             setPageLoading(70);
             if (response?.status) {
                 const lmsToken = response?.result?.data as string;
                 localStorage.setItem('lms-token', lmsToken);
                 setPageLoading(100);
                 router.push('/');
+            } else {
+                setPageLoading(100);
+                showSuccess('error', 'Error', response?.result?.message);
             }
         } catch (error: any) {
             console.log("LoginHandler :: error", JSON.stringify(error));

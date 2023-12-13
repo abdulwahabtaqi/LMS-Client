@@ -1,6 +1,12 @@
+import { Toaster } from "../../shared/types";
+import { ServiceResponse } from "./services";
+
 export interface  AppContextProps {
     message: string;
     pageLoader: PageLoader
+    createSchoolHandler: (CreateSchoolHandler:ServiceResponse) => ServiceResponse;
+    toaster: Toaster;
+    setToaster: (newToaster: Toaster) => void;
 }
 export interface MainContextProviderProps {
     children: React.ReactNode;
@@ -11,4 +17,8 @@ export interface PageLoader {
     setPageLoading: (newPageLoading: number) => void;
     primeReactLoader: boolean;
     setPrimeReactLoader: (newPrimeReactLoader: boolean) => void;
+}
+export interface ToasterData {
+    toaster: Toaster;
+    setToaster: (newToaster: Toaster) => void;
 }

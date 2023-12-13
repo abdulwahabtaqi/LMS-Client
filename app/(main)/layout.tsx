@@ -12,10 +12,10 @@ export const metadata: Metadata = {
     viewport: { initialScale: 1, width: 'device-width' },
     openGraph: {
         type: 'website',
-        title: 'PrimeReact SAKAI-REACT',
-        url: 'https://sakai.primereact.org/',
+        title: 'KOMRAS AI',
+        url: '/',
         description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.',
-        images: ['https://www.primefaces.org/static/social/sakai-react.png'],
+        images: ['/layout/images/logo.png'],
         ttl: 604800
     },
     icons: {

@@ -27,8 +27,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
                 onLoaderFinished={() => pageLoader?.setPageLoading(0)}
             />
             <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
-                <span>SAKAI</span>
+                <img src={`/layout/images/logo.png`} alt="logo" />
             </Link>
 
             <button ref={menuButtonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>

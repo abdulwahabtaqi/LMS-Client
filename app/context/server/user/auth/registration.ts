@@ -1,8 +1,9 @@
 import postAndPutRequest from "../../../services/postAndPutRequest";
+import { ServiceResponse } from "../../../types";
 
 const RegistrationHandler = async (data:{} | [], type:string) => {
   const result = await postAndPutRequest("POST", data, "/auth/registration", type);
-  return result;
+  return result as ServiceResponse;
 };
 
 export default RegistrationHandler;

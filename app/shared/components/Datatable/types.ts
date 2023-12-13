@@ -2,6 +2,6 @@ export interface TableColumns {
     field:string,
     header:string,
     body?:React.FC<any>,
-    sortable:boolean,
+    sortable?:boolean,
     style?:React.CSSProperties,
 }

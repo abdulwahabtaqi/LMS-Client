@@ -1,7 +1,8 @@
 'use client';
 import React, { ReactNode, useState } from 'react';
 import AppContext from './context';
-import { AppContextProps, PageLoader } from './types';
+import { AppContextProps, PageLoader, ToasterData } from './types';
+import { Toaster } from '../shared/types';
 
 
 interface AppProviderProps {
@@ -9,17 +10,24 @@ interface AppProviderProps {
 }
 
 let pageLoader: PageLoader;
+let toasterData: ToasterData;
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [pageLoading, setPageLoading] = useState(0)
   const [primeReactLoader, setPrimeReactLoader] = useState(false);
+  const [toaster, setToaster] = useState({} as Toaster)
   pageLoader = {
     pageLoading, setPageLoading, primeReactLoader, setPrimeReactLoader
-  } ;
+  };
+  toasterData = {
+      toaster, setToaster
+  }
   const [message, setMessage] = useState<string>('');
 
   const contextValue = {
     message,
     pageLoader,
+    toaster,
+    setToaster
   } as AppContextProps;
 
   return (
@@ -30,4 +38,4 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 };
 
 export default AppProvider;
-export { pageLoader }
+export { pageLoader , toasterData }
