@@ -1,5 +1,5 @@
 import { useForm, Controller, SubmitHandler, } from 'react-hook-form'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import FormFieldWithLabel from '../../shared/components/FormFieldWithLabel/FormFieldWithLabel'
 import { TextField } from '../../shared/components/TextField/TextField'
 import { Button } from 'primereact/button'
@@ -60,7 +60,7 @@ const AddAndEditSchool: React.FC<AddAndEditSchoolProps> = (props) => {
                             name='type'
                             control={control}
                             defaultValue=""
-                            rules={{ required: "School type is required", }}
+                            rules={{ required: "School type is required" }}
                             render={({ field }) => (
                                 <FormFieldWithLabel
                                     label="School Type"

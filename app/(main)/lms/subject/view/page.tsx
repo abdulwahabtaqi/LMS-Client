@@ -1,39 +1,41 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
 import React, { useEffect, useState } from 'react'
-import { School } from '../../../../shared/types'
+import { Subject } from '../../../../shared/types'
 import DataTableRenderer from '../../../../shared/components/Datatable/DatatableRenderer'
 import { TableColumns } from '../../../../shared/components/Datatable/types'
 import { Dialog } from 'primereact/dialog'
-import AddAndEditSchool from '../../../../components/school/addAndEditSchool'
-import fetchSchoolsHandler from '../../../../context/server/school/fetchSchoolsHandler'
+import fetchSubjectHandler from '../../../../context/server/subject/fetchSubjectsHandler'
 import { useAppContext } from '../../../../../layout/context/layoutcontext'
 import { Button } from 'primereact/button'
 import { convertTimeStamps } from '../../../../shared/common'
+import AddAndEditSubject from '../../../../components/subject/addAndEditSubject';
 
 
-const ViewSchool = () => {
+const ViewSubject = () => {
     const g = useAppContext();
-    const [schools, setSchools] = useState<School[]>([] as School[]);
-    const [school, setSchool] = useState<School>({} as School);
+    const [subjects, setSubjects] = useState<Subject[]>([] as Subject[]);
+    const [subject, setSubject] = useState<Subject>({} as Subject);
     const [visible, setVisible] = useState<boolean>(false);
 
-    const editSchool = (school: School) => {
-        setSchool(school);
+    const editSubject = (subject: Subject) => {
+        setSubject(subject);
         setVisible(true);
     };
-    const fetchSchools = async () => {
+    const fetchSubject = async () => {
         try {
-            const response = await fetchSchoolsHandler();
+            const response = await fetchSubjectHandler();
             if (response?.status) {
-                setSchools(response?.result?.data as School[]);
+                setSubjects(response?.result?.data as Subject[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Schools" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Subject" });
         }
     };
     const tableColumns: TableColumns[] = [
         {
-            header: 'School Type',
-            field: 'type',
+            header: 'Subject',
+            field: 'subject',
             sortable: true,
             style: { width: '15rem' },
         },
@@ -50,39 +52,46 @@ const ViewSchool = () => {
             style: { width: '15rem' },
         },
         {
+            header: 'Grade',
+            field: 'gradeName',
+            sortable: true,
+            style: { width: '15rem' },
+        },
+        {
             header: 'Action',
             field: 'action',
             style: { width: '15rem' },
         },
     ];
     useEffect(() => {
-        fetchSchools();
+        fetchSubject();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
-        let newSchools = [] as School[];
-        schools?.forEach(x => {
-            newSchools?.push({ ...x, 
-                action: <Button label="Edit" className="p-button-info" onClick={() => editSchool(x)
+        let newSubject = [] as Subject[];
+        subjects?.forEach(x => {
+            newSubject?.push({ ...x, 
+                action: <Button label="Edit" className="p-button-info" onClick={() => editSubject(x)
             } />, 
+            gradeName: x?.grade?.grade,
             createdAt: convertTimeStamps(x?.createdAt), 
             updatedAt: convertTimeStamps(x?.updatedAt)
         })
         });
-        setSchools(newSchools);
-    }, [schools]);
+        setSubjects(newSubject);
+    }, [subjects]);
     return (
         <>
             <div className="grid">
                 <Dialog visible={visible} maximizable style={{ width: '50vw' }} onHide={() => setVisible(false)}>
-                    <AddAndEditSchool schools={schools} setSchools={setSchools} isNew={false} school={school} />
+                    <AddAndEditSubject subjects={subjects} setSubjects={setSubjects} isNew={false} subject={subject} />
                 </Dialog>
                 <div className="col-12">
-                    {schools.length > 0 && <DataTableRenderer<School> data={schools} tableColumns={tableColumns} />}
+                    {subjects.length > 0 && <DataTableRenderer<Subject> data={subjects} tableColumns={tableColumns} />}
                 </div>
             </div>
         </>
     )
 }
 
-export default ViewSchool
+export default ViewSubject

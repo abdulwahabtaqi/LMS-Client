@@ -110,6 +110,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
             applyLightTheme();
+            // applyDarkTheme();
         } else {
             applyDarkTheme();
         }

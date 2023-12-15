@@ -16,38 +16,41 @@ const AppMenu = () => {
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
+            label: 'Home',
+            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/grade' }]
+        },
+        {
+            label: 'Home',
+            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/gradecheck' }]
+        },
+        {
             label: 'School',
             items: [
-                { label: 'School', icon: 'pi pi-fw pi-building', to: '/app/school/add' },
-                // { label: 'View Schools', icon: 'pi pi-fw pi-check-square', to: '/app/input' }
+                { label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/school/create' },
             ]
         },
         {
             label: 'Grade',
             items: [
-                { label: 'Add Grade', icon: 'pi pi-fw pi-eye', to: '/blocks', badge: 'NEW' },
-                { label: 'View Grades', icon: 'pi pi-fw pi-globe', url: 'https://blocks.primereact.org', target: '_blank' }
+                { label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/grade/create', badge: 'NEW' },
             ]
         },
         {
             label: 'Subject',
             items: [
-                { label: 'Add Subject', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
-                { label: 'View Subjects', icon: 'pi pi-fw pi-desktop', url: 'https://primeflex.org/', target: '_blank' }
+                { label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/subject/create' },
             ]
         },
         {
             label: 'Topic',
             items: [
-                { label: 'Add Topic', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
-                { label: 'View Topics', icon: 'pi pi-fw pi-desktop', url: 'https://primeflex.org/', target: '_blank' }
+                { label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/topic/create' },
             ]
         },
         {
             label: 'Sub Topic',
             items: [
-                { label: 'Add Sub Topic', icon: 'pi pi-fw pi-prime', to: '/utilities/icons' },
-                { label: 'View Sub Topics', icon: 'pi pi-fw pi-desktop', url: 'https://primeflex.org/', target: '_blank' }
+                { label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/sub-topic/create' },
             ]
         },
 
@@ -56,13 +59,13 @@ const AppMenu = () => {
     return (
         <MenuProvider>
             <ul className="layout-menu">
-                {model.map((item, i) => {
+                {model?.map((item, i) => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
 
-                <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
+                {/* <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
                     <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link>
+                </Link> */}
             </ul>
         </MenuProvider>
     );
