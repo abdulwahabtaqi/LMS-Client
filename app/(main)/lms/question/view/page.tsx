@@ -1,17 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import React from 'react'
-import ViewTopic from '../../../../components/topic/viewTopics';
+import ViewQuestion from '../../../../components/questions/viewQuestions';
 
-const ViewTopics = () => {
+const ViewQuestions = () => {
 
     return (
         <>
             <div className="grid">
-                <ViewTopic />
+                <ViewQuestion />
             </div>
         </>
     )
 }
 
-export default ViewTopics
+export default ViewQuestions

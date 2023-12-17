@@ -2,8 +2,8 @@
 
 import React from 'react';
 import PageHeader from '../../../../components/pageHeader';
-import AddAndEditTopic from '../../../../components/topic/addAndEditTopic';
-import ViewTopic from '../../../../components/topic/viewTopics';
+import AddAndEditQuestion from '../../../../components/questions/addAndEditQuestion';
+import ViewQuestion from '../../../../components/questions/viewQuestions';
 
 
 const AddTopic = () => {
@@ -11,10 +11,10 @@ const AddTopic = () => {
         <div className="grid">
             <PageHeader title="Topic" />
             <div className="col-12">
-                <AddAndEditTopic isNew={true} />
+                <AddAndEditQuestion isNew={true} />
             </div>
             <div className="col-12">
-                <ViewTopic />
+                <ViewQuestion />
             </div>
         </div>
     );

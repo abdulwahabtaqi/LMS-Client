@@ -1,4 +1,5 @@
 import { Toaster } from "../../shared/types";
+import { NewData } from "./NewData";
 import { ServiceResponse } from "./services";
 
 export interface  AppContextProps {
@@ -7,6 +8,7 @@ export interface  AppContextProps {
     createSchoolHandler: (CreateSchoolHandler:ServiceResponse) => ServiceResponse;
     toaster: Toaster;
     setToaster: (newToaster: Toaster) => void;
+    newData: NewData;
 }
 export interface MainContextProviderProps {
     children: React.ReactNode;

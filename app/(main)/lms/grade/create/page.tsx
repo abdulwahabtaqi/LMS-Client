@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import React from 'react';
-import PageHeader from '../../components/pageHeader';
-import ViewSchool from './view/view';
-import AddAndEditGrade from '../../components/grade/addAndEditGrade';
+import PageHeader from '../../../../components/pageHeader';
+import AddAndEditGrade from '../../../../components/grade/addAndEditGrade';
+import ViewGrade from '../../../../components/grade/viewGrade';
 
 const AddGrade = () => {
     return (
@@ -13,7 +13,7 @@ const AddGrade = () => {
                 <AddAndEditGrade isNew={true} />
             </div>
             <div className="col-12">
-                <ViewSchool />
+                <ViewGrade />
             </div>
         </div>
     );

@@ -60,8 +60,10 @@ export interface Question {
     id: string,
     subTopic: SubTopic,
     subTopicId: string,
+    subTopicName: string,
     question: string,
     type:QuestionType[]
+    difficultyLevel:DifficultyLevel[]
     answers: Answer[],
     createdAt: string,
     updatedAt: string,
@@ -117,4 +119,14 @@ export enum  DifficultyLevel {
 export interface SchoolDropdownProps {
     name: string;
     label: string;
+}
+
+export interface DashboardInsights {
+    totalSchools: number;
+    totalGrades: number;
+    totalSubjects: number;
+    totalTopics: number;
+    totalSubTopics: number;
+    totalQuestions: number;
+    totalUsers: number;
 }

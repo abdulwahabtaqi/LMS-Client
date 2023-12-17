@@ -15,8 +15,6 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 interface AddAndEditGradeProps {
     grade?: Grade
     isNew: boolean,
-    grades?: Grade[],
-    setGrades?: (Grades: Grade[]) => void
 }
 const AddAndEditGrade: React.FC<AddAndEditGradeProps> = (props) => {
     const [schools, setSchools] = useState<School[]>([] as School[]);
@@ -38,18 +36,13 @@ const AddAndEditGrade: React.FC<AddAndEditGradeProps> = (props) => {
         await updateGradeHandler(grade, grade?.id);
     }
     const submitForm: SubmitHandler<Grade> = async (grade: Grade) => {
-        console.log(grade)
         try {
             if (props?.isNew) {
                 await createGradeHandler(grade);
+                g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
             } else {
                 await updateGrade(grade);
-                const oldGrades = props?.grades as Grade[];
-                const gradeIndex = oldGrades?.findIndex((oldGrade) => oldGrade?.id === grade?.id);
-                oldGrades[gradeIndex] = grade;
-                if (props?.setGrades) {
-                    props.setGrades(oldGrades);
-                }
+                g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
             }
         }
         catch (error) {
@@ -84,7 +77,7 @@ const AddAndEditGrade: React.FC<AddAndEditGradeProps> = (props) => {
                                 showCharLimit={false}
                                 showOptionalText={false}
                                 formField={
-                                    <TextField placeholder="eg. Zalando" dataAttribute='brand_name' errorMessage={GradeErrors?.grade?.message} value={field?.value} onChange={field.onChange} />} />
+                                    <TextField placeholder="eg. seventh" dataAttribute='brand_name' errorMessage={GradeErrors?.grade?.message} value={field?.value} onChange={field.onChange} />} />
                         )}
                     />
                 </div>
@@ -113,9 +106,7 @@ const AddAndEditGrade: React.FC<AddAndEditGradeProps> = (props) => {
                                         />
                                         <ErrorMessage text={GradeErrors?.schoolId?.message} />
                                     </>
-
                                 }
-                                
                             />
                         )}
                     />

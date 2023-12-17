@@ -2,18 +2,19 @@
 
 import React from 'react';
 import PageHeader from '../../../../components/pageHeader';
-import ViewTopic from '../view/page';
 import AddAndEditSubTopic from '../../../../components/subTopic/addAndEditSubTopic';
+import ViewSubTopic from '../../../../components/subTopic/viewSubTopics';
+
 
 const AddSubTopic = () => {
     return (
         <div className="grid">
-            <PageHeader title="Grade" />
+            <PageHeader title="Sub Topic" />
             <div className="col-12">
                 <AddAndEditSubTopic isNew={true} />
             </div>
             <div className="col-12">
-                <ViewTopic />
+                <ViewSubTopic />
             </div>
         </div>
     );

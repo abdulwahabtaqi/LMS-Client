@@ -15,8 +15,6 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 interface AddAndEditSubTopicProps {
     subTopic?: SubTopic
     isNew: boolean,
-    subTopics?: SubTopic[],
-    setSubTopics?: (SubTopics: SubTopic[]) => void
 }
 const AddAndEditSubTopic: React.FC<AddAndEditSubTopicProps> = (props) => {
     const [topics, setTopics] = useState<Topic[]>([] as Topic[]);
@@ -41,14 +39,10 @@ const AddAndEditSubTopic: React.FC<AddAndEditSubTopicProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSubTopicHandler(subTopic);
+                g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
             } else {
                 await updateTopic(subTopic);
-                const oldTopics = props?.subTopics as SubTopic[];
-                const subTopicIndex = oldTopics?.findIndex((oldTopic) => oldTopic?.id === subTopic?.id);
-                oldTopics[subTopicIndex] = subTopic;
-                if (props?.setSubTopics) {
-                    props.setSubTopics(oldTopics);
-                }
+                g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
             }
         }
         catch (error) {
@@ -83,7 +77,7 @@ const AddAndEditSubTopic: React.FC<AddAndEditSubTopicProps> = (props) => {
                                 showCharLimit={false}
                                 showOptionalText={false}
                                 formField={
-                                    <TextField placeholder="eg. Zalando" dataAttribute='brand_name' errorMessage={subTopicErrors?.subTopic?.message} value={field?.value} onChange={field.onChange} />} />
+                                    <TextField placeholder="eg. Promises States" dataAttribute='brand_name' errorMessage={subTopicErrors?.subTopic?.message} value={field?.value} onChange={field.onChange} />} />
                         )}
                     />
                 </div>
@@ -94,29 +88,28 @@ const AddAndEditSubTopic: React.FC<AddAndEditSubTopicProps> = (props) => {
                         defaultValue=""
                         rules={{ required: "Select Topic" }}
                         render={({ field }) => (
-                           <>
-                            <FormFieldWithLabel
-                                label="Select Topic"
-                                showCharLimit={false}
-                                showOptionalText={false}
-                                formField={
-                                    <Dropdown
-                                        value={field?.value}  
-                                        onChange={field?.onChange}
-                                        options={topics}
-                                        optionLabel="topic"  
-                                        optionValue="id"  
-                                        placeholder="Select a Topic"
-                                        filter
-                                        className={`w-100 ${subTopicErrors?.topicId?.message ? "p-invalid" : ""}`}
-                                    />
-                                }
-                            />
-                            <ErrorMessage text={subTopicErrors?.topicId?.message} />
-                           </>
+                            <>
+                                <FormFieldWithLabel
+                                    label="Select Topic"
+                                    showCharLimit={false}
+                                    showOptionalText={false}
+                                    formField={
+                                        <Dropdown
+                                            value={field?.value}
+                                            onChange={field?.onChange}
+                                            options={topics}
+                                            optionLabel="topic"
+                                            optionValue="id"
+                                            placeholder="Select a Topic"
+                                            filter
+                                            className={`w-100 ${subTopicErrors?.topicId?.message ? "p-invalid" : ""}`}
+                                        />
+                                    }
+                                />
+                                <ErrorMessage text={subTopicErrors?.topicId?.message} />
+                            </>
                         )}
                     />
-
                 </div>
                 <div className="gap-2">
                     <Button label={`${props?.isNew ? "Save" : "Update"}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />

@@ -1,9 +1,9 @@
-'use client';
-
+'use client'
 import React from 'react';
 import AddAndEditSchool from '../../../../components/school/addAndEditSchool';
 import PageHeader from '../../../../components/pageHeader';
-import ViewSchool from '../view/page';
+import ViewSchool from '../../../../components/school/viewSchool';
+
 
 const AddSchool = () => {
     return (
@@ -17,6 +17,7 @@ const AddSchool = () => {
             </div>
         </div>
     );
-};
-
+}
 export default AddSchool;
+
+

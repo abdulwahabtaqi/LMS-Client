@@ -15,8 +15,6 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 interface AddAndEditTopicProps {
     topic?: Topic
     isNew: boolean,
-    topics?: Topic[],
-    setTopics?: (Topics: Topic[]) => void
 }
 const AddAndEditTopic: React.FC<AddAndEditTopicProps> = (props) => {
     const [subjects, setSubjects] = useState<Subject[]>([] as Subject[]);
@@ -41,14 +39,10 @@ const AddAndEditTopic: React.FC<AddAndEditTopicProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createTopicHandler(topic);
+                g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
             } else {
                 await updateTopic(topic);
-                const oldTopics = props?.topics as Topic[];
-                const topicIndex = oldTopics?.findIndex((oldTopic) => oldTopic?.id === topic?.id);
-                oldTopics[topicIndex] = topic;
-                if (props?.setTopics) {
-                    props.setTopics(oldTopics);
-                }
+                g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
             }
         }
         catch (error) {
@@ -83,7 +77,7 @@ const AddAndEditTopic: React.FC<AddAndEditTopicProps> = (props) => {
                                 showCharLimit={false}
                                 showOptionalText={false}
                                 formField={
-                                    <TextField placeholder="eg. Zalando" dataAttribute='brand_name' errorMessage={TopicErrors?.topic?.message} value={field?.value} onChange={field.onChange} />} />
+                                    <TextField placeholder="eg. Promises" dataAttribute='brand_name' errorMessage={TopicErrors?.topic?.message} value={field?.value} onChange={field.onChange} />} />
                         )}
                     />
                 </div>
@@ -95,24 +89,24 @@ const AddAndEditTopic: React.FC<AddAndEditTopicProps> = (props) => {
                         rules={{ required: "Select Subject" }}
                         render={({ field }) => (
                             <>
-                            <FormFieldWithLabel
-                                label="Select Subject"
-                                showCharLimit={false}
-                                showOptionalText={false}
-                                formField={
-                                    <Dropdown
-                                        value={field?.value}  
-                                        onChange={field?.onChange}
-                                        options={subjects}
-                                        optionLabel="subject"  
-                                        optionValue="id"  
-                                        placeholder="Select a Subject"
-                                        filter
-                                        className={`w-100 ${TopicErrors?.subjectId?.message ? "p-invalid" : ""}`}
-                                    />
-                                }
-                            />
-                            <ErrorMessage text={TopicErrors?.subjectId?.message} />
+                                <FormFieldWithLabel
+                                    label="Select Subject"
+                                    showCharLimit={false}
+                                    showOptionalText={false}
+                                    formField={
+                                        <Dropdown
+                                            value={field?.value}
+                                            onChange={field?.onChange}
+                                            options={subjects}
+                                            optionLabel="subject"
+                                            optionValue="id"
+                                            placeholder="Select a Subject"
+                                            filter
+                                            className={`w-100 ${TopicErrors?.subjectId?.message ? "p-invalid" : ""}`}
+                                        />
+                                    }
+                                />
+                                <ErrorMessage text={TopicErrors?.subjectId?.message} />
                             </>
                         )}
                     />

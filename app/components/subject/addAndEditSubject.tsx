@@ -15,8 +15,6 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 interface AddAndEditSubjectProps {
     subject?: Subject
     isNew: boolean,
-    subjects?: Subject[],
-    setSubjects?: (Subjects: Subject[]) => void
 }
 const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
     const [grades, setGrades] = useState<Grade[]>([] as Grade[]);
@@ -41,14 +39,10 @@ const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSubjectHandler(subject);
+                g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject);
             } else {
                 await updateSubject(subject);
-                const oldSubjects = props?.subjects as Subject[];
-                const subjectIndex = oldSubjects?.findIndex((oldSubject) => oldSubject?.id === subject?.id);
-                oldSubjects[subjectIndex] = subject;
-                if (props?.setSubjects) {
-                    props.setSubjects(oldSubjects);
-                }
+                g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject)
             }
         }
         catch (error) {
@@ -83,7 +77,7 @@ const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
                                 showCharLimit={false}
                                 showOptionalText={false}
                                 formField={
-                                    <TextField placeholder="eg. Zalando" dataAttribute='brand_name' errorMessage={SubjectErrors?.subject?.message} value={field?.value} onChange={field.onChange} />} />
+                                    <TextField placeholder="eg. javascript" dataAttribute='brand_name' errorMessage={SubjectErrors?.subject?.message} value={field?.value} onChange={field.onChange} />} />
                         )}
                     />
                 </div>
@@ -100,15 +94,15 @@ const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
                                 showOptionalText={false}
                                 formField={
                                     <>
-                                    <Dropdown
-                                        value={field?.value}  
-                                        onChange={field?.onChange}
-                                        options={grades}
-                                        optionLabel="grade"  
-                                        optionValue="id"  
-                                        placeholder="Select a Grade"
-                                        filter
-                                        className={`w-100 ${SubjectErrors?.gradeId?.message ? "p-invalid" : ""}`}
+                                        <Dropdown
+                                            value={field?.value}
+                                            onChange={field?.onChange}
+                                            options={grades}
+                                            optionLabel="grade"
+                                            optionValue="id"
+                                            placeholder="Select a Grade"
+                                            filter
+                                            className={`w-100 ${SubjectErrors?.gradeId?.message ? "p-invalid" : ""}`}
                                         />
                                         <ErrorMessage text={SubjectErrors?.gradeId?.message} />
                                     </>
@@ -116,7 +110,7 @@ const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
                             />
                         )}
                     />
-                            
+
                 </div>
                 <div className="gap-2">
                     <Button label={`${props?.isNew ? "Save" : "Update"}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />

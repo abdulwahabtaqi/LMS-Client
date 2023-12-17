@@ -16,14 +16,6 @@ const AppMenu = () => {
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/grade' }]
-        },
-        {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/gradecheck' }]
-        },
-        {
             label: 'School',
             items: [
                 { label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/school/create' },
@@ -51,6 +43,12 @@ const AppMenu = () => {
             label: 'Sub Topic',
             items: [
                 { label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/sub-topic/create' },
+            ]
+        },
+        {
+            label: 'Question',
+            items: [
+                { label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/question/create' },
             ]
         },
 

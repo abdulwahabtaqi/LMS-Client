@@ -11,8 +11,6 @@ import updateSchoolHandler from '../../context/server/school/updateSchoolHandler
 interface AddAndEditSchoolProps {
     school?: School
     isNew: boolean,
-    schools?: School[],
-    setSchools?: (schools: School[]) => void
 }
 const AddAndEditSchool: React.FC<AddAndEditSchoolProps> = (props) => {
     const { control, handleSubmit, reset, setValue, formState: { errors: schoolErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<School>({
@@ -27,16 +25,10 @@ const AddAndEditSchool: React.FC<AddAndEditSchoolProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSchoolHandler(school);
+                g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
             } else {
-               await updateSchool(school);
-               const oldSchools = props?.schools as School[];
-               // find School with SchoolId and update the school in state
-                const schoolIndex = oldSchools?.findIndex((oldSchool) => oldSchool?.id === school?.id);
-                oldSchools[schoolIndex] = school;
-                if (props?.setSchools) {
-                    props.setSchools(oldSchools);
-                }
-                
+                await updateSchool(school);
+                g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
             }
         }
         catch (error) {
@@ -53,28 +45,29 @@ const AddAndEditSchool: React.FC<AddAndEditSchoolProps> = (props) => {
         , [props.school, reset, setValue])
     return (
         <>
-                <div className="card">
-                    <h5>{props?.isNew?"New School":"Update School"}</h5>
-                    <div className="field col-12 md:col-6">
-                        <Controller
-                            name='type'
-                            control={control}
-                            defaultValue=""
-                            rules={{ required: "School type is required" }}
-                            render={({ field }) => (
-                                <FormFieldWithLabel
-                                    label="School Type"
-                                    showCharLimit={false}
-                                    showOptionalText={false}
-                                    formField={
-                                        <TextField placeholder="eg. Zalando" dataAttribute='brand_name' errorMessage={schoolErrors?.type?.message} value={field?.value} onChange={field.onChange} />} />
-                            )}
-                        />
-                    </div>
-                    <div className="gap-2">
-                        <Button label={`${props?.isNew ? "Save" : "Update"}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
-                    </div>
+            <div className="card">
+                <h5>{props?.isNew ? "New School" : "Update School"}</h5>
+                <div className="field col-12 md:col-6">
+                    <Controller
+                        name='type'
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: "School type is required" }}
+                        render={({ field }) => (
+                            <FormFieldWithLabel
+                                label="School Type"
+                                showCharLimit={false}
+                                showOptionalText={false}
+                                formField={
+                                    <TextField placeholder="eg. primary" dataAttribute='brand_name' errorMessage={schoolErrors?.type?.message} value={field?.value} onChange={field.onChange} />
+                                } />
+                        )}
+                    />
                 </div>
+                <div className="gap-2">
+                    <Button label={`${props?.isNew ? "Save" : "Update"}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
+                </div>
+            </div>
         </>
     )
 }

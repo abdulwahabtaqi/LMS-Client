@@ -1,21 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import React from 'react'
-import ViewSchool from '../../../../components/school/viewSchool';
+import ViewGrade from '../../../../components/grade/viewGrade';
 
 
+const ViewGrades = () => {
 
-const ViewSchools = () => {
-   
     return (
         <>
             <div className="grid">
                 <div className="col-12">
-                    <ViewSchool />
+                    <ViewGrade />
                 </div>
             </div>
         </>
     )
 }
 
-export default ViewSchools
+export default ViewGrades
