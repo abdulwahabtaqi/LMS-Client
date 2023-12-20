@@ -26,6 +26,10 @@ export interface NewQuestion {
     isNewQuestion: boolean;
     setIsNewQuestion: (newToaster: boolean) => void;
 }
+export interface NewAnswer {
+    isNewAnswer: boolean;
+    setIsNewAnswer: (newToaster: boolean) => void;
+}
 
 export interface NewData {
    school:NewSchool,
@@ -33,5 +37,6 @@ export interface NewData {
    subject:NewSubject,
    topic:NewTopic,
    subTopic:NewSubTopic,
-   question:NewQuestion
+   question:NewQuestion,
+   answer:NewAnswer
 }

@@ -51,6 +51,18 @@ const AppMenu = () => {
                 { label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/question/create' },
             ]
         },
+        {
+            label: 'Answer',
+            items: [
+                { label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/answer/create' },
+            ]
+        },
+        {
+            label: 'Imports',
+            items: [
+                { label: 'Import', icon: 'pi pi-file-import', to: '/lms/answer/import' },
+            ]
+        },
 
     ];
 

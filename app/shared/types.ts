@@ -73,7 +73,9 @@ export interface Answer {
     id: string,
     question: Question,
     questionId: string,
+    questionName: string,
     answer: string,
+    isCorrect: boolean,
     type:QuestionType[]
     createdAt: string,
     updatedAt: string,
@@ -89,6 +91,10 @@ export interface User {
     updatedAt: string;
 }
 
+export interface ImportAnswers {
+    subTopicId: string,
+    csvFile: File
+}
 export interface DatatableWithSearchProps<T> {
     tableColumns: TableColumns[];
     data: T[];

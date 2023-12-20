@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from 'react';
 import AppContext from './context';
 import { AppContextProps, PageLoader, ToasterData } from './types';
 import { Toaster } from '../shared/types';
-import { NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/NewData';
+import { NewAnswer, NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/NewData';
 
 
 interface AppProviderProps {
@@ -25,6 +25,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
    const [isNewTopic, setIsNewTopic] = useState<boolean>(false);
    const [isNewSubTopic, setIsNewSubTopic] = useState<boolean>(false);
    const [isNewQuestion, setIsNewQuestion] = useState<boolean>(false);
+   const [isNewAnswer, setIsNewAnswer] = useState<boolean>(false);
   // ***************End New Data************ // 
   
   pageLoader = {
@@ -52,7 +53,10 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     } as NewSubTopic,
     question:{
       isNewQuestion, setIsNewQuestion
-    } as NewQuestion
+    } as NewQuestion,
+    answer:{
+      isNewAnswer, setIsNewAnswer
+    } as NewAnswer
   } as NewData;
 
 
