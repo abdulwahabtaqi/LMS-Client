@@ -1,18 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AppMenuitem from './AppMenuitem';
 import { LayoutContext, useAppContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '../types/types';
-import { Role } from '../app/shared/types';
+import { Role, User } from '../app/shared/types';
+import { verifyToken } from '../app/shared/common';
 const AppMenu = () => {
     const g = useAppContext();
     const { layoutConfig } = useContext(LayoutContext);
-
+    const [user, setUser] = useState({} as User)
     let model: AppMenuItem[] = [];
-    if (g?.currentUser?.user?.role === Role.ADMIN) {
+    useEffect(() => {
+        const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
+        setUser(userData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [localStorage?.getItem('lms-token')]);
+    
+    if (user?.role === Role.ADMIN) {
         model = [
             {
                 label: 'Home',
@@ -66,15 +73,19 @@ const AppMenu = () => {
                     { label: 'Import', icon: 'pi pi-file-import', to: '/lms/admin/answer/import' },
                 ]
             },
-    
+            {
+                label: 'Export',
+                items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+            }
+
         ] as AppMenuItem[];
     }
-    else if(g?.currentUser?.user?.role===Role.TEACHER) {
+    else if (user?.role === Role.TEACHER) {
         model = [
-           {
-            label: 'Export',
-            items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
-           }
+            {
+                label: 'Export',
+                items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+            }
         ] as AppMenuItem[];
     }
     return (

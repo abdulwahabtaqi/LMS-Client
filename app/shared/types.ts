@@ -5,29 +5,29 @@ export interface User {
     email: string;
     name: string;
     role: string;
-    joinDate:Date;
+    joinDate: Date;
     exp: number;
     iat: number;
 }
-export interface School{
-    id:string,
-    type:string,
-    grades:Grade[],
-    createdAt:string,
-    updatedAt:string,
-    action?:React.ReactNode
+export interface School {
+    id: string,
+    type: string,
+    grades: Grade[],
+    createdAt: string,
+    updatedAt: string,
+    action?: React.ReactNode
 }
 
-export interface Grade{
-    id:string,
-    school:School,
-    schoolId:string,
-    schoolName:string,
-    grade:string,
-    subjects:Subject[],
-    createdAt:string,
-    updatedAt:string,
-    action?:React.ReactNode
+export interface Grade {
+    id: string,
+    school: School,
+    schoolId: string,
+    schoolName: string,
+    grade: string,
+    subjects: Subject[],
+    createdAt: string,
+    updatedAt: string,
+    action?: React.ReactNode
 }
 
 export interface Subject {
@@ -71,8 +71,8 @@ export interface Question {
     subTopicId: string,
     subTopicName: string,
     question: string,
-    type:QuestionType[]
-    difficultyLevel:DifficultyLevel[]
+    type: QuestionType[]
+    difficultyLevel: DifficultyLevel[]
     answers: Answer[],
     createdAt: string,
     updatedAt: string,
@@ -85,7 +85,7 @@ export interface Answer {
     questionName: string,
     answer: string,
     isCorrect: boolean,
-    type:QuestionType[]
+    type: QuestionType[]
     createdAt: string,
     updatedAt: string,
     action?: React.ReactNode
@@ -97,8 +97,16 @@ export interface ExportAnswers {
     subjectId: string,
     topicId: string,
     subTopicId: string,
-    difficultyLevel:DifficultyLevel,
-    type:QuestionType[]
+    mcqQuestionQuantity: number,
+    mcqDifficultyLevel: DifficultyLevel,
+    shortQuestionQuantity: number,
+    shortQuestionDifficultyLevel: DifficultyLevel,
+    longQuestionQuantity: number,
+    longQuestionDifficultyLevel: DifficultyLevel,
+    type: QuestionType[],
+    MCQVisible: boolean,
+    shortQuestionVisible: boolean,
+    longQuestionVisible: boolean,
 }
 export interface User {
     id: string;
@@ -134,7 +142,7 @@ export enum QuestionType {
     LONG = "LONG"
 }
 
-export enum  DifficultyLevel {
+export enum DifficultyLevel {
     EASY = "EASY",
     MEDIUM = "MEDIUM",
     HARD = "HARD"
