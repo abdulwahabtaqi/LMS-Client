@@ -1,9 +1,9 @@
 'use client';
 import React, { ReactNode, useState } from 'react';
 import AppContext from './context';
-import { AppContextProps, PageLoader, ToasterData } from './types';
-import { Toaster } from '../shared/types';
-import { NewAnswer, NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/NewData';
+import { AppContextProps, CurrentUser, PageLoader, ToasterData } from './types';
+import { Toaster, User } from '../shared/types';
+import { NewAnswer, NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/newData';
 
 
 interface AppProviderProps {
@@ -13,10 +13,12 @@ interface AppProviderProps {
 let pageLoader: PageLoader;
 let toasterData: ToasterData;
 let newData: NewData;
+let currentUser: CurrentUser;
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [pageLoading, setPageLoading] = useState(0);
   const [primeReactLoader, setPrimeReactLoader] = useState(false);
   const [toaster, setToaster] = useState({} as Toaster);
+  const [user, setUser] = useState({} as User);
   
   // ***************New Data**************** //  
    const [isNewSchool, setIsNewSchool] = useState<boolean>(false);
@@ -27,7 +29,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
    const [isNewQuestion, setIsNewQuestion] = useState<boolean>(false);
    const [isNewAnswer, setIsNewAnswer] = useState<boolean>(false);
   // ***************End New Data************ // 
-  
+
   pageLoader = {
     pageLoading, setPageLoading, primeReactLoader, setPrimeReactLoader
   } as PageLoader;
@@ -58,8 +60,10 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       isNewAnswer, setIsNewAnswer
     } as NewAnswer
   } as NewData;
-
-
+  
+   currentUser = {
+    user, setUser
+  } as CurrentUser;
   const [message, setMessage] = useState<string>('');
 
   const contextValue = {
@@ -67,7 +71,8 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     pageLoader,
     toaster,
     setToaster,
-    newData
+    newData,
+    currentUser
   } as AppContextProps;
 
   return (
@@ -78,4 +83,4 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 };
 
 export default AppProvider;
-export { pageLoader , toasterData }
+export { pageLoader, toasterData, currentUser }

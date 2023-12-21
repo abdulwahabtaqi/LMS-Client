@@ -12,6 +12,8 @@ import Link from 'next/link';
 import LoadingBar from 'react-top-loading-bar';
 import RegistrationHandler from '../../../context/server/user/auth/registration';
 import { Toast } from 'primereact/toast';
+import { currentUser } from '../../../context/provider';
+import { verifyToken } from '../../../shared/common';
 
 const LoginPage = () => {
     const toast = useRef<Toast>(null);
@@ -25,13 +27,15 @@ const LoginPage = () => {
         try {
             const response = await RegistrationHandler(user, "callback");
             setPageLoading(70);
-            if(response?.status){
-              const lmsToken =  response?.result?.data as string;
-              localStorage.setItem('lms-token', lmsToken);
+            if (response?.status) {
+                const lmsToken = response?.result?.data as string;
+                localStorage.setItem('lms-token', lmsToken);
+                const user = verifyToken(lmsToken) as User;
+                currentUser?.setUser(user);
                 setPageLoading(100);
-              router.push('/');
+                router.push('/');
             }
-        } catch (error:any) {
+        } catch (error: any) {
             setPageLoading(100);
             showSuccess('error', 'Error', error?.message);
         }
@@ -43,7 +47,7 @@ const LoginPage = () => {
     });
     return (
         <div className={containerClassName}>
-             <LoadingBar
+            <LoadingBar
                 color="#0000FF"
                 progress={pageLoading}
                 onLoaderFinished={() => setPageLoading(0)}
@@ -59,7 +63,7 @@ const LoginPage = () => {
                 >
                     <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
-                        <img src="/layout/images/logo.png" alt="Image" height="50" className="mb-3" />
+                            <img src="/layout/images/logo.png" alt="Image" height="50" className="mb-3" />
                             <div className="text-900 text-3xl font-medium mb-3">Welcome, To LMS!</div>
                             <span className="text-600 font-medium">Sign up to continue</span>
                         </div>
@@ -137,8 +141,8 @@ const LoginPage = () => {
                             <div></div>
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
                                 <div className="flex align-items-center">
-                                  
-                                   <Link href={`./login`}>Sign In</Link>
+
+                                    <Link href={`./login`}>Sign In</Link>
                                 </div>
                                 <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
                                     Forgot password?

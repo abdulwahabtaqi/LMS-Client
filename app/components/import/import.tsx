@@ -8,148 +8,58 @@ import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
 import { useAppContext } from '../../../layout/context/layoutcontext';
 import fetchSubTopicsHandler from '../../context/server/subTopic/fetchSubTopicsHandler';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
+import { InputText } from 'primereact/inputtext';
 
-const ImportAnswers: React.FC = () => {
+const ImportAnswer: React.FC = () => {
     const g = useAppContext();
-    const [importFiles, setImportFiles] = useState([] as any[])
-    const [subTopics, setSubTopics] = useState<SubTopic[]>([]);
-    const {
-        control,
-        handleSubmit,
-        setValue,
-        formState: { errors: ImportErrors },
-        setError,
-    } = useForm<ImportAnswers>({
-        mode: 'onBlur',
-    });
+    // State to store the uploaded file
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-    const submitForm: SubmitHandler<ImportAnswers> = async (imports: ImportAnswers) => {
-        try {
-            console.log('imports====>', imports);
-        } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something went wrong, Please try again later' });
-        }
-    };
+    // State for other form fields
+    const [name, setName] = useState('');
 
-    const fetchSubTopics = async () => {
-        try {
-            const response = await fetchSubTopicsHandler();
-            if (response?.status) {
-                setSubTopics(response?.result?.data as SubTopic[]);
-            }
-        } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Questions' });
-        }
-    };
-
-    const handleFileUpload = async (file: any) => {
-        if (!file || file?.length === 0) {
-            setError('csvFile', {
-                type: 'manual',
-                message: 'Select a file',
-            });
-            return;
-        }
-
-        if (!file[0]?.name?.endsWith('.csv')) {
-            setError('csvFile', {
-                type: 'manual',
-                message: 'File must be in CSV format',
-            });
-            return;
-        }
-
-        if (file[0]?.size > 5000000) {
-            setError('csvFile', {
-                type: 'manual',
-                message: 'File size should be less than 5MB',
-            });
-            return;
-        }
-
-        setError('csvFile', {
-            type: 'manual',
-            message: '',
-        });
-
-        // Log the file to the console
-        console.log('Uploaded File:', file);
-    };
-
-    useEffect(() => {
-        fetchSubTopics();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    const customBase64Uploader = async (event: FileUploadHandlerEvent) => {
-        alert(event)
-        // convert file to base64 encoded
+    // Event handler for file upload
+    const onFileUpload = (event: any) => {
         const file = event.files[0];
-        const reader = new FileReader();
-        // let blob = await fetch(file?.objectURL).then((r) => r.blob()); //blob:url
+        setUploadedFile(file);
+    };
 
-        // reader.readAsDataURL(blob);
+    // Event handler for form submission
+    const onSubmit = () => {
+        // You can handle the form submission here
+        console.log('Name:', name);
+        console.log('File:', uploadedFile);
 
-        reader.onloadend = function () {
-            const base64data = reader.result;
-        };
-    }
+        // Add your logic for submitting the form data, e.g., sending it to the server
+    };
     return (
         <>
             <div className="card">
-                <h5>Import</h5>
-                <div className="grid p-fluid mt-3">
-                    <div className="field col-12 md:col-5">
-                        <Controller
-                            name="subTopicId"
-                            control={control}
-                            defaultValue=""
-                            rules={{ required: 'Sub Topic is required' }}
-                            render={({ field }) => (
-                                <>
-                                    <FormFieldWithLabel
-                                        label="Select Sub Topic"
-                                        showCharLimit={false}
-                                        showOptionalText={false}
-                                        formField={
-                                            <Dropdown
-                                                value={field?.value}
-                                                onChange={(e) => {
-                                                    field?.onChange(e.value);
-                                                    setValue('subTopicId', e.value);
-                                                }}
-                                                options={subTopics}
-                                                optionLabel="subTopic"
-                                                optionValue="id"
-                                                placeholder="Select Sub Topic"
-                                                filter
-                                                className={`w-100 ${ImportErrors?.subTopicId?.message ? 'p-invalid' : ''}`}
-                                            />
-                                        }
-                                    />
-                                    <ErrorMessage text={ImportErrors?.subTopicId?.message} />
-                                </>
-                            )}
+                <div>
+                    <h2>File Upload Form</h2>
+                    <div>
+                        <span>Name:</span>
+                        <InputText value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div>
+                        <span>File:</span>
+                        <FileUpload
+                            mode="basic"
+                            chooseLabel="Choose"
+                            uploadLabel="Upload"
+                            cancelLabel="Cancel"
+                            customUpload
+                            uploadHandler={onFileUpload}
+                            emptyTemplate="No file chosen"
                         />
                     </div>
-                    <div className="field col-12 md:col-5">
-                        <label htmlFor="">Upload File</label>
-                        <FileUpload mode="basic" name="demo[]" accept="image/*" customUpload uploadHandler={customBase64Uploader} />
-                        <ErrorMessage text={ImportErrors?.csvFile?.message} />
+                    <div>
+                        <Button label="Submit" onClick={onSubmit} />
                     </div>
-                </div>
-                <div className="gap-2">
-                    <Button
-                        label={`Import Answers`}
-                        onClick={() => {
-                            console.log('imports====>', importFiles);
-                            handleSubmit(submitForm)();
-                        }}
-                        icon="pi pi-check"
-                    />
                 </div>
             </div>
         </>
     );
 };
 
-export default ImportAnswers;
+export default ImportAnswer;

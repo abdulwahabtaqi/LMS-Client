@@ -2,70 +2,81 @@
 
 import React, { useContext } from 'react';
 import AppMenuitem from './AppMenuitem';
-import { LayoutContext } from './context/layoutcontext';
+import { LayoutContext, useAppContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '../types/types';
-
+import { Role } from '../app/shared/types';
 const AppMenu = () => {
+    const g = useAppContext();
     const { layoutConfig } = useContext(LayoutContext);
 
-    const model: AppMenuItem[] = [
-        {
-            label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
-        },
-        {
-            label: 'School',
-            items: [
-                { label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/school/create' },
-            ]
-        },
-        {
-            label: 'Grade',
-            items: [
-                { label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/grade/create', badge: 'NEW' },
-            ]
-        },
-        {
-            label: 'Subject',
-            items: [
-                { label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/subject/create' },
-            ]
-        },
-        {
-            label: 'Topic',
-            items: [
-                { label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/topic/create' },
-            ]
-        },
-        {
-            label: 'Sub Topic',
-            items: [
-                { label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/sub-topic/create' },
-            ]
-        },
-        {
-            label: 'Question',
-            items: [
-                { label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/question/create' },
-            ]
-        },
-        {
-            label: 'Answer',
-            items: [
-                { label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/answer/create' },
-            ]
-        },
-        {
-            label: 'Imports',
-            items: [
-                { label: 'Import', icon: 'pi pi-file-import', to: '/lms/answer/import' },
-            ]
-        },
-
-    ];
-
+    let model: AppMenuItem[] = [];
+    if (g?.currentUser?.user?.role === Role.ADMIN) {
+        model = [
+            {
+                label: 'Home',
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+            },
+            {
+                label: 'School',
+                items: [
+                    { label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/admin/school/create' },
+                ]
+            },
+            {
+                label: 'Grade',
+                items: [
+                    { label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/admin/grade/create', badge: 'NEW' },
+                ]
+            },
+            {
+                label: 'Subject',
+                items: [
+                    { label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/admin/subject/create' },
+                ]
+            },
+            {
+                label: 'Topic',
+                items: [
+                    { label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/admin/topic/create' },
+                ]
+            },
+            {
+                label: 'Sub Topic',
+                items: [
+                    { label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/admin/sub-topic/create' },
+                ]
+            },
+            {
+                label: 'Question',
+                items: [
+                    { label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/admin/question/create' },
+                ]
+            },
+            {
+                label: 'Answer',
+                items: [
+                    { label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/admin/answer/create' },
+                ]
+            },
+            {
+                label: 'Imports',
+                items: [
+                    { label: 'Import', icon: 'pi pi-file-import', to: '/lms/admin/answer/import' },
+                ]
+            },
+    
+        ] as AppMenuItem[];
+    }
+    else if(g?.currentUser?.user?.role===Role.TEACHER) {
+        model = [
+           {
+            label: 'Export',
+            items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+           }
+        ] as AppMenuItem[];
+    }
     return (
         <MenuProvider>
             <ul className="layout-menu">

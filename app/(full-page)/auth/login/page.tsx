@@ -10,9 +10,10 @@ import { classNames } from 'primereact/utils';
 import { User } from '../../../shared/types';
 import Link from 'next/link';
 import LoginHandler from '../../../context/server/user/auth/login';
-import PrimeReactToast from '../../../shared/components/Toast/toast';
 import LoadingBar from 'react-top-loading-bar';
 import { Toast } from 'primereact/toast';
+import { verifyToken } from '../../../shared/common';
+import { currentUser } from '../../../context/provider';
 Toast
 const Registration = () => {
     const toast = useRef<Toast>(null);
@@ -29,11 +30,12 @@ const Registration = () => {
         setPageLoading(40);
         try {
             const response = await LoginHandler(user, "callback");
-            console.log("LoginHandler :: response", JSON.stringify(response));
             setPageLoading(70);
             if (response?.status) {
                 const lmsToken = response?.result?.data as string;
                 localStorage.setItem('lms-token', lmsToken);
+                const user = verifyToken(lmsToken) as User;
+                currentUser?.setUser(user);
                 setPageLoading(100);
                 router.push('/');
             } else {

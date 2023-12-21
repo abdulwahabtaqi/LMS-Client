@@ -1,5 +1,14 @@
 import { TableColumns } from "./components/Datatable/types";
 
+export interface User {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+    joinDate:Date;
+    exp: number;
+    iat: number;
+}
 export interface School{
     id:string,
     type:string,
@@ -81,6 +90,16 @@ export interface Answer {
     updatedAt: string,
     action?: React.ReactNode
 }
+
+export interface ExportAnswers {
+    schoolId: string,
+    gradeId: string,
+    subjectId: string,
+    topicId: string,
+    subTopicId: string,
+    difficultyLevel:DifficultyLevel,
+    type:QuestionType[]
+}
 export interface User {
     id: string;
     name: string;
@@ -135,4 +154,9 @@ export interface DashboardInsights {
     totalSubTopics: number;
     totalQuestions: number;
     totalUsers: number;
+}
+
+export enum Role {
+    ADMIN = "ADMIN",
+    TEACHER = "TEACHER",
 }
