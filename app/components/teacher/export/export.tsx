@@ -15,6 +15,11 @@ import fetchSubTopicsHandler from '../../../context/server/subTopic/fetchSubTopi
 import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
 import { Toast } from 'primereact/toast'
+import fetchGradeBySchoolIdHandler from '../../../context/server/grade/fetchGradeBySchoolIdHandler'
+import fetchSubjectByGradeIdHandler from '../../../context/server/subject/fetchSubjectByGradeIdHandler'
+import fetchTopicBySubjectIdHandler from '../../../context/server/topic/fetchTopicBySubjectIdHandler'
+import fetchSubTopicBySubTopicIdHandler from '../../../context/server/subTopic/fetchSubTopicBySubTopicIdHandler'
+import _, { set } from 'lodash'
 
 
 const Export = () => {
@@ -59,53 +64,74 @@ const Export = () => {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Schools" });
         }
     };
-    const fetchGrades = async () => {
+
+    const onSchoolChange = async (e:string, field:any) => {
         try {
-            const response = await fetchGradesHandler();
+            field?.onChange(e);
+            const response = await fetchGradeBySchoolIdHandler(e as string);
             if (response?.status) {
+                if(_?.isEmpty(response?.result?.data)){
+                    setValue('gradeId', '');
+                    setValue('subjectId', '');
+                    setValue('topicId', '');
+                    setValue('subTopicId', '');
+                }
                 setGrades(response?.result?.data as Grade[]);
-            }
-        } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Subjects" });
-        }
-    };
-    const fetchSubjects = async () => {
-        try {
-            const response = await fetchSubjectsHandler();
-            if (response?.status) {
-                setSubjects(response?.result?.data as Subject[]);
             }
         } catch (error) {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Topics" });
         }
-    };
-    const fetchTopics = async () => {
+    }
+
+    const onChangeGrade = async (e:string, field:any) => {
         try {
-            const response = await fetchTopicsHandler();
+            field?.onChange(e);
+            const response = await fetchSubjectByGradeIdHandler(e as string);
             if (response?.status) {
+                if(_?.isEmpty(response?.result?.data)){
+                    setValue('subjectId', '');
+                    setValue('topicId', '');
+                    setValue('subTopicId', '');
+                }
+                setSubjects(response?.result?.data as Subject[]);
+            }
+        } catch (error) {
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
+        }
+    }
+    const onChangeSubject = async (e:string, field:any) => {
+        try {
+            field?.onChange(e);
+            const response = await fetchTopicBySubjectIdHandler(e as  string);
+            if (response?.status) {
+                if(_?.isEmpty(response?.result?.data)){
+                    setValue('topicId', '');
+                    setValue('subTopicId', '');
+                }
                 setTopics(response?.result?.data as Topic[]);
             }
         } catch (error) {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
         }
-    };
-    const fetchSubTopics = async () => {
+    }
+
+    const onChangeTopic = async (e:string, field:any) => {
         try {
-            const response = await fetchSubTopicsHandler();
+            field?.onChange(e);
+            const response = await fetchSubTopicBySubTopicIdHandler(e as string);
             if (response?.status) {
+                if(_?.isEmpty(response?.result?.data)){
+                    setValue('subTopicId', '');
+                }
                 setSubTopics(response?.result?.data as SubTopic[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Questions" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
         }
-    };
+    }
 
     useEffect(() => {
         fetchSchools();
-        fetchGrades();
-        fetchSubjects();
-        fetchTopics();
-        fetchSubTopics();
         setValue('MCQVisible', MCQVisible);
         setValue('shortQuestionVisible', shortQuestionVisible);
         setValue('longQuestionVisible', longQuestionVisible);
@@ -138,7 +164,7 @@ const Export = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={field?.onChange}
+                                                onChange={(e)=>{onSchoolChange(e?.value, field)}}
                                                 options={schools}
                                                 optionLabel="type"
                                                 optionValue="id"
@@ -168,7 +194,7 @@ const Export = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={field?.onChange}
+                                                onChange={(e)=>{onChangeGrade(e?.value, field)}}
                                                 options={grades}
                                                 optionLabel="grade"
                                                 optionValue="id"
@@ -199,7 +225,7 @@ const Export = () => {
                                         formField={
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={field?.onChange}
+                                                onChange={(e)=>onChangeSubject(e?.value,field)}
                                                 options={subjects}
                                                 optionLabel="subject"
                                                 optionValue="id"
@@ -230,7 +256,7 @@ const Export = () => {
                                         formField={
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={field?.onChange}
+                                                onChange={(e)=>onChangeTopic(e?.value,field)}
                                                 options={topics}
                                                 optionLabel="topic"
                                                 optionValue="id"
