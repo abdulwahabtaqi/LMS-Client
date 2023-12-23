@@ -3,15 +3,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import FormFieldWithLabel from '../../../shared/components/FormFieldWithLabel/FormFieldWithLabel'
 import { TextField } from '../../../shared/components/TextField/TextField'
 import { useForm, Controller, SubmitHandler, } from 'react-hook-form'
-import { ExportAnswers, Grade, School, SubTopic, Subject, Topic } from '../../../shared/types'
+import { ExportAnswers, Grade, Question, School, SubTopic, Subject, Topic } from '../../../shared/types'
 import { Dropdown } from 'primereact/dropdown'
 import { ErrorMessage } from '../../../shared/components/ErrorMessage/ErrorMessage'
 import { useAppContext } from '../../../../layout/context/layoutcontext'
 import fetchSchoolsHandler from '../../../context/server/school/fetchSchoolsHandler'
-import fetchGradesHandler from '../../../context/server/grade/fetchGradesHandler'
-import fetchSubjectsHandler from '../../../context/server/subject/fetchSubjectsHandler'
-import fetchTopicsHandler from '../../../context/server/topic/fetchTopicsHandler'
-import fetchSubTopicsHandler from '../../../context/server/subTopic/fetchSubTopicsHandler'
 import { Button } from 'primereact/button'
 import { InputSwitch } from 'primereact/inputswitch'
 import { Toast } from 'primereact/toast'
@@ -20,9 +16,13 @@ import fetchSubjectByGradeIdHandler from '../../../context/server/subject/fetchS
 import fetchTopicBySubjectIdHandler from '../../../context/server/topic/fetchTopicBySubjectIdHandler'
 import fetchSubTopicBySubTopicIdHandler from '../../../context/server/subTopic/fetchSubTopicBySubTopicIdHandler'
 import _, { set } from 'lodash'
+import { Dialog } from 'primereact/dialog'
+import QuestionList from './QuestionList'
+import { TreeTableSelectionKeysType } from 'primereact/treetable'
+import fetchQuestionsForExportHandler from '../../../context/server/export/fetchQuestionsForExportHandler'
 
 
-const Export = () => {
+const Export:React.FC = () => {
     const g = useAppContext();
     const toast = useRef<Toast>(null);
     const { control, handleSubmit, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
@@ -36,19 +36,42 @@ const Export = () => {
     const [MCQVisible, setMCQVisible] = useState<boolean>(false);
     const [shortQuestionVisible, setShortQuestionVisible] = useState<boolean>(false);
     const [longQuestionVisible, setLongQuestionVisible] = useState<boolean>(false);
-
+    const [filteredMcqQuestions, setFilteredMcqQuestions] = useState<Question[]>([] as Question[])
+    const [filteredShortQuestions, setFilteredShortQuestions] = useState<Question[]>([] as Question[])
+    const [filteredLongQuestions, setFilteredLongQuestions] = useState<Question[]>([] as Question[])
+    const [visible, setVisible] = useState<boolean>(false);
+    const [selectedMqs, setSelectedMcq] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedShortQuestion, setSelectedShortQuestion] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedLongQuestion, setSelectedLongQuestion] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [filterQuestionsLoading, setFilterQuestionsLoading] = useState<boolean>(false)
+   
     const dificultyLevel = [
         { label: 'EASY', value: 'EASY' },
         { label: 'MEDIUM', value: 'MEDIUM' },
         { label: 'HARD', value: 'HARD' },
     ];
-    
+    const fetchSuggestQuestions = async (data: ExportAnswers) => {
+        try {
+            setFilterQuestionsLoading(true)
+            const questions = await fetchQuestionsForExportHandler(data, "callback");
+            if(questions?.status){
+                setFilteredMcqQuestions(questions?.result?.data?.mcqQuestion as Question[])
+                setFilteredShortQuestions(questions?.result?.data?.shortQuestion as Question[])
+                setFilteredLongQuestions(questions?.result?.data?.longQuestion as Question[])
+                setFilterQuestionsLoading(false);
+            }
+        } catch (error) {
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Questions" });
+        }
+    }
     const submitForm: SubmitHandler<ExportAnswers> = async (ExportAnswers: ExportAnswers) => {
         try {
-            if((!(MCQVisible) && !(shortQuestionVisible) && !(longQuestionVisible))){
-                toast?.current?.show({ severity:"warn", summary:"Warning", detail:"Please select question", life:3000 });
+            if ((!(MCQVisible) && !(shortQuestionVisible) && !(longQuestionVisible))) {
+                toast?.current?.show({ severity: "warn", summary: "Warning", detail: "Please select at least one type of question", life: 3000 });
+                return;
             }
-            console.log("ExportAnswers", ExportAnswers);
+            setVisible(true);
+            await fetchSuggestQuestions(ExportAnswers);
         }
         catch (error) {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something went wrong, Please try again later" })
@@ -145,7 +168,10 @@ const Export = () => {
     }, [MCQVisible, shortQuestionVisible, longQuestionVisible]);
     return (
         <>
-        <Toast ref={toast}/>
+            <Toast ref={toast} />
+            <Dialog visible={visible} maximizable style={{ width: '80vw' }} onHide={() => setVisible(false)}>
+              <QuestionList setVisible={setVisible} filteredMcqQuestions={filteredMcqQuestions} filteredShortQuestions={filteredShortQuestions} filteredLongQuestions={filteredLongQuestions}  selectedMcq={selectedMqs} setSelectedMcq={setSelectedMcq} loading={filterQuestionsLoading}  selectedShortQuestion={selectedShortQuestion} setSelectedShortQuestion={setSelectedShortQuestion} selectedLongQuestion={selectedLongQuestion} setSelectedLongQuestion={setSelectedLongQuestion} />
+            </Dialog>
             <h5>Export Answers</h5>
             <div className="card">
                 <div className="grid p-fluid mt-3">
@@ -487,7 +513,7 @@ const Export = () => {
                     </div>
                 </div>}
                 <div className="gap-2">
-                    <Button label={`Export`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
+                    <Button label={`Apply`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
                 </div>
             </div>
         </>

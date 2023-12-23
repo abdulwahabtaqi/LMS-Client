@@ -152,6 +152,21 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                     </div>
                     <div className="field col-12 md:col-5">
                         <Controller
+                            name='marks'
+                            control={control}
+                            rules={{ required: "Question marks required", }}
+                            render={({ field }) => (
+                                <FormFieldWithLabel
+                                    label="Question Name"
+                                    showCharLimit={false}
+                                    showOptionalText={false}
+                                    formField={
+                                        <TextField type='number' placeholder="eg. 5"  errorMessage={QuestionErrors?.marks?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-5">
+                        <Controller
                             name='subTopicId'
                             control={control}
                             rules={{ required: "Select Sub Topic" }}

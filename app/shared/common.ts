@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { User } from './types';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+
 export const convertTimeStamps = (data: string) => {
     const inputDate = new Date(data);
     const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -17,4 +21,19 @@ export const verifyToken = (token: string): User | null => {
     console.error('JWT verification error:', error?.message);
     return null;
   }
+};
+
+
+
+export const downloadHtmlAsPdf = (element: HTMLElement, filename: string) => {
+  html2canvas(element).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+    pdf?.addImage(imgData, 'PNG', 0, 0, pdf?.internal?.pageSize?.getWidth(), pdf?.internal?.pageSize?.getHeight());
+    pdf?.save(filename);
+  });
 };

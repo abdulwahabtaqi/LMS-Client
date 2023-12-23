@@ -18,8 +18,8 @@ interface AddAndEditAnswerProps {
 const AddAndEditAnswer: React.FC<AddAndEditAnswerProps> = (props) => {
     const [questions, setQuestions] = useState<Question[]>([] as Question[]);
     const isCorrect = [
-        { label: 'True', value: true },
-        { label: 'False', value: false },
+        { label: 'True', value: "true" },
+        { label: 'False', value: "false" },
     ];
     const { control, handleSubmit, reset, setValue, formState: { errors: AnswerErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<Answer>({
         mode: 'onBlur',
@@ -55,7 +55,8 @@ const AddAndEditAnswer: React.FC<AddAndEditAnswerProps> = (props) => {
     useEffect(() => {
         if (props?.answer) {
             setValue('answer', props?.answer?.answer);
-            setValue('id', props?.answer?.id)
+            setValue('id', props?.answer?.id);
+            setValue('isCorrect', props?.answer?.isCorrect?"true":"false");
             reset(props.answer)
         }
     }
@@ -105,7 +106,7 @@ const AddAndEditAnswer: React.FC<AddAndEditAnswerProps> = (props) => {
                                                 optionValue="value"
                                                 placeholder="Select Type"
                                                 filter
-                                                className={`w-100 ${AnswerErrors?.type?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${AnswerErrors?.isCorrect?.message ? "p-invalid" : ""}`}
                                             />
                                         }
                                     />

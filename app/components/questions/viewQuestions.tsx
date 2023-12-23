@@ -53,6 +53,12 @@ const ViewQuestion = () => {
             style: { width: '15rem' },
         },
         {
+            header: 'Marks',
+            field: 'marks',
+            sortable: true,
+            style: { width: '15rem' },
+        },
+        {
             header: 'Sub Topic Name',
             field: 'subTopicName',
             sortable: true,

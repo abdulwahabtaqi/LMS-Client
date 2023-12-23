@@ -72,6 +72,7 @@ export interface Question {
     subTopicName: string,
     question: string,
     type: QuestionType[]
+    marks: number,
     difficultyLevel: DifficultyLevel[]
     answers: Answer[],
     createdAt: string,
@@ -84,7 +85,8 @@ export interface Answer {
     questionId: string,
     questionName: string,
     answer: string,
-    isCorrect: boolean,
+    isCorrect: string,
+    difficultyLevel: string,
     type: QuestionType[]
     createdAt: string,
     updatedAt: string,

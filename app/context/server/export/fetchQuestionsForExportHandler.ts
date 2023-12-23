@@ -1,9 +1,10 @@
-import getAndDeleteRequest from "../../services/getAndDeleteRequest";
-import { ServiceResponse } from "../../types";
+import postAndPutRequest from "../../services/postAndPutRequest";
+import { FetchQuestionForPaperResponse } from "../../types";
 
-const fetchQuestionsForExportHandler = async () => {
-  const result = await getAndDeleteRequest("GET",`/exporter/fetch/questions`);
-  return result as ServiceResponse;
+const fetchQuestionsForExportHandler = async (data:{} | [] , type:string = "direct") => {
+  const result = await postAndPutRequest("POST", data, `/exporter/fetch/questions`, type);
+  console.log("result", result)
+  return result as FetchQuestionForPaperResponse;
 };
 
 export default fetchQuestionsForExportHandler;

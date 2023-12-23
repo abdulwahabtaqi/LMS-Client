@@ -53,7 +53,7 @@ const ViewAnswer = () => {
             style: { width: '15rem' },
         },
         {
-            header: 'Sub Topic Name',
+            header: 'Question',
             field: 'questionName',
             sortable: true,
             style: { width: '15rem' },
@@ -92,6 +92,7 @@ const ViewAnswer = () => {
                 action: <Button label="Edit" className="p-button-info" onClick={() => editAnswer(x)
                 } />,
                 questionName: x?.question?.question,
+                difficultyLevel: x?.question?.difficultyLevel as string,
                 createdAt: convertTimeStamps(x?.createdAt),
                 updatedAt: convertTimeStamps(x?.updatedAt)
             })
