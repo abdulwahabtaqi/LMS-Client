@@ -110,6 +110,16 @@ export interface ExportAnswers {
     shortQuestionVisible: boolean,
     longQuestionVisible: boolean,
 }
+
+
+export interface ImportInput {
+    schoolId: string,
+    gradeId: string,
+    subjectId: string,
+    topicId: string,
+    subTopicId: string,
+    csvFile: File
+}
 export interface User {
     id: string;
     name: string;

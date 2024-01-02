@@ -92,7 +92,7 @@ const ViewAnswer = () => {
                 action: <Button label="Edit" className="p-button-info" onClick={() => editAnswer(x)
                 } />,
                 questionName: x?.question?.question,
-                difficultyLevel: x?.question?.difficultyLevel as string,
+                difficultyLevel: x?.question?.difficultyLevel as unknown as string,
                 createdAt: convertTimeStamps(x?.createdAt),
                 updatedAt: convertTimeStamps(x?.updatedAt)
             })
