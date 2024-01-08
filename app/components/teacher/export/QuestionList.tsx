@@ -8,6 +8,7 @@ import { Question } from '../../../shared/types';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import CkEditor from '../../../shared/components/CkEditor/CustomEditor';
+import QuestionPaper from './questionPaper';
 
 
 interface QuestionListProps {
@@ -103,7 +104,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 </div>`;
             }
             const node: TreeNode = {
-                key: index,
+                key: index + 1,
                 data: {
                     question: question?.question,
                     type: question?.type,
@@ -111,7 +112,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 },
                 children: question?.answers?.map((answer, index) => {
                     return {
-                        key: index,
+                        // key: index + 3,
                         data: {
                             question: answer?.answer?.length > 14 ? answer?.answer?.substring(0, 14) + "..." : answer?.answer,
                             type: answer?.type,
@@ -131,8 +132,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
         }
         setEditorContent(content)
         return tree
-    }
-
+    };
     const onMcqInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMcqGlobalFilter(e.target.value);
     };
@@ -185,7 +185,23 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
     return (
         <div className="grid">
             <Dialog visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
-                <CkEditor content={editorContent} />
+                {/* <CkEditor content={editorContent} /> */}
+                <QuestionPaper 
+                examDifficultyLevel={[]} 
+                examinerName='demo'
+                note='demo'
+                schoolLevelName='demo'
+                subjectName='demo'
+                topicName='demo'
+                schoolName='demo'
+                studentId='demo'
+                studentName='demo'
+                subTopicName='demo'
+                teacherName='demo'
+                mcqQuestions={[]}
+                longQuestions={[]}
+                shortQuestions={[]}
+                />
             </Dialog>
             <div className="col-12 my-3">
                 <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
