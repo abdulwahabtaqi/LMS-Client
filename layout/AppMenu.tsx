@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import AppMenuitem from './AppMenuitem';
 import { LayoutContext, useAppContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
-import Link from 'next/link';
 import { AppMenuItem } from '../types/types';
 import { Role, User } from '../app/shared/types';
 import { verifyToken } from '../app/shared/common';
@@ -15,9 +14,10 @@ const AppMenu = () => {
     let model: AppMenuItem[] = [];
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
+        console.log('userData', userData);
         setUser(userData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [localStorage?.getItem('lms-token')]);
+    }, []);
     
     if (user?.role === Role.ADMIN) {
         model = [

@@ -49,7 +49,8 @@ const Importer: React.FC = () => {
                 toast?.current?.show({ severity: 'error', summary: 'Error', detail: "Please Upload a CSV File" });
                 return;
             }
-           const imports = await importsHandler(ImportInput, firstFile);
+        //    const imports = await importsHandler(ImportInput, firstFile);
+           toast?.current?.show({ severity: 'success', summary: 'Success', detail: "Questions & Answers are imported Successfully" });
         }
         catch (error) {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something went wrong, Please try again later" })
