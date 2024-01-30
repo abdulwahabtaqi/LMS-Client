@@ -18,6 +18,7 @@ export interface FetchQUestionPaperResponseData{
     multipleShortQuestion:Question[],
     multipleTrueFalseQuestion:Question[],
     sequenceQuestion:Question[],
+    multipleShortQuestionV2:Question[],
 }
 export interface FetchQuestionForPaperAPIResponse {
     status: boolean;

@@ -93,6 +93,7 @@ export interface Answer {
     type: QuestionType[]
     createdAt: string,
     updatedAt: string,
+    additional:string,
     action?: React.ReactNode
 }
 
@@ -119,6 +120,8 @@ export interface ExportAnswers {
     sequenceDifficultyLevel: DifficultyLevel;
     multipleTrueFalseQuantity: number;
     multipleTrueFalseDifficultyLevel: DifficultyLevel;
+    multipleQuestionV2Quantity: number;
+    multipleQuestionV2DifficultyLevel: DifficultyLevel;
     type: QuestionType[];
     MCQVisible: boolean;
     shortQuestionVisible: boolean;
@@ -128,6 +131,8 @@ export interface ExportAnswers {
     multipleShortVisible:boolean;
     sequenceVisible:boolean;
     multipleTrueFalseVisible:boolean;
+    multipleQuestionV2Visible:boolean;
+    
 }
 
 

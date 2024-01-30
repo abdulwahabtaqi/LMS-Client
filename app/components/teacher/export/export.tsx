@@ -42,6 +42,7 @@ const Export: React.FC = () => {
     const [multipleShortVisible, setMultipleShortVisible] = useState<boolean>(false);
     const [sequenceVisible, setSequenceVisible] = useState<boolean>(false);
     const [multipleTrueFalseVisible, setMultipleTrueFalseVisible] = useState<boolean>(false);
+    const [multipleQuestionV2Visible, setMultipleQuestionV2Visible] = useState<boolean>(false);
     const [filteredMcqQuestions, setFilteredMcqQuestions] = useState<Question[]>([] as Question[]);
     const [filteredShortQuestions, setFilteredShortQuestions] = useState<Question[]>([] as Question[]);
     const [filteredLongQuestions, setFilteredLongQuestions] = useState<Question[]>([] as Question[]);
@@ -50,6 +51,7 @@ const Export: React.FC = () => {
     const [filteredMultipleShortQuestions, setFilteredMultipleShortQuestions] = useState<Question[]>([] as Question[]);
     const [filteredSequenceQuestions, setFilteredSequenceQuestions] = useState<Question[]>([] as Question[]);
     const [filteredMultipleTrueFalseQuestions, setFilteredMultipleTrueFalseQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredMultipleQuestionV2Questions, setFilteredMultipleQuestionV2Questions] = useState<Question[]>([] as Question[]);
     const [visible, setVisible] = useState<boolean>(false);
     const [selectedMqs, setSelectedMcq] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [selectedShortQuestion, setSelectedShortQuestion] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
@@ -59,8 +61,7 @@ const Export: React.FC = () => {
     const [selectedMultipleShort, setSelectedMultipleShort] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [selectedSequence, setSelectedSequence] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [selectedMultipleTrueFalse, setSelectedMultipleTrueFalse] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
-
-
+    const [selectedMultipleQuestionV2, setSelectedMultipleQuestionV2] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [filterQuestionsLoading, setFilterQuestionsLoading] = useState<boolean>(false)
 
     const dificultyLevel = [
@@ -81,6 +82,7 @@ const Export: React.FC = () => {
                 setFilteredMultipleShortQuestions(questions?.result?.data?.multipleShortQuestion as Question[]);
                 setFilteredSequenceQuestions(questions?.result?.data?.sequenceQuestion as Question[]);
                 setFilteredMultipleTrueFalseQuestions(questions?.result?.data?.multipleTrueFalseQuestion as Question[]);
+                setFilteredMultipleQuestionV2Questions(questions?.result?.data?.multipleShortQuestionV2 as Question[]);
                 setFilterQuestionsLoading(false);
             }
         } catch (error) {
@@ -188,6 +190,7 @@ const Export: React.FC = () => {
         setValue('multipleShortVisible', multipleShortVisible);
         setValue('sequenceVisible', sequenceVisible);
         setValue('multipleTrueFalseVisible', multipleTrueFalseVisible);
+        setValue('multipleQuestionV2Visible', multipleQuestionV2Visible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
@@ -199,8 +202,9 @@ const Export: React.FC = () => {
         setValue('multipleShortVisible', multipleShortVisible);
         setValue('sequenceVisible', sequenceVisible);
         setValue('multipleTrueFalseVisible', multipleTrueFalseVisible);
+        setValue('multipleQuestionV2Visible', multipleQuestionV2Visible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [MCQVisible, shortQuestionVisible, longQuestionVisible, fillInTheBlanksVisible, multiFillInTheBlanksVisible, multipleShortVisible, sequenceVisible, multipleTrueFalseVisible]);
+    }, [MCQVisible, shortQuestionVisible, longQuestionVisible, fillInTheBlanksVisible, multiFillInTheBlanksVisible, multipleShortVisible, sequenceVisible, multipleTrueFalseVisible, multipleQuestionV2Visible]);
     return (
         <>
             <Toast ref={toast} />
@@ -215,6 +219,7 @@ const Export: React.FC = () => {
                     filteredMultipleShortQuestions={filteredMultipleShortQuestions}
                     filteredSequenceQuestions={filteredSequenceQuestions}
                     filteredMultipleTrueFalseQuestions={filteredMultipleTrueFalseQuestions}
+                    filteredMultipleQuestionV2Questions={filteredMultipleQuestionV2Questions}
                     selectedMcq={selectedMqs}
                     setSelectedMcq={setSelectedMcq}
                     loading={filterQuestionsLoading}
@@ -232,6 +237,8 @@ const Export: React.FC = () => {
                     setSelectedSequence={setSelectedSequence}
                     selectedMultipleTrueFalse={selectedMultipleTrueFalse}
                     setSelectedMultipleTrueFalse={setSelectedMultipleTrueFalse}
+                    selectedMultipleQuestionV2={selectedMultipleQuestionV2}
+                    setSelectedMultipleQuestionV2={setSelectedMultipleQuestionV2}
                 />
             </Dialog>
             <h5>Export Answers</h5>
@@ -445,6 +452,12 @@ const Export: React.FC = () => {
                         <div className='flex align-items-center'>
                             <label htmlFor="" className='mr-3 font-bold'> {`Multiple Fill in the blanks`}</label>
                             <InputSwitch checked={multiFillInTheBlanksVisible} onChange={(e) => setMultiFillInTheBlanksVisible(!multiFillInTheBlanksVisible)} />
+                        </div>
+                    </div>
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Group Short Question`}</label>
+                            <InputSwitch checked={multipleQuestionV2Visible} onChange={(e) => setMultipleQuestionV2Visible(!multipleQuestionV2Visible)} />
                         </div>
                     </div>
                 </div>
@@ -880,6 +893,60 @@ const Export: React.FC = () => {
                                         }
                                     />
                                     <ErrorMessage text={ExportErrors?.multipleTrueFalseDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {multipleQuestionV2Visible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleQuestionV2Quantity'
+                            control={control}
+                            rules={multipleQuestionV2Visible ? {
+                                required: "Select Multiple Group Question Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Multiple Group Question Quantity Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Multiple Group Question Quantity Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Group Question Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.multipleQuestionV2Quantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleQuestionV2DifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Multiple True & False Questions Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.multipleQuestionV2DifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.multipleQuestionV2DifficultyLevel?.message} />
                                 </>
                             )}
                         />
