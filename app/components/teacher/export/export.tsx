@@ -22,7 +22,7 @@ import { TreeTableSelectionKeysType } from 'primereact/treetable'
 import fetchQuestionsForExportHandler from '../../../context/server/export/fetchQuestionsForExportHandler'
 
 
-const Export:React.FC = () => {
+const Export: React.FC = () => {
     const g = useAppContext();
     const toast = useRef<Toast>(null);
     const { control, handleSubmit, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
@@ -36,15 +36,33 @@ const Export:React.FC = () => {
     const [MCQVisible, setMCQVisible] = useState<boolean>(false);
     const [shortQuestionVisible, setShortQuestionVisible] = useState<boolean>(false);
     const [longQuestionVisible, setLongQuestionVisible] = useState<boolean>(false);
-    const [filteredMcqQuestions, setFilteredMcqQuestions] = useState<Question[]>([] as Question[])
-    const [filteredShortQuestions, setFilteredShortQuestions] = useState<Question[]>([] as Question[])
-    const [filteredLongQuestions, setFilteredLongQuestions] = useState<Question[]>([] as Question[])
+    const [practiceMode, setPracticeMode] = useState<boolean>(false);
+    const [fillInTheBlanksVisible, setFillInTheBlanksVisible] = useState<boolean>(false);
+    const [multiFillInTheBlanksVisible, setMultiFillInTheBlanksVisible] = useState<boolean>(false);
+    const [multipleShortVisible, setMultipleShortVisible] = useState<boolean>(false);
+    const [sequenceVisible, setSequenceVisible] = useState<boolean>(false);
+    const [multipleTrueFalseVisible, setMultipleTrueFalseVisible] = useState<boolean>(false);
+    const [filteredMcqQuestions, setFilteredMcqQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredShortQuestions, setFilteredShortQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredLongQuestions, setFilteredLongQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredFillInTheBlanksQuestions, setFilteredFillInTheBlanksQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredMultiFillInTheBlanksQuestions, setFilteredMultiFillInTheBlanksQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredMultipleShortQuestions, setFilteredMultipleShortQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredSequenceQuestions, setFilteredSequenceQuestions] = useState<Question[]>([] as Question[]);
+    const [filteredMultipleTrueFalseQuestions, setFilteredMultipleTrueFalseQuestions] = useState<Question[]>([] as Question[]);
     const [visible, setVisible] = useState<boolean>(false);
     const [selectedMqs, setSelectedMcq] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [selectedShortQuestion, setSelectedShortQuestion] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [selectedLongQuestion, setSelectedLongQuestion] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedFillInTheBlanks, setSelectedFillInTheBlanks] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedMultiFillInTheBlanks, setSelectedMultiFillInTheBlanks] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedMultipleShort, setSelectedMultipleShort] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedSequence, setSelectedSequence] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+    const [selectedMultipleTrueFalse, setSelectedMultipleTrueFalse] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
+
+
     const [filterQuestionsLoading, setFilterQuestionsLoading] = useState<boolean>(false)
-   
+
     const dificultyLevel = [
         { label: 'EASY', value: 'EASY' },
         { label: 'MEDIUM', value: 'MEDIUM' },
@@ -52,12 +70,17 @@ const Export:React.FC = () => {
     ];
     const fetchSuggestQuestions = async (data: ExportAnswers) => {
         try {
-            setFilterQuestionsLoading(true)
+            setFilterQuestionsLoading(true);
             const questions = await fetchQuestionsForExportHandler(data, "callback");
-            if(questions?.status){
-                setFilteredMcqQuestions(questions?.result?.data?.mcqQuestion as Question[])
-                setFilteredShortQuestions(questions?.result?.data?.shortQuestion as Question[])
-                setFilteredLongQuestions(questions?.result?.data?.longQuestion as Question[])
+            if (questions?.status) {
+                setFilteredMcqQuestions(questions?.result?.data?.mcqQuestion as Question[]);
+                setFilteredShortQuestions(questions?.result?.data?.shortQuestion as Question[]);
+                setFilteredLongQuestions(questions?.result?.data?.longQuestion as Question[]);
+                setFilteredFillInTheBlanksQuestions(questions?.result?.data?.fillInTheBlanksQuestion as Question[]);
+                setFilteredMultiFillInTheBlanksQuestions(questions?.result?.data?.multiFillInTheBlanksQuestion as Question[]);
+                setFilteredMultipleShortQuestions(questions?.result?.data?.multipleShortQuestion as Question[]);
+                setFilteredSequenceQuestions(questions?.result?.data?.sequenceQuestion as Question[]);
+                setFilteredMultipleTrueFalseQuestions(questions?.result?.data?.multipleTrueFalseQuestion as Question[]);
                 setFilterQuestionsLoading(false);
             }
         } catch (error) {
@@ -66,11 +89,13 @@ const Export:React.FC = () => {
     }
     const submitForm: SubmitHandler<ExportAnswers> = async (ExportAnswers: ExportAnswers) => {
         try {
-            if ((!(MCQVisible) && !(shortQuestionVisible) && !(longQuestionVisible))) {
+            if ((!(MCQVisible) && !(shortQuestionVisible) && !(longQuestionVisible) && !(fillInTheBlanksVisible) && !(multiFillInTheBlanksVisible) && !(multipleShortVisible) && !(sequenceVisible) && !(multipleTrueFalseVisible))) {
                 toast?.current?.show({ severity: "warn", summary: "Warning", detail: "Please select at least one type of question", life: 3000 });
                 return;
             }
             setVisible(true);
+            console.log("ExportAnswers====>", ExportAnswers);
+            ExportAnswers.isPracticeMode = practiceMode;
             await fetchSuggestQuestions(ExportAnswers);
         }
         catch (error) {
@@ -88,12 +113,12 @@ const Export:React.FC = () => {
         }
     };
 
-    const onSchoolChange = async (e:string, field:any) => {
+    const onSchoolChange = async (e: string, field: any) => {
         try {
             field?.onChange(e);
             const response = await fetchGradeBySchoolIdHandler(e as string);
             if (response?.status) {
-                if(_?.isEmpty(response?.result?.data)){
+                if (_?.isEmpty(response?.result?.data)) {
                     setValue('gradeId', '');
                     setValue('subjectId', '');
                     setValue('topicId', '');
@@ -106,12 +131,12 @@ const Export:React.FC = () => {
         }
     }
 
-    const onChangeGrade = async (e:string, field:any) => {
+    const onChangeGrade = async (e: string, field: any) => {
         try {
             field?.onChange(e);
             const response = await fetchSubjectByGradeIdHandler(e as string);
             if (response?.status) {
-                if(_?.isEmpty(response?.result?.data)){
+                if (_?.isEmpty(response?.result?.data)) {
                     setValue('subjectId', '');
                     setValue('topicId', '');
                     setValue('subTopicId', '');
@@ -122,12 +147,12 @@ const Export:React.FC = () => {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
         }
     }
-    const onChangeSubject = async (e:string, field:any) => {
+    const onChangeSubject = async (e: string, field: any) => {
         try {
             field?.onChange(e);
-            const response = await fetchTopicBySubjectIdHandler(e as  string);
+            const response = await fetchTopicBySubjectIdHandler(e as string);
             if (response?.status) {
-                if(_?.isEmpty(response?.result?.data)){
+                if (_?.isEmpty(response?.result?.data)) {
                     setValue('topicId', '');
                     setValue('subTopicId', '');
                 }
@@ -138,12 +163,12 @@ const Export:React.FC = () => {
         }
     }
 
-    const onChangeTopic = async (e:string, field:any) => {
+    const onChangeTopic = async (e: string, field: any) => {
         try {
             field?.onChange(e);
             const response = await fetchSubTopicBySubTopicIdHandler(e as string);
             if (response?.status) {
-                if(_?.isEmpty(response?.result?.data)){
+                if (_?.isEmpty(response?.result?.data)) {
                     setValue('subTopicId', '');
                 }
                 setSubTopics(response?.result?.data as SubTopic[]);
@@ -158,23 +183,66 @@ const Export:React.FC = () => {
         setValue('MCQVisible', MCQVisible);
         setValue('shortQuestionVisible', shortQuestionVisible);
         setValue('longQuestionVisible', longQuestionVisible);
+        setValue('fillInTheBlanksVisible', fillInTheBlanksVisible);
+        setValue('multiFillInTheBlanksVisible', multiFillInTheBlanksVisible);
+        setValue('multipleShortVisible', multipleShortVisible);
+        setValue('sequenceVisible', sequenceVisible);
+        setValue('multipleTrueFalseVisible', multipleTrueFalseVisible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         setValue('MCQVisible', MCQVisible);
         setValue('shortQuestionVisible', shortQuestionVisible);
         setValue('longQuestionVisible', longQuestionVisible);
+        setValue('fillInTheBlanksVisible', fillInTheBlanksVisible);
+        setValue('multiFillInTheBlanksVisible', multiFillInTheBlanksVisible);
+        setValue('multipleShortVisible', multipleShortVisible);
+        setValue('sequenceVisible', sequenceVisible);
+        setValue('multipleTrueFalseVisible', multipleTrueFalseVisible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [MCQVisible, shortQuestionVisible, longQuestionVisible]);
+    }, [MCQVisible, shortQuestionVisible, longQuestionVisible, fillInTheBlanksVisible, multiFillInTheBlanksVisible, multipleShortVisible, sequenceVisible, multipleTrueFalseVisible]);
     return (
         <>
             <Toast ref={toast} />
             <Dialog visible={visible} maximizable style={{ width: '80vw' }} onHide={() => setVisible(false)}>
-              <QuestionList setVisible={setVisible} filteredMcqQuestions={filteredMcqQuestions} filteredShortQuestions={filteredShortQuestions} filteredLongQuestions={filteredLongQuestions}  selectedMcq={selectedMqs} setSelectedMcq={setSelectedMcq} loading={filterQuestionsLoading}  selectedShortQuestion={selectedShortQuestion} setSelectedShortQuestion={setSelectedShortQuestion} selectedLongQuestion={selectedLongQuestion} setSelectedLongQuestion={setSelectedLongQuestion} />
+                <QuestionList
+                    setVisible={setVisible}
+                    filteredMcqQuestions={filteredMcqQuestions}
+                    filteredShortQuestions={filteredShortQuestions}
+                    filteredLongQuestions={filteredLongQuestions}
+                    filteredFillInTheBlanksQuestions={filteredFillInTheBlanksQuestions}
+                    filteredMultiFillInTheBlanksQuestions={filteredMultiFillInTheBlanksQuestions}
+                    filteredMultipleShortQuestions={filteredMultipleShortQuestions}
+                    filteredSequenceQuestions={filteredSequenceQuestions}
+                    filteredMultipleTrueFalseQuestions={filteredMultipleTrueFalseQuestions}
+                    selectedMcq={selectedMqs}
+                    setSelectedMcq={setSelectedMcq}
+                    loading={filterQuestionsLoading}
+                    selectedShortQuestion={selectedShortQuestion}
+                    setSelectedShortQuestion={setSelectedShortQuestion}
+                    selectedLongQuestion={selectedLongQuestion}
+                    setSelectedLongQuestion={setSelectedLongQuestion}
+                    selectedFillInTheBlanks={selectedFillInTheBlanks}
+                    setSelectedFillInTheBlanks={setSelectedFillInTheBlanks}
+                    selectedMultiFillInTheBlanks={selectedMultiFillInTheBlanks}
+                    setSelectedMultiFillInTheBlanks={setSelectedMultiFillInTheBlanks}
+                    selectedMultipleShort={selectedMultipleShort}
+                    setSelectedMultipleShort={setSelectedMultipleShort}
+                    selectedSequence={selectedSequence}
+                    setSelectedSequence={setSelectedSequence}
+                    selectedMultipleTrueFalse={selectedMultipleTrueFalse}
+                    setSelectedMultipleTrueFalse={setSelectedMultipleTrueFalse}
+                />
             </Dialog>
             <h5>Export Answers</h5>
             <div className="card">
                 <div className="grid p-fluid mt-3">
+                    <div className="field col-26 md:col-12">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Practice Mode`}</label>
+                            <InputSwitch checked={practiceMode} onChange={(e) => setPracticeMode(!practiceMode)} />
+                        </div>
+                    </div>
                     <div className="field col-12 md:col-3">
                         <Controller
                             name='schoolId'
@@ -190,7 +258,7 @@ const Export:React.FC = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e)=>{onSchoolChange(e?.value, field)}}
+                                                onChange={(e) => { onSchoolChange(e?.value, field) }}
                                                 options={schools}
                                                 optionLabel="type"
                                                 optionValue="id"
@@ -220,7 +288,7 @@ const Export:React.FC = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e)=>{onChangeGrade(e?.value, field)}}
+                                                onChange={(e) => { onChangeGrade(e?.value, field) }}
                                                 options={grades}
                                                 optionLabel="grade"
                                                 optionValue="id"
@@ -251,7 +319,7 @@ const Export:React.FC = () => {
                                         formField={
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e)=>onChangeSubject(e?.value,field)}
+                                                onChange={(e) => onChangeSubject(e?.value, field)}
                                                 options={subjects}
                                                 optionLabel="subject"
                                                 optionValue="id"
@@ -282,7 +350,7 @@ const Export:React.FC = () => {
                                         formField={
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e)=>onChangeTopic(e?.value,field)}
+                                                onChange={(e) => onChangeTopic(e?.value, field)}
                                                 options={topics}
                                                 optionLabel="topic"
                                                 optionValue="id"
@@ -342,6 +410,41 @@ const Export:React.FC = () => {
                         <div className='flex align-items-center'>
                             <label htmlFor="" className='mr-3 font-bold'> {`Use Long Answer`}</label>
                             <InputSwitch checked={longQuestionVisible} onChange={(e) => setLongQuestionVisible(!longQuestionVisible)} />
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`File in the blanks`}</label>
+                            <InputSwitch checked={fillInTheBlanksVisible} onChange={(e) => setFillInTheBlanksVisible(!fillInTheBlanksVisible)} />
+                        </div>
+                    </div>
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Multiple Short Question`}</label>
+                            <InputSwitch checked={multipleShortVisible} onChange={(e) => setMultipleShortVisible(!multipleShortVisible)} />
+                        </div>
+                    </div>
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Sequence`}</label>
+                            <InputSwitch checked={sequenceVisible} onChange={(e) => setSequenceVisible(!sequenceVisible)} />
+                        </div>
+                    </div>
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Multiple True False`}</label>
+                            <InputSwitch checked={multipleTrueFalseVisible} onChange={(e) => setMultipleTrueFalseVisible(!multipleTrueFalseVisible)} />
+                        </div>
+                    </div>
+                    <div className="field col-16 md:col-3">
+                        <div className='flex align-items-center'>
+                            <label htmlFor="" className='mr-3 font-bold'> {`Multiple Fill in the blanks`}</label>
+                            <InputSwitch checked={multiFillInTheBlanksVisible} onChange={(e) => setMultiFillInTheBlanksVisible(!multiFillInTheBlanksVisible)} />
                         </div>
                     </div>
                 </div>
@@ -507,6 +610,276 @@ const Export:React.FC = () => {
                                         }
                                     />
                                     <ErrorMessage text={ExportErrors?.longQuestionDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {fillInTheBlanksVisible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='fillInTheBlanksQuantity'
+                            control={control}
+                            rules={fillInTheBlanksVisible ? {
+                                required: "Select Fill in the blanks Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Fill in the blanks Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Fill in the blanks Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Fill in the blanks Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.fillInTheBlanksQuantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='fillInTheBlanksDifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Fill in the blanks Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.fillInTheBlanksDifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.fillInTheBlanksDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {multiFillInTheBlanksVisible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multiFillInTheBlanksQuantity'
+                            control={control}
+                            rules={multiFillInTheBlanksVisible ? {
+                                required: "Select Multifill in the blanks Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Multifill in the blanks Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Multifill in the blanks Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Multifill in the blanks Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.multiFillInTheBlanksQuantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multiFillInTheBlanksDifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Fill in the blanks Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.multiFillInTheBlanksDifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.multiFillInTheBlanksDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {multipleShortVisible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleShortQuantity'
+                            control={control}
+                            rules={multipleShortVisible ? {
+                                required: "Select Multiple Short Question Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Multiple Short Question Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Multiple Short Question Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Multiple Short Question Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.multipleShortQuantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleShortDifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Fill in the blanks Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.multipleShortDifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.multipleShortDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {sequenceVisible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='sequenceQuantity'
+                            control={control}
+                            rules={sequenceVisible ? {
+                                required: "Select Sequence Question Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Sequence Question Quantity Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Sequence Question Quantity Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Sequence Question Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.sequenceQuantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='sequenceDifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Fill in the blanks Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.sequenceDifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.sequenceDifficultyLevel?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                </div>}
+                {multipleTrueFalseVisible && <div className="grid p-fluid mt-4">
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleTrueFalseQuantity'
+                            control={control}
+                            rules={multipleTrueFalseVisible ? {
+                                required: "Select Multiple True & False Question Quantity",
+                                validate: {
+                                    minValue: value => (value >= 5) || "Minimum Multiple True & False Quantity Should be 5",
+                                    maxValue: value => (value <= 15) || "Maximum Multiple True & False Quantity Should be 15"
+                                }
+                            } : {}}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Multiple True & False Question Quantity"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <TextField type='number' placeholder="eg. 10" errorMessage={ExportErrors?.multipleTrueFalseQuantity?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-4">
+                        <Controller
+                            name='multipleTrueFalseDifficultyLevel'
+                            control={control}
+                            rules={{ required: "Select Multiple True & False Questions Dificulty Level" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Dificulty Level"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={dificultyLevel}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Dificulty Level"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.multipleTrueFalseDifficultyLevel?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.multipleTrueFalseDifficultyLevel?.message} />
                                 </>
                             )}
                         />

@@ -12,8 +12,12 @@ export interface ServiceResponse {
 export interface FetchQUestionPaperResponseData{
     mcqQuestion:Question[],
     shortQuestion:Question[],
-    longQuestion:Question[]
-
+    longQuestion:Question[],
+    fillInTheBlanksQuestion:Question[],
+    multiFillInTheBlanksQuestion:Question[],
+    multipleShortQuestion:Question[],
+    multipleTrueFalseQuestion:Question[],
+    sequenceQuestion:Question[],
 }
 export interface FetchQuestionForPaperAPIResponse {
     status: boolean;

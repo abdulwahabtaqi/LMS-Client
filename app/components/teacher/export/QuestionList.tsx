@@ -9,16 +9,32 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import CkEditor from '../../../shared/components/CkEditor/CustomEditor';
 import QuestionPaper from './questionPaper';
+import HTMLEditor from './HtmlEditor';
 
 
 interface QuestionListProps {
     filteredMcqQuestions: Question[]
     filteredShortQuestions: Question[]
     filteredLongQuestions: Question[]
+    filteredFillInTheBlanksQuestions: Question[]
+    filteredMultiFillInTheBlanksQuestions: Question[]
+    filteredMultipleShortQuestions: Question[]
+    filteredSequenceQuestions: Question[]
+    filteredMultipleTrueFalseQuestions: Question[]
     selectedMcq: TreeTableSelectionKeysType;
     setSelectedMcq: (e: TreeTableSelectionKeysType) => void;
     selectedShortQuestion: TreeTableSelectionKeysType;
     setSelectedShortQuestion: (e: TreeTableSelectionKeysType) => void;
+    selectedFillInTheBlanks: TreeTableSelectionKeysType;
+    setSelectedFillInTheBlanks: (e: TreeTableSelectionKeysType) => void;
+    selectedMultiFillInTheBlanks: TreeTableSelectionKeysType;
+    setSelectedMultiFillInTheBlanks: (e: TreeTableSelectionKeysType) => void;
+    selectedMultipleShort: TreeTableSelectionKeysType;
+    setSelectedMultipleShort: (e: TreeTableSelectionKeysType) => void;
+    selectedSequence: TreeTableSelectionKeysType;
+    setSelectedSequence: (e: TreeTableSelectionKeysType) => void;
+    selectedMultipleTrueFalse: TreeTableSelectionKeysType;
+    setSelectedMultipleTrueFalse: (e: TreeTableSelectionKeysType) => void;
     selectedLongQuestion: TreeTableSelectionKeysType;
     setSelectedLongQuestion: (e: TreeTableSelectionKeysType) => void;
     loading: boolean;
@@ -30,79 +46,297 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
     const [mcq, setMcq] = useState<TreeNode[]>([]);
     const [shortQuestions, setShortQuestions] = useState<TreeNode[]>([]);
     const [longQuestions, setLongQuestions] = useState<TreeNode[]>([]);
+    const [fillInTheBlanksQuestions, setFillInTheBlanksQuestions] = useState<TreeNode[]>([]);
+    const [multiFillInTheBlanksQuestions, setMultiFillInTheBlanksQuestions] = useState<TreeNode[]>([]);
+    const [multipleShortQuestions, setMultipleShortQuestions] = useState<TreeNode[]>([]);
+    const [sequenceQuestions, setSequenceQuestions] = useState<TreeNode[]>([]);
+    const [multipleTrueFalseQuestions, setMultipleTrueFalseQuestions] = useState<TreeNode[]>([]);
+
     const [mcqGlobalFilter, setMcqGlobalFilter] = useState<string>('');
     const [shortQuestionGlobalFilter, setShortQuestionGlobalFilter] = useState<string>('');
     const [longQuestionGlobalFilter, setLongQUestionGlobalFilter] = useState<string>('');
+    const [fillInTheBlanksGlobalFilter, setFillInTheBlanksGlobalFilter] = useState<string>('');
+    const [multiFillInTheBlanksGlobalFilter, setMultiFillInTheBlanksGlobalFilter] = useState<string>('');
+    const [multipleShortGlobalFilter, setMultipleShortGlobalFilter] = useState<string>('');
+    const [sequenceGlobalFilter, setSequenceGlobalFilter] = useState<string>('');
+    const [multipleTrueFalseGlobalFilter, setMultipleTrueFalseGlobalFilter] = useState<string>('');
+
     const [visible, setVisible] = useState<boolean>(false);
     const [editorContent, setEditorContent] = useState<string>(``);
-    let content = `  <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Question Paper</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-            }
-            .instructions, .mcqs, .short-questions, .long-questions {
-                margin-bottom: 30px;
-            }
-            .question {
-                margin-bottom: 15px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="question-paper">
-            <div class="instructions">
-                <h2>Instructions</h2>
-                <p>Please read the following instructions carefully before proceeding:</p>
-                <ul>
-                    <li>Do not open this question paper until you are told to do so.</li>
-                    <li>Answer all questions in the spaces provided.</li>
-                    <li>Use a blue or black pen for your answers.</li>
-                    <li>Do not use correction fluid or tape.</li>
-                    <li>Turn off all electronic devices.</li>
-                </ul>
-            </div>
+    let content = `
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Form</title>
+        </head>
+        <body style="font-family: sans-serif">
+            <div style="width: 1000px; margin-left: auto; margin-right: auto">
+                <!-- title -->
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a6a6a6">
+                    <p style="color: #a6a6a6; font-weight: 600">Way in LISTENING</p>
+                    <div style="display: flex; justify-content: space-around; align-items: center">
+                        <p style="color: #a6a6a6; font-weight: 600">LISTENING</p>
+                        <p style="color: #a6a6a6; font-weight: 600; border: 3px solid #a6a6a6; border-radius: 100%; padding: 5px 10px; margin-left: 20px; margin-right: 30px; margin-bottom: -30px; background: #fff">2</p>
+                    </div>
+                </div>
+                <!-- title -->
     
-            <div class="mcqs">
-                <h2>Multiple Choice Questions (MCQs)</h2>`;
+                <!-- name -->
+                <div style="display: flex; justify-content: space-between; align-items: center">
+                    <p style="color: #000">Name: ____________________________</p>
+                    <p style="color: #000">Class: __________________</p>
+                    <p style="color: #000">Date: __________________</p>
+                </div>
+                <!-- name -->
+    
+                <!-- question 1 -->
+                <div>
+                    <h1 style="color: #000">Listening</h1>
+                    <h2 style="color: #000">An activity weekend in Cardiff</h2>
+                    <h4 style="color: #000">1 Listen to the radio programme and put the photos in the right order.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q1" style="width: 100%" />
+                        <input type="checkbox" id="q1" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q2" style="width: 100%" />
+                        <input type="checkbox" id="q2" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q3" style="width: 100%" />
+                        <input type="checkbox" id="q3" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q4" style="width: 100%" />
+                        <input type="checkbox" id="q4" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q5" style="width: 100%" />
+                        <input type="checkbox" id="q5" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" for="q6" style="width: 100%" />
+                        <input type="checkbox" id="q6" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                    </div>
+                </div>
+                <!-- question 1 -->
+    
+                <!-- question 2 -->
+                <div>
+                    <h4 style="color: #000">2 What can you do at the activity weekend in Cardiff? Write down five sports.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px">1. _______________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">2. _______________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">3. _______________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">4. _______________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">5. _______________________________________________</p>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="data:image/jpeg;base64,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" style="width: 50%" />
+                    </div>
+                </div>
+                <!-- question 2 -->
+    
+                <!-- question 3 -->
+                <div>
+                    <h4 style="color: #000">3 Listen again. Right or wrong? Tick (&#10003;) the correct box for each sentence.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px">1. The radio programme has the best tips for the weekend</p>
+                        <p style="color: #000; margin-bottom: 20px">2. Maisie Reedman is part of the radio team.</p>
+                        <p style="color: #000; margin-bottom: 20px">3. The zip line in Cardiff is the longest in Europe.</p>
+                        <p style="color: #000; margin-bottom: 20px">4. They will close some roads in the city centre</p>
+                        <p style="color: #000; margin-bottom: 20px">5. You need a helmet for some sports.</p>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px; margin-top: -31px">
+                        <div style="display: flex">
+                            <h4 style="margin-bottom: 8px">Right</h4>
+                            <h4 style="margin-left: 10px; margin-bottom: 8px">Wrong</h4>
+                        </div>
+                        <div style="display: flex">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                    </div>
+                </div>
+                <!-- question 3 -->
+    
+                <!-- question 4 -->
+                <div>
+                    <h4 style="color: #000">4 Complete the sentences with the right information.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px; line-height: 33px">1. There will be an activity weekend in the ____________________________________ of Wales.</p>
+                        <p style="color: #000; margin-bottom: 20px; line-height: 33px">2. You can try lots of different ____________________________________ there</p>
+                        <p style="color: #000; line-height: 33px">3. You can try out water sports like ____________________________________</p>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/8.png" style="width: 50%" />
+                    </div>
+                    <div style="width: 100%">
+                        <p style="color: #000; margin-bottom: 20px; line-height: 33px">4. Lots of ____________________________________ will be there to help and answer questions.</p>
+                        <p style="color: #000; margin-bottom: 20px; line-height: 33px">5. They hope that lots of ____________________________________ will come.</p>
+                    </div>
+                </div>
+                <!-- question 4 -->
+    
+                <!-- question 5 -->
+                <div>
+                    <h4 style="color: #000">5 Answer the questions. Write complete sentences.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 100%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px">1. Why is it a good idea to visit Cardiff this weekend?</p>
+                        <p style="color: #000; margin-bottom: 20px">________________________________________________________________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">2. What’s so special about the zip line near Mount Snowdon?</p>
+                        <p style="color: #000; margin-bottom: 20px">________________________________________________________________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">3. Why is it safe to ride your bike or skateboard in the city centre?</p>
+                        <p style="color: #000; margin-bottom: 20px">________________________________________________________________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">4. What can you do there if you don’t want to do sports?</p>
+                        <p style="color: #000; margin-bottom: 20px">________________________________________________________________________________________________</p>
+                        <p style="color: #000; margin-bottom: 20px">5. How do you know where you can find which activity?</p>
+                        <p style="color: #000; margin-bottom: 20px">________________________________________________________________________________________________</p>
+    
+                        <img src="data:image/jpeg;base64,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" />
+                    </div>
+                    <div style="display: flex; justify-content: space-between; width: 40%">
+                        <p style="color: #000; margin-bottom: 20px">Your points: ___ / XX</p>
+                        <p style="color: #000; margin-bottom: 20px">Mark ___</p>
+                    </div>
+                </div>
+                <!-- question 5 -->
+    
+                <!-- part 2 question 2.1-->
+                <div style="margin-top: 200px">
+                    <h1 style="color: #000">Diff corner</h1>
+                    <p style="color: #a6a6a6; font-weight: 600">_______________________ Parallelaufgabe zu S.1</p>
+                    <h4 style="color: #000">1 Listen to the radio programme and put the photos in the right order.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/1.png" for="q1" style="width: 100%" />
+                        <input type="checkbox" id="q1" name="" value="" style="margin-top: 10px; width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">a zip line</label>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/2.png" for="q2" style="width: 100%" />
+                        <input type="checkbox" id="q2" name="" value="" style="margin-top: 10px; width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">a sign</label>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/3.png" for="q3" style="width: 100%" />
+                        <input type="checkbox" id="q3" name="" value="" style="margin-top: 10px; width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">a skateboard park</label>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/4.png" for="q4" style="width: 100%" />
+                        <input type="checkbox" id="q4" name="" value="" style="margin-top: 10px; width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">the radio studio</label>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/5.png" for="q5" style="width: 100%" />
+                        <input type="checkbox" id="q5" name="" value="" style="margin-top: 10px; width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">drinks and snacks </label>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <img src="images/6.png" for="q6" style="width: 100%" />
+                        <input type="checkbox" id="q6" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                        <label style="margin-left: 10px">rafting</label>
+                    </div>
+                </div>
+                <!--  part 2 question 2.1-->
+    
+                <!-- question 2.2 -->
+                <div>
+                    <h4 style="color: #000">2 What can you do at the activity weekend in Cardiff? Write down five sports.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 40.99%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px">1. <span style="text-decoration: underline">z</span> _ _ <span style="text-decoration: underline">l</span> _ _ _</p>
+                        <p style="color: #000; margin-bottom: 20px">2. <span style="text-decoration: underline">c</span> <span style="text-decoration: underline">a</span> _ _ _ _ _ _</p>
+                        <p style="color: #000; margin-bottom: 20px">3. <span style="text-decoration: underline">r</span> <span style="text-decoration: underline">a</span> _ _ _ _ _</p>
+                        <p style="color: #000; margin-bottom: 20px">4. <span style="text-decoration: underline">t</span> _ _ _ _ <span style="text-decoration: underline">t</span> _ _ _ _</p>
+                        <p style="color: #000; margin-bottom: 20px">5. <span style="text-decoration: underline">n </span> _ _ <span style="text-decoration: underline">b</span> _ _ _</p>
+                    </div>
+                    <div style="width: 57.99%; margin-bottom: 10px">
+                        <img src="images/10.png" style="width: 75%" />
+                    </div>
+                </div>
+                <!-- question 2.2 -->
+    
+                <!-- question 2.3 -->
+                <div>
+                    <h4 style="color: #000">3 Listen again. Right or wrong? Tick (&#10003;) the correct box for each sentence.</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+                    <div style="width: 47.99%; margin-bottom: 10px">
+                        <p style="color: #000; margin-bottom: 20px">1. The radio programme has the best <span style="text-decoration: underline">tips for the weekend</span>.</p>
+                        <p style="color: #000; margin-bottom: 20px">2. Maisie Reedman is part of the<span style="text-decoration: underline"> radio team</span>.</p>
+                        <p style="color: #000; margin-bottom: 20px">3. The zip line <span style="text-decoration: underline">in Cardiff </span> is the longest in Europe.</p>
+                        <p style="color: #000; margin-bottom: 20px">4. They will <span style="text-decoration: underline">close </span> some roads in the city centre</p>
+                        <p style="color: #000; margin-bottom: 20px">5. You need a <span style="text-decoration: underline">helmet </span> for some sports.</p>
+                    </div>
+                    <div style="width: 47.99%; margin-bottom: 10px; margin-top: -31px">
+                        <div style="display: flex">
+                            <h4 style="margin-bottom: 8px">Right</h4>
+                            <h4 style="margin-left: 10px; margin-bottom: 8px">Wrong</h4>
+                        </div>
+                        <div style="display: flex">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                        <div style="display: flex; margin-top: 10px">
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000" />
+                            <input type="checkbox" name="" value="" style="width: 20px; height: 20px; border-radius: 0px; border: 2px solid #000; margin-left: 30px" />
+                        </div>
+                    </div>
+                </div>
+                <!-- question 2.3 -->
+            </div>
+        </body>
+    </html>
+    
+    `;
 
-    const createQuestionTree = (questions: Question[], type:string) => {
+    const createQuestionTree = (questions: Question[], type: string) => {
         const tree: TreeNode[] = [];
-        if(type==="shortQuestion"){
-            content += `
-            <div class="short-questions">
-            <h2>Short Questions</h2>
-            `
-        } else if(type==="longQuestion"){
-            content += `
-             <div class="long-questions">
-            <h2>Long Questions</h2>`;
-        }
         questions?.forEach((question, index) => {
-            if(type==="mcq"){
-                content += `
-                    <div class="question">
-                    <p>${question?.question}</p>
-                    <ol type="A">`; 
-                    question?.answers?.forEach((x,index)=>{
-                        content += `<li>${index}. ${x?.answer}</li>`;
-                    })
-                    content +=`</ol></div>`;
-            } else if(type==="shortQuestion"){
-                content += `
-                <div class="short-questions">
-                <p>${index + 1}. ${question?.question}.</p>
-                </div>`;
-            } else if(type==="longQuestion"){
-                content += `
-                <div class="long-questions">
-                <p>${index + 1}. ${question?.question}.</p>
-                </div>`;
-            }
             const node: TreeNode = {
                 key: index + 1,
                 data: {
@@ -112,7 +346,6 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 },
                 children: question?.answers?.map((answer, index) => {
                     return {
-                        // key: index + 3,
                         data: {
                             question: answer?.answer?.length > 14 ? answer?.answer?.substring(0, 14) + "..." : answer?.answer,
                             type: answer?.type,
@@ -122,14 +355,6 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
             };
             tree?.push(node);
         });
-        if(type==="mcq"){
-          content += `</div>`;
-        }
-        else if(type==="shortQuestion"){
-            content += `</div>`
-        } else if(type==="longQuestion"){
-            content += `</div>`
-        }
         setEditorContent(content)
         return tree
     };
@@ -141,6 +366,21 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
     };
     const onLongQuestionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLongQUestionGlobalFilter(e.target.value);
+    };
+    const onFillInTheBlanksInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFillInTheBlanksGlobalFilter(e.target.value);
+    };
+    const onMultiFillInTheBlanksInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMultiFillInTheBlanksGlobalFilter(e.target.value);
+    };
+    const onMultipleShortQuestionsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMultipleShortGlobalFilter(e.target.value);
+    };
+    const onSequenceQuestionsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSequenceGlobalFilter(e.target.value);
+    };
+    const onMultipleTrueFalseQuestionsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMultipleTrueFalseGlobalFilter(e.target.value);
     };
 
     const renderMcqHeader = () => {
@@ -175,32 +415,86 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
         );
     };
     const longQuestionHeaderRender = renderLongQuestionHeader();
+
+    const renderFillInTheBlanksHeader = () => {
+        return (
+            <div className="p-d-flex p-flex-column p-jc-md-end p-jc-lg-between p-gap-2">
+                <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
+                    <InputText value={fillInTheBlanksGlobalFilter} onChange={onFillInTheBlanksInputChange} placeholder="Keyword Question" className="mx-2 my-2" />
+                </div>
+            </div>
+        );
+    }
+    const fillInTheBlanksHeaderRender = renderFillInTheBlanksHeader();
+
+    const renderMultiFillInTheBlanksHeader = () => {
+        return (
+            <div className="p-d-flex p-flex-column p-jc-md-end p-jc-lg-between p-gap-2">
+                <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
+                    <InputText value={multiFillInTheBlanksGlobalFilter} onChange={onMultiFillInTheBlanksInputChange} placeholder="Keyword Question" className="mx-2 my-2" />
+                </div>
+            </div>
+        );
+    }
+    const multiFillInTheBlanksHeaderRender = renderMultiFillInTheBlanksHeader();
+
+    const renderMultipleShortQuestionsHeader = () => {
+        return (
+            <div className="p-d-flex p-flex-column p-jc-md-end p-jc-lg-between p-gap-2">
+                <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
+                    <InputText value={multipleShortGlobalFilter} onChange={onMultipleShortQuestionsInputChange} placeholder="Keyword Question" className="mx-2 my-2" />
+                </div>
+            </div>
+        );
+    }
+    const multipleShortQuestionsHeaderRender = renderMultipleShortQuestionsHeader();
+
+    const renderSequenceQuestionsHeader = () => {
+        return (
+            <div className="p-d-flex p-flex-column p-jc-md-end p-jc-lg-between p-gap-2">
+                <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
+                    <InputText value={sequenceGlobalFilter} onChange={onSequenceQuestionsInputChange} placeholder="Keyword Question" className="mx-2 my-2" />
+                </div>
+            </div>
+        );
+    }
+    const sequenceQuestionsHeaderRender = renderSequenceQuestionsHeader();
+
+    const renderMultipleTrueFalseQuestionsHeader = () => {
+        return (
+            <div className="p-d-flex p-flex-column p-jc-md-end p-jc-lg-between p-gap-2">
+                <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between">
+                    <InputText value={multipleTrueFalseGlobalFilter} onChange={onMultipleTrueFalseQuestionsInputChange} placeholder="Keyword Question" className="mx-2 my-2" />
+                </div>
+            </div>
+        );
+    }
+    const multipleTrueFalseQuestionsHeaderRender = renderMultipleTrueFalseQuestionsHeader();
+
     useEffect(() => {
         setMcq(createQuestionTree(props.filteredMcqQuestions, "mcq"));
         setShortQuestions(createQuestionTree(props.filteredShortQuestions, "shortQuestion"));
         setLongQuestions(createQuestionTree(props.filteredLongQuestions, "longQuestion"));
+        setFillInTheBlanksQuestions(createQuestionTree(props.filteredFillInTheBlanksQuestions, "fillInTheBlanks"));
+        setMultiFillInTheBlanksQuestions(createQuestionTree(props.filteredMultiFillInTheBlanksQuestions, "multiFillInTheBlanks"));
+        setMultipleShortQuestions(createQuestionTree(props.filteredMultipleShortQuestions, "multipleShortQuestions"));
+        setSequenceQuestions(createQuestionTree(props.filteredSequenceQuestions, "sequenceQuestions"));
+        setMultipleTrueFalseQuestions(createQuestionTree(props.filteredMultipleTrueFalseQuestions, "multipleTrueFalseQuestions"));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props?.filteredMcqQuestions, props?.filteredShortQuestions, props?.filteredLongQuestions]);
+    }, [props?.filteredMcqQuestions, props?.filteredShortQuestions, props?.filteredLongQuestions, props?.selectedMcq, props?.selectedShortQuestion, props?.selectedLongQuestion]);
 
     return (
         <div className="grid">
             <Dialog visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
-                {/* <CkEditor content={editorContent} /> */}
-                <QuestionPaper 
-                examDifficultyLevel={[]} 
-                examinerName='demo'
-                note='demo'
-                schoolLevelName='demo'
-                subjectName='demo'
-                topicName='demo'
-                schoolName='demo'
-                studentId='demo'
-                studentName='demo'
-                subTopicName='demo'
-                teacherName='demo'
-                mcqQuestions={[]}
-                longQuestions={[]}
-                shortQuestions={[]}
+                <QuestionPaper
+                    filteredMcqQuestions={props?.filteredMcqQuestions}
+                    filteredShortQuestions={props?.filteredShortQuestions}
+                    filteredLongQuestions={props?.filteredLongQuestions}
+                    filteredFillInTheBlanksQuestions={props?.filteredFillInTheBlanksQuestions}
+                    filteredMultiFillInTheBlanksQuestions={props?.filteredMultiFillInTheBlanksQuestions}
+                    filteredMultipleShortQuestions={props?.filteredMultipleShortQuestions}
+                    filteredSequenceQuestions={props?.filteredSequenceQuestions}
+                    filteredMultipleTrueFalseQuestions={props?.filteredMultipleTrueFalseQuestions}
                 />
             </Dialog>
             <div className="col-12 my-3">
@@ -222,6 +516,56 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 <div className="card">
                     <h5>Short Questions</h5>
                     <TreeTable value={shortQuestions} globalFilter={shortQuestionGlobalFilter} header={shortQuestionHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedShortQuestion} onSelectionChange={(e) => props?.setSelectedShortQuestion(e.value)}>
+                        <Column field="question" header="Name" expander />
+                        <Column field="type" header="Type" />
+                        <Column field="subTopic" header="Subtopic" />
+                    </TreeTable>
+                </div>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    <h5>Fill in the blanks</h5>
+                    <TreeTable value={fillInTheBlanksQuestions} globalFilter={fillInTheBlanksGlobalFilter} header={fillInTheBlanksHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedFillInTheBlanks} onSelectionChange={(e) => props?.setSelectedFillInTheBlanks(e.value)}>
+                        <Column field="question" header="Name" expander />
+                        <Column field="type" header="Type" />
+                        <Column field="subTopic" header="Subtopic" />
+                    </TreeTable>
+                </div>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    <h5>Multi Fill in the blanks</h5>
+                    <TreeTable value={multiFillInTheBlanksQuestions} globalFilter={multiFillInTheBlanksGlobalFilter} header={multiFillInTheBlanksHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedMultiFillInTheBlanks} onSelectionChange={(e) => props?.setSelectedMultiFillInTheBlanks(e.value)}>
+                        <Column field="question" header="Name" expander />
+                        <Column field="type" header="Type" />
+                        <Column field="subTopic" header="Subtopic" />
+                    </TreeTable>
+                </div>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    <h5>Multiple Short Questions</h5>
+                    <TreeTable value={multipleShortQuestions} globalFilter={multipleShortGlobalFilter} header={multipleShortQuestionsHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedMultipleShort} onSelectionChange={(e) => props?.setSelectedMultipleShort(e.value)}>
+                        <Column field="question" header="Name" expander />
+                        <Column field="type" header="Type" />
+                        <Column field="subTopic" header="Subtopic" />
+                    </TreeTable>
+                </div>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    <h5>Sequence Questions</h5>
+                    <TreeTable value={sequenceQuestions} globalFilter={sequenceGlobalFilter} header={sequenceQuestionsHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedSequence} onSelectionChange={(e) => props?.setSelectedSequence(e.value)}>
+                        <Column field="question" header="Name" expander />
+                        <Column field="type" header="Type" />
+                        <Column field="subTopic" header="Subtopic" />
+                    </TreeTable>
+                </div>
+            </div>
+            <div className="col-12">
+                <div className="card">
+                    <h5>Multiple True False Questions</h5>
+                    <TreeTable value={multipleTrueFalseQuestions} globalFilter={multipleTrueFalseGlobalFilter} header={multipleTrueFalseQuestionsHeaderRender} selectionMode="checkbox" selectionKeys={props?.selectedMultipleTrueFalse} onSelectionChange={(e) => props?.setSelectedMultipleTrueFalse(e.value)}>
                         <Column field="question" header="Name" expander />
                         <Column field="type" header="Type" />
                         <Column field="subTopic" header="Subtopic" />
