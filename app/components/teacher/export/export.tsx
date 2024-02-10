@@ -20,6 +20,7 @@ import { Dialog } from 'primereact/dialog'
 import QuestionList from './QuestionList'
 import { TreeTableSelectionKeysType } from 'primereact/treetable'
 import fetchQuestionsForExportHandler from '../../../context/server/export/fetchQuestionsForExportHandler'
+import { ExportTypes } from './types'
 
 
 const Export: React.FC = () => {
@@ -69,6 +70,10 @@ const Export: React.FC = () => {
         { label: 'MEDIUM', value: 'MEDIUM' },
         { label: 'HARD', value: 'HARD' },
     ];
+    const exportMode = [
+        { label: 'Practice', value: ExportTypes.PRACTICE },
+        { label: 'Paper', value: ExportTypes.PAPER },
+    ]
     const fetchSuggestQuestions = async (data: ExportAnswers) => {
         try {
             setFilterQuestionsLoading(true);
@@ -244,12 +249,6 @@ const Export: React.FC = () => {
             <h5>Export Answers</h5>
             <div className="card">
                 <div className="grid p-fluid mt-3">
-                    <div className="field col-26 md:col-12">
-                        <div className='flex align-items-center'>
-                            <label htmlFor="" className='mr-3 font-bold'> {`Practice Mode`}</label>
-                            <InputSwitch checked={practiceMode} onChange={(e) => setPracticeMode(!practiceMode)} />
-                        </div>
-                    </div>
                     <div className="field col-12 md:col-3">
                         <Controller
                             name='schoolId'
@@ -372,7 +371,7 @@ const Export: React.FC = () => {
                             )}
                         />
                     </div>
-                    <div className="field col-16 md:col-12">
+                    <div className="field col-16 md:col-6">
                         <Controller
                             name='subTopicId'
                             control={control}
@@ -397,6 +396,35 @@ const Export: React.FC = () => {
                                         }
                                     />
                                     <ErrorMessage text={ExportErrors?.subTopicId?.message} />
+                                </>
+                            )}
+                        />
+                    </div>
+                    <div className="field col-12 md:col-6">
+                        <Controller
+                            name='exportMode'
+                            control={control}
+                            rules={{ required: "Select Export Mode" }}
+                            render={({ field }) => (
+                                <>
+                                    <FormFieldWithLabel
+                                        label="Select Export Mode"
+                                        showCharLimit={false}
+                                        showOptionalText={false}
+                                        formField={
+                                            <Dropdown
+                                                value={field?.value}
+                                                onChange={field?.onChange}
+                                                options={exportMode}
+                                                optionLabel="label"
+                                                optionValue="value"
+                                                placeholder="Select Export Mode"
+                                                filter
+                                                className={`w-100 ${ExportErrors?.exportMode?.message ? "p-invalid" : ""}`}
+                                            />
+                                        }
+                                    />
+                                    <ErrorMessage text={ExportErrors?.exportMode?.message} />
                                 </>
                             )}
                         />
@@ -516,6 +544,7 @@ const Export: React.FC = () => {
                             )}
                         />
                     </div>
+
                 </div>}
                 {shortQuestionVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">

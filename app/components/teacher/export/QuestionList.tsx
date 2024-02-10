@@ -64,7 +64,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
     const [multipleQuestionV2GlobalFilter, setMultipleQuestionV2GlobalFilter] = useState<string>('');
     const [mode, setMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
-    const [download,setDownload] = useState<boolean>(false);
+    const [download, setDownload] = useState<boolean>(false);
 
     const createQuestionTree = (questions: Question[], type: string) => {
         const tree: TreeNode[] = [];
@@ -233,47 +233,47 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
             <div style={{ position: 'sticky', top: 0, zIndex: 1000 }} className='flex align-items-center'>
                 <label htmlFor="" className='mr-3 font-bold'> {mode ? `Teacher Mode` : `Exam Mode`}</label>
                 <InputSwitch checked={mode} onChange={(e) => setMode(!mode)} />
-               <Button onClick={()=>{
-                setDownload(!download);
-                reservedQuestions();
-               }} className='mx-2' label='Download'/>
+                <Button onClick={() => {
+                    setDownload(!download);
+                    reservedQuestions();
+                }} className='mx-2' label='Download' />
             </div>
         </>)
     }
-    const reservedQuestions = async ()=>{
+    const reservedQuestions = async () => {
         try {
             const questionsIds = [] as string[]
-            props?.filteredMcqQuestions?.forEach((question)=>{
+            props?.filteredMcqQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredShortQuestions?.forEach((question)=>{
+            props?.filteredShortQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredLongQuestions?.forEach((question)=>{
+            props?.filteredLongQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredFillInTheBlanksQuestions?.forEach((question)=>{
+            props?.filteredFillInTheBlanksQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredMultiFillInTheBlanksQuestions?.forEach((question)=>{
+            props?.filteredMultiFillInTheBlanksQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredMultipleShortQuestions?.forEach((question)=>{
+            props?.filteredMultipleShortQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredSequenceQuestions?.forEach((question)=>{
+            props?.filteredSequenceQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredMultipleTrueFalseQuestions?.forEach((question)=>{
+            props?.filteredMultipleTrueFalseQuestions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
-            props?.filteredMultipleQuestionV2Questions?.forEach((question)=>{
+            props?.filteredMultipleQuestionV2Questions?.forEach((question) => {
                 questionsIds.push(question?.id)
             })
             const uniqueArray: string[] = Array?.from(new Set(questionsIds));
-            await ReserveQuestionAsPractice({questionIds: uniqueArray})
+            await ReserveQuestionAsPractice({ questionIds: uniqueArray })
         } catch (error) {
-            
+
         }
     }
     return (

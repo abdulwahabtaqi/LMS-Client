@@ -132,7 +132,7 @@ export interface ExportAnswers {
     sequenceVisible:boolean;
     multipleTrueFalseVisible:boolean;
     multipleQuestionV2Visible:boolean;
-    
+    exportMode: string;
 }
 
 
