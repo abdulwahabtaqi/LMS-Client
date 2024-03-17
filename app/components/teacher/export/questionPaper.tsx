@@ -24,6 +24,7 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({ mode, filteredFillInTheBl
         const cleanedString = inputString.replace(/--\s*(.*?)\s*--/, '').replace(/d22/g, '_');
         return [modifiedPattern, cleanedString];
     }
+    const [isDownloadFirstTime, setIsDownloadFirstTime] = useState<boolean>(false)
     const downloadable = useRef<HTMLDivElement>(null);
     const extractWordsBetweenMarkers = (inputString: string): string[] => {
         // Regular expression to match words between "-- --"
@@ -367,15 +368,20 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({ mode, filteredFillInTheBl
         setGlobalCounter(counter);
     }, []);
     useEffect(() => {
-        // const printable = downloadable?.current?.innerHTML;
-        // const printWindow = window.open('', '', 'height=400,width=800');
-        // printWindow?.document.write('<html><head><title>Question Paper</title>');
-        // printWindow?.document.write('</head><body >');
-        // printWindow?.document.write(printable || '');
-        // printWindow?.document.write('</body></html>');
-        // printWindow?.print();
-        // printWindow?.document.close();
 
+      if(isDownloadFirstTime){
+        const printable = downloadable?.current?.innerHTML;
+        const printWindow = window.open('', '', 'height=400,width=800');
+        printWindow?.document.write('<html><head><title>Question Paper</title>');
+        printWindow?.document.write('</head><body >');
+        printWindow?.document.write(printable || '');
+        printWindow?.document.write('</body></html>');
+        printWindow?.print();
+        printWindow?.document.close();
+    }
+    setIsDownloadFirstTime(true)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [download]);
     return (
         <>

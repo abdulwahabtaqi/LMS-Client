@@ -26,7 +26,7 @@ import { ExportTypes } from './types'
 const Export: React.FC = () => {
     const g = useAppContext();
     const toast = useRef<Toast>(null);
-    const { control, handleSubmit, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
+    const { control, handleSubmit,watch, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
         mode: 'onBlur',
     });
     const [schools, setSchools] = useState<School[]>([] as School[]);
@@ -186,6 +186,7 @@ const Export: React.FC = () => {
         }
     }
 
+    console.log("watch('exportMode')", watch('exportMode'))
     useEffect(() => {
         fetchSchools();
         setValue('MCQVisible', MCQVisible);
@@ -245,6 +246,7 @@ const Export: React.FC = () => {
                     setSelectedMultipleTrueFalse={setSelectedMultipleTrueFalse}
                     selectedMultipleQuestionV2={selectedMultipleQuestionV2}
                     setSelectedMultipleQuestionV2={setSelectedMultipleQuestionV2}
+                    questionMode={watch('exportMode')}
                 />
             </Dialog>
             <h5>Export Answers</h5>

@@ -41,9 +41,11 @@ interface QuestionListProps {
     setSelectedMultipleQuestionV2: (e: TreeTableSelectionKeysType) => void;
     loading: boolean;
     setVisible: (e: boolean) => void;
+    questionMode:string;
 }
 
 const QuestionList: React.FC<QuestionListProps> = (props) => {
+    console.log("questionMode===>", props?.questionMode)
     const [mcq, setMcq] = useState<TreeNode[]>([]);
     const [shortQuestions, setShortQuestions] = useState<TreeNode[]>([]);
     const [longQuestions, setLongQuestions] = useState<TreeNode[]>([]);
@@ -271,7 +273,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 questionsIds.push(question?.id)
             })
             const uniqueArray: string[] = Array?.from(new Set(questionsIds));
-            await ReserveQuestionAsPractice({ questionIds: uniqueArray })
+            await ReserveQuestionAsPractice({ questionIds: uniqueArray, questionMode:props?.questionMode })
         } catch (error) {
 
         }
