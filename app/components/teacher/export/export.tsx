@@ -74,6 +74,7 @@ const Export: React.FC = () => {
         { label: 'Practice', value: ExportTypes.PRACTICE },
         { label: 'Paper', value: ExportTypes.PAPER },
     ]
+
     const fetchSuggestQuestions = async (data: ExportAnswers) => {
         try {
             setFilterQuestionsLoading(true);
@@ -447,11 +448,6 @@ const Export: React.FC = () => {
                             <InputSwitch checked={longQuestionVisible} onChange={(e) => setLongQuestionVisible(!longQuestionVisible)} />
                         </div>
                     </div>
-
-
-
-
-
                     <div className="field col-16 md:col-3">
                         <div className='flex align-items-center'>
                             <label htmlFor="" className='mr-3 font-bold'> {`File in the blanks`}</label>
@@ -489,6 +485,7 @@ const Export: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                
                 {MCQVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -546,6 +543,7 @@ const Export: React.FC = () => {
                     </div>
 
                 </div>}
+
                 {shortQuestionVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -657,6 +655,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {fillInTheBlanksVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -711,6 +710,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {multiFillInTheBlanksVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -765,6 +765,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {multipleShortVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -819,6 +820,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {sequenceVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -873,6 +875,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {multipleTrueFalseVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -927,6 +930,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 {multipleQuestionV2Visible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller
@@ -981,6 +985,7 @@ const Export: React.FC = () => {
                         />
                     </div>
                 </div>}
+
                 <div className="gap-2">
                     <Button label={`Apply`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
                 </div>

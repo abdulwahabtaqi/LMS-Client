@@ -35,8 +35,8 @@ const Importer: React.FC = () => {
 
     const submitForm: SubmitHandler<ImportInput> = async (ImportInput: ImportInput) => {
         try {
-            if(_?.isEmpty(selectedFiles)){
-                if(isFileSelected){
+            if (_?.isEmpty(selectedFiles)) {
+                if (isFileSelected) {
                     toast?.current?.show({ severity: 'warn', summary: 'Warning', detail: "Please confirm / save file, which you uploaded" });
                     return;
                 }
@@ -45,13 +45,13 @@ const Importer: React.FC = () => {
             const firstFile = selectedFiles[0];
             const fileNameParts = firstFile?.name?.split('.');
             const extension = fileNameParts?.slice(1)?.join('.')?.toLowerCase();
-            if(extension !== 'csv'){
-                toast?.current?.show({ severity: 'error', summary: 'Error', detail: "Please Upload a CSV File" });
-                return;
-            }
-           const imports = await importsHandler(ImportInput, firstFile);
-           if(imports?.status)
-           toast?.current?.show({ severity: 'success', summary: 'Success', detail: "Questions & Answers are imported Successfully" });
+            // if(extension !== 'csv'){
+            //     toast?.current?.show({ severity: 'error', summary: 'Error', detail: "Please Upload a CSV File" });
+            //     return;
+            // }
+            const imports = await importsHandler(ImportInput, firstFile);
+            if (imports?.status)
+                toast?.current?.show({ severity: 'success', summary: 'Success', detail: "Questions & Answers are imported Successfully" });
         }
         catch (error) {
             g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something went wrong, Please try again later" })
@@ -313,16 +313,16 @@ const Importer: React.FC = () => {
                                     chooseLabel="Upload CSV"
                                     uploadLabel="Confirm"
                                     cancelLabel="Clear"
-                                    onRemove={() => {setSelectedFiles([]); setIsFileSelected(false)}}
-                                    onClear={() => {setSelectedFiles([]); setIsFileSelected(false)}}
-                                    onSelect={() => {setIsFileSelected(true)}}
+                                    onRemove={() => { setSelectedFiles([]); setIsFileSelected(false) }}
+                                    onClear={() => { setSelectedFiles([]); setIsFileSelected(false) }}
+                                    onSelect={() => { setIsFileSelected(true) }}
                                     uploadHandler={onFileSelect}
                                     emptyTemplate="No file chosen"
                                 />
                             }
                         />
                         <div className="my-1"></div>
-                        <ErrorMessage text={_?.isEmpty(selectedFiles)?"Please Upload CSV":""} />
+                        <ErrorMessage text={_?.isEmpty(selectedFiles) ? "Please Upload CSV" : ""} />
                     </div>
                 </div>
 
