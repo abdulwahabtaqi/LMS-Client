@@ -158,6 +158,13 @@ export interface ImportAnswers {
     subTopicId: string,
     csvFile: File
 }
+export interface Histories {
+    id: string,
+    exportType: string,
+    createdAt: string,
+    action?: React.ReactNode
+
+}
 export interface DatatableWithSearchProps<T> {
     tableColumns: TableColumns[];
     data: T[];

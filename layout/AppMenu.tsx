@@ -75,7 +75,10 @@ const AppMenu = () => {
             },
             {
                 label: 'Export',
-                items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+                items: [
+                    { label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' },
+                    { label: 'History', icon: 'pi pi-clock', to: '/lms/history/' }
+                ]
             }
 
         ] as AppMenuItem[];

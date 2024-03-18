@@ -186,7 +186,6 @@ const Export: React.FC = () => {
         }
     }
 
-    console.log("watch('exportMode')", watch('exportMode'))
     useEffect(() => {
         fetchSchools();
         setValue('MCQVisible', MCQVisible);
@@ -200,6 +199,7 @@ const Export: React.FC = () => {
         setValue('multipleQuestionV2Visible', multipleQuestionV2Visible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     useEffect(() => {
         setValue('MCQVisible', MCQVisible);
         setValue('shortQuestionVisible', shortQuestionVisible);
@@ -212,6 +212,7 @@ const Export: React.FC = () => {
         setValue('multipleQuestionV2Visible', multipleQuestionV2Visible);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [MCQVisible, shortQuestionVisible, longQuestionVisible, fillInTheBlanksVisible, multiFillInTheBlanksVisible, multipleShortVisible, sequenceVisible, multipleTrueFalseVisible, multipleQuestionV2Visible]);
+
     return (
         <>
             <Toast ref={toast} />

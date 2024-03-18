@@ -7,7 +7,7 @@ import LoadingBar from 'react-top-loading-bar';
 
 
 const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
-    const {pageLoader} = useAppContext()
+    const { pageLoader } = useAppContext()
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menuButtonRef = useRef(null);
     const topBarMenuRef = useRef(null);
@@ -37,21 +37,14 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
             <button ref={topBarMenuButtonRef} type="button" className="p-link layout-topbar-menu-button layout-topbar-button" onClick={showProfileSidebar}>
                 <i className="pi pi-ellipsis-v" />
             </button>
-
+            
             <div ref={topBarMenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
-                <button type="button" className="p-link layout-topbar-button">
-                    <i className="pi pi-calendar"></i>
-                    <span>Calendar</span>
-                </button>
-                <button type="button" className="p-link layout-topbar-button">
-                    <i className="pi pi-user"></i>
-                    <span>Profile</span>
-                </button>
-                <Link href="/documentation">
+               <Link href="/lms/history">
                     <button type="button" className="p-link layout-topbar-button">
-                        <i className="pi pi-cog"></i>
-                        <span>Settings</span>
+                    <i className="pi pi-users"></i>
+                        <span>History</span>
                     </button>
+                    <strong>Ali Usama</strong>
                 </Link>
             </div>
         </div>

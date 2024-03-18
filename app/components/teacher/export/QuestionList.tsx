@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import QuestionPaper from './questionPaper';
 import { InputSwitch } from 'primereact/inputswitch';
-import ReserveQuestionAsPractice from '../../../context/server/import/reserveQuestionAsPractice';
+import ReserveQuestionAsPractice from '../../../context/server/export/reserveQuestionAsPractice';
 
 interface QuestionListProps {
     filteredMcqQuestions: Question[]

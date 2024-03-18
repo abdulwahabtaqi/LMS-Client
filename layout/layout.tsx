@@ -167,11 +167,11 @@ const Layout = ({ children }: ChildContainerProps) => {
   return (
     <React.Fragment>
       <div className={containerClass}>
-        <Toast ref={toast} />
         <AppTopbar ref={topbarRef} />
         <div ref={sidebarRef} className="layout-sidebar">
           <AppSidebar />
         </div>
+        <Toast ref={toast} />
         <div className="layout-main-container">
           <div className="layout-main">{children}</div>
           <AppFooter />
