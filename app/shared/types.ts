@@ -161,6 +161,7 @@ export interface ImportAnswers {
 export interface Histories {
     id: string,
     exportType: string,
+    question:Question,
     createdAt: string,
     action?: React.ReactNode
 

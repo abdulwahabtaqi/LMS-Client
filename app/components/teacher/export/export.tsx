@@ -26,7 +26,7 @@ import { ExportTypes } from './types'
 const Export: React.FC = () => {
     const g = useAppContext();
     const toast = useRef<Toast>(null);
-    const { control, handleSubmit,watch, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
+    const { control, handleSubmit, watch, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ExportAnswers>({
         mode: 'onBlur',
     });
     const [schools, setSchools] = useState<School[]>([] as School[]);
@@ -488,7 +488,7 @@ const Export: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 {MCQVisible && <div className="grid p-fluid mt-4">
                     <div className="field col-12 md:col-4">
                         <Controller

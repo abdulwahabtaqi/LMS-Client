@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TreeTable, TreeTableSelectionKeysType } from 'primereact/treetable';
 import { Column } from 'primereact/column';
 import { TreeNode } from 'primereact/treenode';
@@ -10,6 +10,10 @@ import { Dialog } from 'primereact/dialog';
 import QuestionPaper from './questionPaper';
 import { InputSwitch } from 'primereact/inputswitch';
 import ReserveQuestionAsPractice from '../../../context/server/export/reserveQuestionAsPractice';
+import FormFieldWithLabel from '../../../shared/components/FormFieldWithLabel/FormFieldWithLabel';
+import { TextField } from '../../../shared/components/TextField/TextField';
+import _ from 'lodash';
+import { Toast } from 'primereact/toast';
 
 interface QuestionListProps {
     filteredMcqQuestions: Question[]
@@ -41,11 +45,10 @@ interface QuestionListProps {
     setSelectedMultipleQuestionV2: (e: TreeTableSelectionKeysType) => void;
     loading: boolean;
     setVisible: (e: boolean) => void;
-    questionMode:string;
+    questionMode: string;
 }
 
 const QuestionList: React.FC<QuestionListProps> = (props) => {
-    console.log("questionMode===>", props?.questionMode)
     const [mcq, setMcq] = useState<TreeNode[]>([]);
     const [shortQuestions, setShortQuestions] = useState<TreeNode[]>([]);
     const [longQuestions, setLongQuestions] = useState<TreeNode[]>([]);
@@ -67,7 +70,20 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
     const [mode, setMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [download, setDownload] = useState<boolean>(false);
+    const [exportName, setExportName] = useState<string>("")
+    const [exportNameVisible, setExportNameVisible] = useState<boolean>(false)
+    const toast = useRef<Toast>(null);
 
+    const handleTriggerDownload = () => {
+        if (_?.isEmpty(exportName) || exportName?.length < 5) {
+            return toast?.current?.show({ severity: 'error', summary: 'Error', detail: "Please Input a name, Or name length must be greater than 5", life: 3000 });
+        }
+         
+        reservedQuestions();
+    }
+    const handleGetExportName = () => {
+        setExportNameVisible(true)
+    }
     const createQuestionTree = (questions: Question[], type: string) => {
         const tree: TreeNode[] = [];
         questions?.forEach((question, index) => {
@@ -236,8 +252,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 <label htmlFor="" className='mr-3 font-bold'> {mode ? `Teacher Mode` : `Exam Mode`}</label>
                 <InputSwitch checked={mode} onChange={(e) => setMode(!mode)} />
                 <Button onClick={() => {
-                    setDownload(!download);
-                    reservedQuestions();
+                    handleGetExportName()
                 }} className='mx-2' label='Download' />
             </div>
         </>)
@@ -273,13 +288,43 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                 questionsIds.push(question?.id)
             })
             const uniqueArray: string[] = Array?.from(new Set(questionsIds));
-            await ReserveQuestionAsPractice({ questionIds: uniqueArray, questionMode:props?.questionMode })
+            const response = await ReserveQuestionAsPractice({ questionIds: uniqueArray, questionMode: props?.questionMode, name: exportName }, "callback");
+            console.log("====>", response)
+            if (response?.result?.status) {
+                setDownload(!download);
+                setExportNameVisible(false);
+            } else {
+                toast?.current?.show({ severity: 'error', summary: 'Error', detail: response?.result?.message, life: 3000 });
+            }
         } catch (error) {
-
+            toast?.current?.show({ severity: 'error', summary: 'Error', detail: "Something Went Wrong", life: 3000 });
         }
     }
     return (
         <div className="grid">
+            <Toast ref={toast} />
+            <Dialog header="Header" visible={exportNameVisible} style={{ width: '50vw' }} onHide={() => setExportNameVisible(false)}>
+
+                <FormFieldWithLabel
+
+                    label="Name for your export"
+                    showCharLimit={false}
+                    showOptionalText={false}
+                    formField={
+                        <div className="flex flex-column gap-2">
+                            <Toast ref={toast} />
+                            <label htmlFor="username">Name</label>
+                            <InputText onChange={(e) => setExportName(e?.target.value)} id="username" aria-describedby="username-help" />
+                            <small id="username-help">
+                                Enter name for this export
+                            </small>
+                        </div>
+                    }
+                />
+                <div className="gap-2">
+                    <Button label={`Download`} onClick={handleTriggerDownload} icon="pi pi-check" />
+                </div>
+            </Dialog>
             <Dialog header={Header} visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
                 <QuestionPaper
                     filteredMcqQuestions={props?.filteredMcqQuestions}
@@ -377,7 +422,6 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                         <Column field="question" header="Name" expander />
                         <Column field="type" header="Type" />
                         <Column field="subTopic" header="Subtopic" />
-
                     </TreeTable>
                 </div>
             </div>

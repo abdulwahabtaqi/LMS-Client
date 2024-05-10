@@ -74,10 +74,10 @@ const ViewHistory = () => {
         histories?.forEach(x => {
             newHistories?.push({
                 id: x?.id,
-                exportType: x?.exportType,
+                exportType: x?.exportType, 
+                question: x?.question,
                 createdAt: convertTimeStamps(x?.createdAt),
-                action: <Button label="Remove" className="p-button-info" onClick={() => removeHistory(x?.id)
-                } />
+                action: <Button label="Remove" className="p-button-info" onClick={() => removeHistory(x?.id)} />
             })
         });
         setUIHistories(newHistories);
