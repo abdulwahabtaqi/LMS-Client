@@ -39,10 +39,10 @@ const AddAndEditSubTopic: React.FC<AddAndEditSubTopicProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSubTopicHandler(subTopic);
-                g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
+                // g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
             } else {
                 await updateTopic(subTopic);
-                g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
+                // g?.newData?.subTopic?.setIsNewSubTopic(!g?.newData?.subTopic?.isNewSubTopic);
             }
         }
         catch (error) {

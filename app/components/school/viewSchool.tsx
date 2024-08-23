@@ -60,10 +60,7 @@ const ViewSchool: React.FC<ViewSchoolProps> = ({fetchAgain}) => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchSchools();
-         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.school?.isNewSchool]);
+   
     useEffect(() => {
         fetchSchools();
         // eslint-disable-next-line react-hooks/exhaustive-deps

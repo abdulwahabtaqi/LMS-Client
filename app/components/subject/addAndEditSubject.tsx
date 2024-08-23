@@ -39,10 +39,10 @@ const AddAndEditSubject: React.FC<AddAndEditSubjectProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSubjectHandler(subject);
-                g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject);
+                // g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject);
             } else {
                 await updateSubject(subject);
-                g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject)
+                // g?.newData?.subject?.setIsNewSubject(!g?.newData?.subject?.isNewSubject)
             }
         }
         catch (error) {

@@ -64,10 +64,7 @@ const ViewTopic = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchTopic();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.topic?.isNewTopic]);
+   
     useEffect(() => {
         fetchTopic();
         // eslint-disable-next-line react-hooks/exhaustive-deps

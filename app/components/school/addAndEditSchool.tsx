@@ -25,10 +25,10 @@ const AddAndEditSchool: React.FC<AddAndEditSchoolProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createSchoolHandler(school);
-                g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
+                // g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
             } else {
                 await updateSchool(school);
-                g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
+                // g?.newData?.school?.setIsNewSchool(!g?.newData?.school?.isNewSchool)
             }
         }
         catch (error) {

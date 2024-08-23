@@ -49,10 +49,10 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createQuestionHandler(question);
-                g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
+                // g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
             } else {
                 await updateQuestion(question);
-                g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
+                // g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
             }
         }
         catch (error) {

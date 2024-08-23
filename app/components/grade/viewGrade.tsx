@@ -64,10 +64,7 @@ const ViewGrade = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchGrade();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.grade?.isNewGrade]);
+   
     useEffect(() => {
         fetchGrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps

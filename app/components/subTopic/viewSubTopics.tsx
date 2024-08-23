@@ -64,10 +64,7 @@ const ViewSubTopic = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchSubTopic();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.subTopic?.isNewSubTopic]);
+
     useEffect(() => {
         fetchSubTopic();
         // eslint-disable-next-line react-hooks/exhaustive-deps

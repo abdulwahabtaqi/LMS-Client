@@ -39,10 +39,10 @@ const AddAndEditTopic: React.FC<AddAndEditTopicProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createTopicHandler(topic);
-                g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
+                // g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
             } else {
                 await updateTopic(topic);
-                g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
+                // g?.newData?.topic?.setIsNewTopic(!g?.newData?.topic?.isNewTopic);
             }
         }
         catch (error) {

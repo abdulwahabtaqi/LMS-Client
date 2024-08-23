@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from 'react';
 import AppContext from './context';
 import { AppContextProps, CurrentUser, PageLoader, ToasterData } from './types';
 import { Toaster, User } from '../shared/types';
-import { NewAnswer, NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/newData';
+import { NewAnswer, NewData, NewGrade, NewQuestion, NewSchool, NewSubTopic, NewSubject, NewTopic } from './types/NewData';
 
 
 interface AppProviderProps {
@@ -72,7 +72,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     toaster,
     setToaster,
     newData,
-    currentUser
+    currentUser,
   } as AppContextProps;
 
   return (

@@ -64,10 +64,7 @@ const ViewSubject = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchSubject();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.subject?.isNewSubject]);
+    
     useEffect(() => {
         fetchSubject();
         // eslint-disable-next-line react-hooks/exhaustive-deps

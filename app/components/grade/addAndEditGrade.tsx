@@ -38,10 +38,10 @@ const AddAndEditGrade: React.FC<AddAndEditGradeProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createGradeHandler(grade);
-                g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
+                // g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
             } else {
                 await updateGrade(grade);
-                g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
+                // g?.newData?.grade?.setIsNewGrade(!g?.newData?.grade?.isNewGrade)
             }
         }
         catch (error) {

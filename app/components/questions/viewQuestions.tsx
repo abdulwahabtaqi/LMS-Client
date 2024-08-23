@@ -82,10 +82,7 @@ const ViewQuestion = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchQuestion();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.question?.isNewQuestion]);
+   
     useEffect(() => {
         fetchQuestion();
         // eslint-disable-next-line react-hooks/exhaustive-deps

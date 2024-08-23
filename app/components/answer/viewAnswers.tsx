@@ -76,10 +76,7 @@ const ViewAnswer = () => {
             style: { width: '15rem' },
         },
     ];
-    useEffect(() => {
-        fetchAnswer();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [g?.newData?.answer?.isNewAnswer]);
+
     useEffect(() => {
         fetchAnswer();
         // eslint-disable-next-line react-hooks/exhaustive-deps

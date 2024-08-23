@@ -17,14 +17,14 @@ const CkEditor: React.FC<CKEditorProps> = (props) => {
     return (
        <>
         <Button label='Save' className='my-2' onClick={() => downloadHtmlAsPdf(editorState as unknown as HTMLElement, "demo")} />
-        <CKEditor
+        {/* <CKEditor
             editor={ClassicEditor}
             data={editorState}
-            onChange={(event, editor) => {
-                const data = editor.getData();
+            onChange={(event, editor:any) => {
+                const data = editor?.getData();
                 setEditorState(data);
             }}
-        />
+        /> */}
        </>
     );
 };

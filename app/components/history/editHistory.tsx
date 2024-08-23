@@ -42,10 +42,10 @@ const EditHistory: React.FC<EditHistoryProps> = (props) => {
         try {
             if (props?.isNew) {
                 await createAnswerHandler(answer);
-                g?.newData?.answer?.setIsNewAnswer(!g?.newData?.answer?.isNewAnswer);
+                // g?.newData?.answer?.setIsNewAnswer(!g?.newData?.answer?.isNewAnswer);
             } else {
                 await updateAnswer(answer);
-                g?.newData?.answer?.setIsNewAnswer(!g?.newData?.answer?.isNewAnswer);
+                // g?.newData?.answer?.setIsNewAnswer(!g?.newData?.answer?.isNewAnswer);
             }
         }
         catch (error) {
