@@ -5,7 +5,7 @@ import { ApiResponse, ServiceResponse } from "../types";
 const getAndDeleteRequest = async (method: string, url: string, contentType = "application/json" as string):Promise<ServiceResponse> => {
   try {
     const apiUrl = "http://localhost:4040/api/v1" + url as string;
-    // const apiUrl = "http://192.168.18.13:4040/api/v1" + url as string;
+    // const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
     pageLoader.setPageLoading(30);
     pageLoader.setPrimeReactLoader(true);
     const response = await fetch(apiUrl, {
