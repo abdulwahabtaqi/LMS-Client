@@ -5,8 +5,8 @@ import { ApiResponse, ServiceResponse } from "../types";
 
 const postAndPutRequest = async (method: string, data: {} | [], url: string, type = "direct" as string, contentType = "application/json" as string):Promise<ServiceResponse> => {
     try {
-        const apiUrl = "http://localhost:4040/api/v1" + url as string;
-        // const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
+        // const apiUrl = "http://localhost:4040/api/v1" + url as string;
+        const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
         pageLoader?.setPageLoading(30);
         const response = await fetch(apiUrl, {
             method,
