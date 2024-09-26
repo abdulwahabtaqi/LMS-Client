@@ -1,28 +1,36 @@
-'use client'
-import React, { useEffect, useRef, useState } from 'react'
-import FormFieldWithLabel from '../../shared/components/FormFieldWithLabel/FormFieldWithLabel'
-import { useForm, Controller, SubmitHandler, } from 'react-hook-form'
-import { ExportAnswers, Grade, ImportInput, Question, School, SubTopic, Subject, Topic } from '../../shared/types'
-import { Dropdown } from 'primereact/dropdown'
-import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
-import { useAppContext } from '../../../layout/context/layoutcontext'
-import fetchSchoolsHandler from '../../context/server/school/fetchSchoolsHandler'
-import { Button } from 'primereact/button'
-import { Toast } from 'primereact/toast'
-import fetchGradeBySchoolIdHandler from '../../context/server/grade/fetchGradeBySchoolIdHandler'
-import fetchSubjectByGradeIdHandler from '../../context/server/subject/fetchSubjectByGradeIdHandler'
-import fetchTopicBySubjectIdHandler from '../../context/server/topic/fetchTopicBySubjectIdHandler'
-import fetchSubTopicBySubTopicIdHandler from '../../context/server/subTopic/fetchSubTopicBySubTopicIdHandler'
-import _ from 'lodash'
-import { FileUpload } from 'primereact/fileupload'
-import importsHandler from '../../context/server/import/importsHandler'
-
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import FormFieldWithLabel from '../../shared/components/FormFieldWithLabel/FormFieldWithLabel';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { ExportAnswers, Grade, ImportInput, Question, School, SubTopic, Subject, Topic } from '../../shared/types';
+import { Dropdown } from 'primereact/dropdown';
+import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage';
+import { useAppContext } from '../../../layout/context/layoutcontext';
+import fetchSchoolsHandler from '../../context/server/school/fetchSchoolsHandler';
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import fetchGradeBySchoolIdHandler from '../../context/server/grade/fetchGradeBySchoolIdHandler';
+import fetchSubjectByGradeIdHandler from '../../context/server/subject/fetchSubjectByGradeIdHandler';
+import fetchTopicBySubjectIdHandler from '../../context/server/topic/fetchTopicBySubjectIdHandler';
+import fetchSubTopicBySubTopicIdHandler from '../../context/server/subTopic/fetchSubTopicBySubTopicIdHandler';
+import _ from 'lodash';
+import { FileUpload } from 'primereact/fileupload';
+import importsHandler from '../../context/server/import/importsHandler';
+import DownloadCsv from '../downloadCsv/downloadCsv';
 
 const Importer: React.FC = () => {
     const g = useAppContext();
     const toast = useRef<Toast>(null);
-    const { control, handleSubmit, reset, setValue, formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<ImportInput>({
-        mode: 'onBlur',
+    const {
+        control,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors: ExportErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting },
+        setError,
+        clearErrors
+    } = useForm<ImportInput>({
+        mode: 'onBlur'
     });
     const [schools, setSchools] = useState<School[]>([] as School[]);
     const [grades, setGrades] = useState<Grade[]>([] as Grade[]);
@@ -32,12 +40,11 @@ const Importer: React.FC = () => {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
 
-
     const submitForm: SubmitHandler<ImportInput> = async (ImportInput: ImportInput) => {
         try {
             if (_?.isEmpty(selectedFiles)) {
                 if (isFileSelected) {
-                    toast?.current?.show({ severity: 'warn', summary: 'Warning', detail: "Please confirm / save file, which you uploaded" });
+                    toast?.current?.show({ severity: 'warn', summary: 'Warning', detail: 'Please confirm / save file, which you uploaded' });
                     return;
                 }
                 return;
@@ -50,13 +57,11 @@ const Importer: React.FC = () => {
             //     return;
             // }
             const imports = await importsHandler(ImportInput, firstFile);
-            if (imports?.status)
-                toast?.current?.show({ severity: 'success', summary: 'Success', detail: "Questions & Answers are imported Successfully" });
+            if (imports?.status) toast?.current?.show({ severity: 'success', summary: 'Success', detail: 'Questions & Answers are imported Successfully' });
+        } catch (error) {
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something went wrong, Please try again later' });
         }
-        catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something went wrong, Please try again later" })
-        }
-    }
+    };
     const fetchSchools = async () => {
         try {
             const response = await fetchSchoolsHandler();
@@ -64,7 +69,7 @@ const Importer: React.FC = () => {
                 setSchools(response?.result?.data as School[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Schools" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Schools' });
         }
     };
 
@@ -82,9 +87,9 @@ const Importer: React.FC = () => {
                 setGrades(response?.result?.data as Grade[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Topics" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Topics' });
         }
-    }
+    };
 
     const onChangeGrade = async (e: string, field: any) => {
         try {
@@ -99,9 +104,9 @@ const Importer: React.FC = () => {
                 setSubjects(response?.result?.data as Subject[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching SubTopics' });
         }
-    }
+    };
     const onChangeSubject = async (e: string, field: any) => {
         try {
             field?.onChange(e);
@@ -114,9 +119,9 @@ const Importer: React.FC = () => {
                 setTopics(response?.result?.data as Topic[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching SubTopics' });
         }
-    }
+    };
 
     const onChangeTopic = async (e: string, field: any) => {
         try {
@@ -129,7 +134,7 @@ const Importer: React.FC = () => {
                 setSubTopics(response?.result?.data as SubTopic[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching SubTopics" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching SubTopics' });
         }
     };
     const onFileSelect = (event: any) => {
@@ -150,10 +155,10 @@ const Importer: React.FC = () => {
                 <div className="grid p-fluid mt-3">
                     <div className="field col-12 md:col-3">
                         <Controller
-                            name='schoolId'
+                            name="schoolId"
                             control={control}
                             defaultValue=""
-                            rules={{ required: "Select School" }}
+                            rules={{ required: 'Select School' }}
                             render={({ field }) => (
                                 <FormFieldWithLabel
                                     label="Select School"
@@ -163,13 +168,15 @@ const Importer: React.FC = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e) => { onSchoolChange(e?.value, field) }}
+                                                onChange={(e) => {
+                                                    onSchoolChange(e?.value, field);
+                                                }}
                                                 options={schools}
                                                 optionLabel="type"
                                                 optionValue="id"
                                                 placeholder="Select a School"
                                                 filter
-                                                className={`w-100 ${ExportErrors?.schoolId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${ExportErrors?.schoolId?.message ? 'p-invalid' : ''}`}
                                             />
                                             <ErrorMessage text={ExportErrors?.schoolId?.message} />
                                         </>
@@ -180,10 +187,10 @@ const Importer: React.FC = () => {
                     </div>
                     <div className="field col-12 md:col-3">
                         <Controller
-                            name='gradeId'
+                            name="gradeId"
                             control={control}
                             defaultValue=""
-                            rules={{ required: "Select Grade" }}
+                            rules={{ required: 'Select Grade' }}
                             render={({ field }) => (
                                 <FormFieldWithLabel
                                     label="Select Grade"
@@ -193,13 +200,15 @@ const Importer: React.FC = () => {
                                         <>
                                             <Dropdown
                                                 value={field?.value}
-                                                onChange={(e) => { onChangeGrade(e?.value, field) }}
+                                                onChange={(e) => {
+                                                    onChangeGrade(e?.value, field);
+                                                }}
                                                 options={grades}
                                                 optionLabel="grade"
                                                 optionValue="id"
                                                 placeholder="Select a Grade"
                                                 filter
-                                                className={`w-100 ${ExportErrors?.gradeId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${ExportErrors?.gradeId?.message ? 'p-invalid' : ''}`}
                                             />
                                             <ErrorMessage text={ExportErrors?.gradeId?.message} />
                                         </>
@@ -207,14 +216,13 @@ const Importer: React.FC = () => {
                                 />
                             )}
                         />
-
                     </div>
                     <div className="field col-12 md:col-3">
                         <Controller
-                            name='subjectId'
+                            name="subjectId"
                             control={control}
                             defaultValue=""
-                            rules={{ required: "Select Subject" }}
+                            rules={{ required: 'Select Subject' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
@@ -230,7 +238,7 @@ const Importer: React.FC = () => {
                                                 optionValue="id"
                                                 placeholder="Select a Subject"
                                                 filter
-                                                className={`w-100 ${ExportErrors?.subjectId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${ExportErrors?.subjectId?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -238,14 +246,13 @@ const Importer: React.FC = () => {
                                 </>
                             )}
                         />
-
                     </div>
                     <div className="field col-12 md:col-3">
                         <Controller
-                            name='topicId'
+                            name="topicId"
                             control={control}
                             defaultValue=""
-                            rules={{ required: "Select Topic" }}
+                            rules={{ required: 'Select Topic' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
@@ -261,7 +268,7 @@ const Importer: React.FC = () => {
                                                 optionValue="id"
                                                 placeholder="Select a Topic"
                                                 filter
-                                                className={`w-100 ${ExportErrors?.topicId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${ExportErrors?.topicId?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -272,9 +279,9 @@ const Importer: React.FC = () => {
                     </div>
                     <div className="field col-16 md:col-12">
                         <Controller
-                            name='subTopicId'
+                            name="subTopicId"
                             control={control}
-                            rules={{ required: "Select Sub Topic" }}
+                            rules={{ required: 'Select Sub Topic' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
@@ -290,7 +297,7 @@ const Importer: React.FC = () => {
                                                 optionValue="id"
                                                 placeholder="Select Sub Topic"
                                                 filter
-                                                className={`w-100 ${ExportErrors?.subTopicId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${ExportErrors?.subTopicId?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -299,6 +306,7 @@ const Importer: React.FC = () => {
                             )}
                         />
                     </div>
+                    {/* <DownloadCsv /> */}
                     <div className="field col-16 md:col-12">
                         <FormFieldWithLabel
                             label="Select Sub Topic"
@@ -313,25 +321,34 @@ const Importer: React.FC = () => {
                                     chooseLabel="Upload CSV"
                                     uploadLabel="Confirm"
                                     cancelLabel="Clear"
-                                    onRemove={() => { setSelectedFiles([]); setIsFileSelected(false) }}
-                                    onClear={() => { setSelectedFiles([]); setIsFileSelected(false) }}
-                                    onSelect={() => { setIsFileSelected(true) }}
+                                    onRemove={() => {
+                                        setSelectedFiles([]);
+                                        setIsFileSelected(false);
+                                    }}
+                                    onClear={() => {
+                                        setSelectedFiles([]);
+                                        setIsFileSelected(false);
+                                    }}
+                                    onSelect={() => {
+                                        setIsFileSelected(true);
+                                    }}
                                     uploadHandler={onFileSelect}
                                     emptyTemplate="No file chosen"
                                 />
                             }
                         />
                         <div className="my-1"></div>
-                        <ErrorMessage text={_?.isEmpty(selectedFiles) ? "Please Upload CSV" : ""} />
+                        <ErrorMessage text={_?.isEmpty(selectedFiles) ? 'Please Upload CSV' : ''} />
                     </div>
                 </div>
 
-                <div className="gap-2">
+                <div className="gap-2 d-flex flex-coloumn">
                     <Button label={`Apply`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
+                    <DownloadCsv />
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default Importer
+export default Importer;
