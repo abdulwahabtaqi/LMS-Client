@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, {useEffect, useState } from 'react';
-import {  useAppContext } from '../../layout/context/layoutcontext';
+import React, { useEffect, useState } from 'react';
+import { useAppContext } from '../../layout/context/layoutcontext';
 import fetchDashboardInsightsHandler from '../context/server/insights/fetchDashboardInsights';
 import { DashboardInsights } from '../shared/types';
 
@@ -12,9 +12,9 @@ const Dashboard = () => {
         totalGrades: 0,
         totalQuestions: 0,
         totalSchools: 0,
-        totalSubjects: 0,   
+        totalSubjects: 0,
         totalSubTopics: 0,
-        totalTopics: 0,
+        totalTopics: 0
     } as DashboardInsights);
     const fetchDashboardInsights = async () => {
         try {
@@ -23,12 +23,12 @@ const Dashboard = () => {
                 setDashboardInsights(response?.result?.data as DashboardInsights);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Dashboard Insights" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Dashboard Insights' });
         }
-    }
+    };
     useEffect(() => {
-        fetchDashboardInsights()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchDashboardInsights();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <div className="grid">
@@ -62,7 +62,7 @@ const Dashboard = () => {
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                        <span className="block text-500 font-medium mb-3">Subjects</span>
+                            <span className="block text-500 font-medium mb-3">Subjects</span>
                             <div className="text-900 font-medium text-xl">{dashboardInsights?.totalSubjects}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>

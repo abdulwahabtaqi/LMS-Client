@@ -10,15 +10,15 @@ import { verifyToken } from '../app/shared/common';
 const AppMenu = () => {
     const g = useAppContext();
     const { layoutConfig } = useContext(LayoutContext);
-    const [user, setUser] = useState({} as User)
+    const [user, setUser] = useState({} as User);
     let model: AppMenuItem[] = [];
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
         console.log('userData', userData);
         setUser(userData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    
+
     if (user?.role === Role.ADMIN) {
         model = [
             {
@@ -27,51 +27,40 @@ const AppMenu = () => {
             },
             {
                 label: 'School',
-                items: [
-                    { label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/admin/school/create' },
-                ]
+                items: [{ label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/admin/school/create' }]
             },
             {
                 label: 'Grade',
-                items: [
-                    { label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/admin/grade/create', badge: 'NEW' },
-                ]
+                items: [{ label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/admin/grade/create', badge: 'NEW' }]
             },
             {
                 label: 'Subject',
-                items: [
-                    { label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/admin/subject/create' },
-                ]
+                items: [{ label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/admin/subject/create' }]
             },
             {
                 label: 'Topic',
-                items: [
-                    { label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/admin/topic/create' },
-                ]
+                items: [{ label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/admin/topic/create' }]
             },
             {
                 label: 'Sub Topic',
-                items: [
-                    { label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/admin/sub-topic/create' },
-                ]
+                items: [{ label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/admin/sub-topic/create' }]
             },
             {
                 label: 'Question',
-                items: [
-                    { label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/admin/question/create' },
-                ]
+                items: [{ label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/admin/question/create' }]
             },
             {
                 label: 'Answer',
-                items: [
-                    { label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/admin/answer/create' },
-                ]
+                items: [{ label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/admin/answer/create' }]
             },
+
             {
                 label: 'Imports',
-                items: [
-                    { label: 'Import', icon: 'pi pi-file-import', to: '/lms/admin/answer/import' },
-                ]
+                items: [{ label: 'Import', icon: 'pi pi-file-import', to: '/lms/admin/answer/import' }]
+            },
+            {
+                label: 'Media',
+                items: [{ label: 'Images', icon: 'pi pi-image', to: '/lms/admin/question/media' }]
             },
             {
                 label: 'Export',
@@ -80,10 +69,8 @@ const AppMenu = () => {
                     { label: 'History', icon: 'pi pi-clock', to: '/lms/history/' }
                 ]
             }
-
         ] as AppMenuItem[];
-    }
-    else if (user?.role === Role.TEACHER) {
+    } else if (user?.role === Role.TEACHER) {
         model = [
             {
                 label: 'Export',

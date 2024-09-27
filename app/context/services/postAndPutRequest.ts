@@ -14,7 +14,9 @@ const postAndPutRequest = async (method: string, data: {} | [], url: string, typ
                 'Content-Type': contentType,
                 'Authorization': `${localStorage?.getItem("lms-token")}`
             },
-            body: data ? JSON?.stringify(data) : undefined
+            body: data ? JSON?.stringify(data) : undefined,
+
+
         });
         pageLoader?.setPageLoading(50);
         const result = await response.json() as ApiResponse;
