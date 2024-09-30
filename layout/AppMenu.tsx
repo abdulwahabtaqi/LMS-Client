@@ -60,7 +60,7 @@ const AppMenu = () => {
             },
             {
                 label: 'Media',
-                items: [{ label: 'Images', icon: 'pi pi-image', to: '/lms/admin/question/media' }]
+                items: [{ label: 'Media', icon: 'pi pi-image', to: '/lms/admin/question/media' }]
             },
             {
                 label: 'Export',

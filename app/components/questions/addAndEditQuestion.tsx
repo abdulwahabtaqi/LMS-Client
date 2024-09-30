@@ -1,36 +1,57 @@
-import { useForm, Controller, SubmitHandler, } from 'react-hook-form'
-import React, { useEffect, useState } from 'react'
-import FormFieldWithLabel from '../../shared/components/FormFieldWithLabel/FormFieldWithLabel'
-import { TextField } from '../../shared/components/TextField/TextField'
-import { Button } from 'primereact/button'
-import { useAppContext } from '../../../layout/context/layoutcontext'
-
-import { Question, SubTopic } from '../../shared/types'
-import updateQuestionHandler from '../../context/server/question/updateQuestionHandler'
-import createQuestionHandler from '../../context/server/question/createQuestionHandler'
-import fetchSubTopicsHandler from '../../context/server/subTopic/fetchSubTopicsHandler'
-import { Dropdown } from 'primereact/dropdown'
-import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage'
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import FormFieldWithLabel from '../../shared/components/FormFieldWithLabel/FormFieldWithLabel';
+import { TextField } from '../../shared/components/TextField/TextField';
+import { Button } from 'primereact/button';
+import { useAppContext } from '../../../layout/context/layoutcontext';
+import { Question, SubTopic } from '../../shared/types';
+import updateQuestionHandler from '../../context/server/question/updateQuestionHandler';
+import createQuestionHandler from '../../context/server/question/createQuestionHandler';
+import fetchSubTopicsHandler from '../../context/server/subTopic/fetchSubTopicsHandler';
+import { Dropdown } from 'primereact/dropdown';
+import { ErrorMessage } from '../../shared/components/ErrorMessage/ErrorMessage';
 
 interface AddAndEditQuestionProps {
-    question?: Question
-    isNew: boolean,
+    question?: Question;
+    isNew: boolean;
 }
+
 const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
     const [subTopics, setSubTopics] = useState<SubTopic[]>([] as SubTopic[]);
+    const [image, setImage] = useState<string>('');
     const questionTypes = [
         { label: 'MCQ', value: 'MCQ' },
         { label: 'SHORT', value: 'SHORT' },
-        { label: 'LONG', value: 'LONG' },
+        { label: 'LONG', value: 'LONG' }
     ];
-    const dificultyLevel = [
+    const difficultyLevel = [
         { label: 'EASY', value: 'EASY' },
         { label: 'MEDIUM', value: 'MEDIUM' },
-        { label: 'HARD', value: 'HARD' },
+        { label: 'HARD', value: 'HARD' }
     ];
-    const { control, handleSubmit, reset, setValue, formState: { errors: QuestionErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting }, setError, clearErrors } = useForm<Question>({
-        mode: 'onBlur',
+
+    const {
+        control,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors: QuestionErrors }
+    } = useForm<Question>({
+        mode: 'onBlur'
     });
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files[0]) {
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const g = useAppContext();
     const fetchSubTopics = async () => {
         try {
@@ -39,64 +60,66 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                 setSubTopics(response?.result?.data as SubTopic[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Questions" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Questions' });
         }
     };
+
     const updateQuestion = async (question: Question) => {
-        await updateQuestionHandler(question, question?.id);
-    }
+        await updateQuestionHandler({ ...question, questionImages: image }, question?.id);
+    };
+
     const submitForm: SubmitHandler<Question> = async (question: Question) => {
         try {
             if (props?.isNew) {
-                await createQuestionHandler(question);
-                // g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
+                await createQuestionHandler({ ...question, questionImages: image });
             } else {
                 await updateQuestion(question);
-                // g?.newData?.question?.setIsNewQuestion(!g?.newData?.question?.isNewQuestion);
             }
+        } catch (error) {
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something went wrong, Please try again later' });
         }
-        catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something went wrong, Please try again later" })
-        }
-    }
+    };
+
     useEffect(() => {
         if (props?.question) {
             setValue('question', props?.question?.question);
-            setValue('id', props?.question?.id)
-            reset(props.question)
+            setValue('id', props?.question?.id);
+            reset(props.question);
+
+            setImage(props.question.questionImages || '');
         }
-    }
-        , [props.question, reset, setValue]);
+    }, [props.question, reset, setValue]);
+
     useEffect(() => {
         fetchSubTopics();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
+
     return (
         <>
             <div className="card">
-                    <h5>{props?.isNew ? "New Question" : "Update Question"}</h5>
+                <h5>{props?.isNew ? 'New Question' : 'Update Question'}</h5>
                 <div className="grid p-fluid mt-3">
                     <div className="field col-12 md:col-5">
                         <Controller
-                            name='question'
+                            name="question"
                             control={control}
                             defaultValue=""
-                            rules={{ required: "Question name is required", }}
+                            rules={{ required: 'Question name is required' }}
                             render={({ field }) => (
                                 <FormFieldWithLabel
                                     label="Question Name"
                                     showCharLimit={false}
                                     showOptionalText={false}
-                                    formField={
-                                        <TextField placeholder="eg. What is pending state in promise" dataAttribute='brand_name' errorMessage={QuestionErrors?.question?.message} value={field?.value} onChange={field.onChange} />} />
+                                    formField={<TextField placeholder="eg. What is pending state in promise" dataAttribute="brand_name" errorMessage={QuestionErrors?.question?.message} value={field?.value} onChange={field.onChange} />}
+                                />
                             )}
                         />
                     </div>
                     <div className="field col-12 md:col-5">
                         <Controller
-                            name='type'
+                            name="type"
                             control={control}
-                            rules={{ required: "Select Question Type" }}
+                            rules={{ required: 'Select Question Type' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
@@ -112,7 +135,7 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                                                 optionValue="value"
                                                 placeholder="Select Type"
                                                 filter
-                                                className={`w-100 ${QuestionErrors?.type?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${QuestionErrors?.type?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -123,25 +146,25 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                     </div>
                     <div className="field col-12 md:col-5">
                         <Controller
-                            name='difficultyLevel'
+                            name="difficultyLevel"
                             control={control}
-                            rules={{ required: "Select Dificulty Level" }}
+                            rules={{ required: 'Select Difficulty Level' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
-                                        label="Select Dificulty Level"
+                                        label="Select Difficulty Level"
                                         showCharLimit={false}
                                         showOptionalText={false}
                                         formField={
                                             <Dropdown
                                                 value={field?.value}
                                                 onChange={field?.onChange}
-                                                options={dificultyLevel}
+                                                options={difficultyLevel}
                                                 optionLabel="label"
                                                 optionValue="value"
-                                                placeholder="Select Dificulty Level"
+                                                placeholder="Select Difficulty Level"
                                                 filter
-                                                className={`w-100 ${QuestionErrors?.difficultyLevel?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${QuestionErrors?.difficultyLevel?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -152,24 +175,24 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                     </div>
                     <div className="field col-12 md:col-5">
                         <Controller
-                            name='marks'
+                            name="marks"
                             control={control}
-                            rules={{ required: "Question marks required", }}
+                            rules={{ required: 'Question marks required' }}
                             render={({ field }) => (
                                 <FormFieldWithLabel
-                                    label="Question Name"
+                                    label="Question Marks"
                                     showCharLimit={false}
                                     showOptionalText={false}
-                                    formField={
-                                        <TextField type='number' placeholder="eg. 5"  errorMessage={QuestionErrors?.marks?.message} value={String(field?.value)} onChange={field.onChange} />} />
+                                    formField={<TextField type="number" placeholder="eg. 5" errorMessage={QuestionErrors?.marks?.message} value={String(field?.value)} onChange={field.onChange} />}
+                                />
                             )}
                         />
                     </div>
                     <div className="field col-12 md:col-5">
                         <Controller
-                            name='subTopicId'
+                            name="subTopicId"
                             control={control}
-                            rules={{ required: "Select Sub Topic" }}
+                            rules={{ required: 'Select Sub Topic' }}
                             render={({ field }) => (
                                 <>
                                     <FormFieldWithLabel
@@ -185,7 +208,7 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                                                 optionValue="id"
                                                 placeholder="Select Sub Topic"
                                                 filter
-                                                className={`w-100 ${QuestionErrors?.subTopicId?.message ? "p-invalid" : ""}`}
+                                                className={`w-100 ${QuestionErrors?.subTopicId?.message ? 'p-invalid' : ''}`}
                                             />
                                         }
                                     />
@@ -194,14 +217,26 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                             )}
                         />
                     </div>
-                   
                 </div>
-                <div className="gap-2">
-                        <Button label={`${props?.isNew ? "Save" : "Update"}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
-                    </div>
+                <div className="field col-4">
+                    <label htmlFor="file-upload" className="p-button " style={{ cursor: 'pointer' }}>
+                        <span className=" text-white font-bold">Choose Image</span>
+                        <input id="file-upload" type="file" accept="image/*" multiple onChange={handleFileUpload} style={{ display: 'none' }} />
+                    </label>
+                    {image.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '10px' }}>
+                            <div style={{ marginRight: '10px', marginBottom: '10px' }}>
+                                <img src={image} alt={`Preview `} style={{ maxWidth: '100px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }} />
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div className="gap-2 flex">
+                    <Button label={`${props?.isNew ? 'Save' : 'Update'}`} onClick={handleSubmit(submitForm)} icon="pi pi-check" />
+                </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default AddAndEditQuestion
+export default AddAndEditQuestion;

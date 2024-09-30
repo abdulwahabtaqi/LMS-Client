@@ -1,11 +1,13 @@
 import { ImportInput } from "../../../shared/types";
 import { pageLoader } from "../../provider";
 
-const importsHandler = async (data:ImportInput , csvFile:File) => {
+const importsHandler = async (data: ImportInput, csvFile: File) => {
   try {
+    console.log(csvFile)
     pageLoader?.setPageLoading(30);
     const url = "/imports/csvImport";
-    const apiUrl = "http://localhost:4040/api/v1" + url as string;
+    // const apiUrl = "http://localhost:4040/api/v1" + url as string;
+    const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
     const formData = new FormData();
     formData?.append("file", csvFile);
     formData?.append("subTopicId", data?.subTopicId);

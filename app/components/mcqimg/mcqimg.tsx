@@ -5,6 +5,7 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import uploadMcqsImg from '../../context/server/mcq/uploadMcqsImg';
+import ImageGallery from './ImageGallery';
 
 interface McqimgProps {
     onImageUpload?: (imageUrl: string) => void;
@@ -14,7 +15,7 @@ const Mcqimg: React.FC<McqimgProps> = ({ onImageUpload }) => {
     const [image, setImage] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [uploadedImages, setUploadedImages] = useState<string[]>(['https://res.cloudinary.com/drwdqdqbg/image/upload/v1727465344/mcqs/xcwfrnjcqe0tth1tdxvl.png']);
+    const [uploadedImages, setUploadedImages] = useState<string>('');
     const toast = useRef<Toast>(null);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +38,7 @@ const Mcqimg: React.FC<McqimgProps> = ({ onImageUpload }) => {
             const response = await uploadMcqsImg(image);
             if (response?.status) {
                 const imageUrl = response?.data?.imageUrl;
-                setUploadedImages((prevImages) => [...prevImages, imageUrl]);
+                setUploadedImages(imageUrl);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Success',
@@ -80,14 +81,11 @@ const Mcqimg: React.FC<McqimgProps> = ({ onImageUpload }) => {
     return (
         <div className="media-page">
             <Toast ref={toast} />
-
             <div className="header-section">
                 <h2>Media</h2>
                 <Button label="Add Image" icon="pi pi-plus" className="p-button-success" onClick={openModal} />
             </div>
-
-            <div className="image-gallery">{uploadedImages.length > 0 ? uploadedImages.map((img, index) => <img key={index} src={img} alt={`Uploaded ${index}`} className="gallery-image" />) : <p>No images uploaded yet.</p>}</div>
-
+            <ImageGallery />
             <Dialog visible={showModal} header="Upload Image" modal onHide={closeModal} style={{ width: '90vw', maxWidth: '600px' }}>
                 <div className="upload-container">
                     <label className="custom-file-upload">
@@ -98,7 +96,6 @@ const Mcqimg: React.FC<McqimgProps> = ({ onImageUpload }) => {
                     <Button label={loading ? 'Uploading...' : 'Upload Image'} icon="pi pi-upload" onClick={handleSendFile} disabled={loading || !image} className="p-button-primary" />
                 </div>
             </Dialog>
-
             <style jsx>{`
                 .media-page {
                     padding: 2rem;
@@ -108,21 +105,6 @@ const Mcqimg: React.FC<McqimgProps> = ({ onImageUpload }) => {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                }
-
-                .image-gallery {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                    gap: 1rem;
-                    margin-top: 2rem;
-                }
-
-                .gallery-image {
-                    width: 100%;
-                    height: auto;
-                    border-radius: 8px;
-                    background-color: white;
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                 }
 
                 .upload-container {
