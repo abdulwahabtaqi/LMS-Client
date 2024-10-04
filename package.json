@@ -2,7 +2,6 @@
     "name": "sakai-react",
     "version": "10.1.0-SNAPSHOT",
     "private": true,
-    "proxy": "http://localhost:4040",
     "scripts": {
         "start:dev": "next dev",
         "build": "next build",
