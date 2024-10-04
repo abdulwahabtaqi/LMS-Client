@@ -86,7 +86,7 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
             setValue('id', props?.question?.id);
             reset(props.question);
 
-            setImage(props.question.questionImages || '');
+            setImage(props?.question?.questionImage || '');
         }
     }, [props.question, reset, setValue]);
 
