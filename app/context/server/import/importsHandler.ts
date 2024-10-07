@@ -7,7 +7,8 @@ const importsHandler = async (data: ImportInput, csvFile: File) => {
     pageLoader?.setPageLoading(30);
     const url = "/imports/csvImport";
     // const apiUrl = "http://localhost:4040/api/v1" + url as string;
-    const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
+    // const apiUrl = "https://lms-server-production-505b.up.railway.app/api/v1" + url as string;
+    const apiUrl = "https://surprising-magic-production.up.railway.app/api/v1" + url as string;
     const formData = new FormData();
     formData?.append("file", csvFile);
     formData?.append("subTopicId", data?.subTopicId);
