@@ -7,10 +7,13 @@ import { MenuProvider } from './context/menucontext';
 import { AppMenuItem } from '../types/types';
 import { Role, User } from '../app/shared/types';
 import { verifyToken } from '../app/shared/common';
+import Loader from './../app/components/loader/Loader';
+
 const AppMenu = () => {
     const g = useAppContext();
     const { layoutConfig } = useContext(LayoutContext);
     const [user, setUser] = useState({} as User);
+
     let model: AppMenuItem[] = [];
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
@@ -68,6 +71,10 @@ const AppMenu = () => {
                     { label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' },
                     { label: 'History', icon: 'pi pi-clock', to: '/lms/history/' }
                 ]
+            },
+            {
+                label: 'Manage',
+                items: [{ label: 'Users', icon: 'pi pi-users', to: '/lms/admin/users' }]
             }
         ] as AppMenuItem[];
     } else if (user?.role === Role.TEACHER) {
