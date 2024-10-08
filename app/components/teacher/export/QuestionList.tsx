@@ -355,6 +355,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                     filteredMultipleQuestionV2Questions={props?.filteredMultipleQuestionV2Questions}
                     download={download}
                     mode={mode}
+                    exportName={exportName}
                 />
             </Dialog>
             <div className="col-12 my-3">

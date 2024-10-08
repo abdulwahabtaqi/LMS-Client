@@ -536,7 +536,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: "Select MCQ's Quantity",
                                               validate: {
-                                                  minValue: (value) => value >= 5 || "Minimum MCQ's Quantity Should be 5",
+                                                  minValue: (value) => value >= 1 || "Minimum MCQ's Quantity Should be 1",
                                                   maxValue: (value) => value <= 15 || "Maximum MCQ's Quantity Should be 15"
                                               }
                                           }
@@ -597,7 +597,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Short Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Short Quantity Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Short Quantity Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Short Quantity Should be 15'
                                               }
                                           }
@@ -658,8 +658,8 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Long Questions Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 2 || 'Minimum Long Quantity Should be 2',
-                                                  maxValue: (value) => value <= 5 || 'Maximum Long Quantity Should be 5'
+                                                  minValue: (value) => value >= 1 || 'Minimum Long Quantity Should be 1',
+                                                  maxValue: (value) => value <= 5 || 'Maximum Long Quantity Should be 1'
                                               }
                                           }
                                         : {}
@@ -719,7 +719,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Fill in the blanks Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Fill in the blanks Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Fill in the blanks Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Fill in the blanks Should be 15'
                                               }
                                           }
@@ -780,7 +780,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Multifill in the blanks Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Multifill in the blanks Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Multifill in the blanks Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Multifill in the blanks Should be 15'
                                               }
                                           }
@@ -841,7 +841,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Multiple Short Question Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Multiple Short Question Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Multiple Short Question Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Multiple Short Question Should be 15'
                                               }
                                           }
@@ -902,7 +902,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Sequence Question Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Sequence Question Quantity Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Sequence Question Quantity Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Sequence Question Quantity Should be 15'
                                               }
                                           }
@@ -963,7 +963,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Multiple True & False Question Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Multiple True & False Quantity Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Multiple True & False Quantity Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Multiple True & False Quantity Should be 15'
                                               }
                                           }
@@ -1024,7 +1024,7 @@ const Export: React.FC = () => {
                                         ? {
                                               required: 'Select Multiple Group Question Quantity',
                                               validate: {
-                                                  minValue: (value) => value >= 5 || 'Minimum Multiple Group Question Quantity Should be 5',
+                                                  minValue: (value) => value >= 1 || 'Minimum Multiple Group Question Quantity Should be 1',
                                                   maxValue: (value) => value <= 15 || 'Maximum Multiple Group Question Quantity Should be 15'
                                               }
                                           }

@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import Mcqimg from '../../../../../components/mcqimg/mcqimg';
 
-const page = () => {
+const Media = () => {
     return (
         <Fragment>
             <div className="p-grid">
@@ -14,4 +14,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Media;

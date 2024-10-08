@@ -14,6 +14,7 @@ interface QuestionPaperProps {
     filteredMultipleQuestionV2Questions: Question[];
     download: boolean;
     mode: boolean;
+    exportName: string;
 }
 let counter = 0;
 const QuestionPaper: React.FC<QuestionPaperProps> = ({
@@ -27,7 +28,8 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
     filteredSequenceQuestions,
     filteredShortQuestions,
     filteredMultipleQuestionV2Questions,
-    download
+    download,
+    exportName
 }) => {
     const [globalCounter, setGlobalCounter] = useState<number>(0);
     const processInputStringV2 = (inputString: string): [string, string] => {
@@ -86,7 +88,7 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                                 <h5 style={{ color: '#000' }}>
                                     {index + 1}. {question?.question}
                                 </h5>
-                                <img src={question?.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
 
                             <div key={index} style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -119,9 +121,9 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                         <>
                             <div className="flex w-full " style={{ width: '100%', justifyContent: 'space-between' }} key={index}>
                                 <h4 style={{ color: '#000' }}>
-                                    {index + 1 + filteredMcqQuestions?.length}. {question?.question}
+                                    {index + 1 + (filteredMcqQuestions?.length || 0)}. {question?.question}
                                 </h4>
-                                <img src={question.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div key={index} style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 {question?.answers?.map((answer, ansIndex) => {
@@ -158,9 +160,9 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                         <>
                             <div className="flex w-full " style={{ width: '100%', justifyContent: 'space-between' }} key={index}>
                                 <h5 style={{ color: '#000' }}>
-                                    {index + 1 + filteredMcqQuestions?.length + filteredSequenceQuestions?.length}. {question?.question}
+                                    {index + 1 + (filteredMcqQuestions?.length || 0) + (filteredSequenceQuestions?.length || 0)}. {question?.question}
                                 </h5>
-                                <img src={question.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 <div style={{ width: '47.99%', marginBottom: '10px' }}>
@@ -201,9 +203,9 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                         <>
                             <div className="flex w-full " style={{ width: '100%', justifyContent: 'space-between' }} key={index}>
                                 <h5 style={{ color: '#000' }}>
-                                    {index + 1 + filteredMcqQuestions?.length + filteredSequenceQuestions?.length + filteredMultiFillInTheBlanksQuestions?.length}. {question?.question}
+                                    {index + 1 + (filteredMcqQuestions?.length || 0) + (filteredSequenceQuestions?.length || 0) + (filteredMultiFillInTheBlanksQuestions?.length || 0)}. {question?.question}
                                 </h5>
-                                <img src={question.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 <div style={{ width: '47.99%', marginBottom: '10px' }}>
@@ -253,9 +255,10 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                         <>
                             <div className="flex w-full " style={{ width: '100%', justifyContent: 'space-between' }} key={index}>
                                 <h6 style={{ color: '#000' }}>
-                                    {index + 1 + filteredMcqQuestions?.length + filteredSequenceQuestions?.length + filteredMultiFillInTheBlanksQuestions?.length + filteredMultipleTrueFalseQuestions?.length}. {question?.question}
+                                    {index + 1 + (filteredMcqQuestions?.length || 0) + (filteredSequenceQuestions?.length || 0) + (filteredMultiFillInTheBlanksQuestions?.length || 0) + (filteredMultipleTrueFalseQuestions?.length || 0)}.{' '}
+                                    {question?.question}
                                 </h6>
-                                <img src={question.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 <div style={{ width: '47.99%', marginBottom: '10px' }}>
@@ -295,10 +298,16 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                         <>
                             <div className="flex w-full " style={{ width: '100%', justifyContent: 'space-between' }} key={index}>
                                 <h6 style={{ color: '#000' }}>
-                                    {index + 1 + filteredMcqQuestions?.length + filteredSequenceQuestions?.length + filteredMultiFillInTheBlanksQuestions?.length + filteredMultipleTrueFalseQuestions?.length + filteredShortQuestions?.length}.{' '}
-                                    {question?.question}
+                                    {index +
+                                        1 +
+                                        (filteredMcqQuestions?.length || 0) +
+                                        (filteredSequenceQuestions?.length || 0) +
+                                        (filteredMultiFillInTheBlanksQuestions?.length || 0) +
+                                        (filteredMultipleTrueFalseQuestions?.length || 0) +
+                                        (filteredShortQuestions?.length || 0)}
+                                    . {question?.question}
                                 </h6>
-                                <img src={question?.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 <div style={{ width: '47.99%', marginBottom: '10px' }}>
@@ -341,7 +350,7 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                                 <h4 style={{ color: '#000' }}>
                                     {globalCounter}. {question?.question}
                                 </h4>
-                                <img src={question?.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -437,7 +446,7 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
                                 <h4 style={{ color: '#000' }}>
                                     {globalCounter}. {question?.question}
                                 </h4>
-                                <img src={question?.questionImage} width={50} height={50} alt="" />
+                                <img src={question?.questionImage} width={100} height={100} alt="" />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                                 <div style={{ width: '47.99%', marginBottom: '10px' }}>
@@ -484,6 +493,18 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
             printWindow?.document.write('</body></html>');
             printWindow?.print();
             printWindow?.document.close();
+            if (printable) {
+                const blob = new Blob([printable], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `questionPaper/${exportName}`;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a); // Clean up
+            }
         }
         setIsDownloadFirstTime(true);
 

@@ -16,7 +16,7 @@ const ImageGallery: React.FC = () => {
         const fetchImages = async () => {
             try {
                 const result = await getMcqsImgs();
-                console.log('result', result.result.data);
+
                 setImages(result.result.data);
             } catch (err) {
                 setError('Failed to fetch images');
