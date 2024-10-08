@@ -12,7 +12,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
 
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
-        console.log('userData', userData);
+
         setUser(userData);
     }, []);
     const { pageLoader } = useAppContext();
@@ -48,7 +48,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
                         <i className="pi pi-users"></i>
                         <span>History</span>
                     </button>
-                    <strong>{user.name}</strong>
+                    <strong>{user?.name}</strong>
                 </Link>
             </div>
         </div>
