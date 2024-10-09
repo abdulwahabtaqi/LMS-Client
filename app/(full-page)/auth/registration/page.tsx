@@ -23,7 +23,6 @@ const LoginPage = () => {
     const showSuccess = (severity: 'success' | 'error' | 'warn' | 'info', summary: string, detail: string) => {
         toast?.current?.show({ severity, summary, detail, life: 3000 });
     };
-
     const submitForm: SubmitHandler<User> = async (user: User) => {
         setPageLoading(40);
         try {
@@ -32,21 +31,24 @@ const LoginPage = () => {
             }
 
             const response = await RegistrationHandler(user, 'callback');
+            console.log(response.result.message);
             setPageLoading(70);
             if (response?.status) {
                 const lmsToken = response?.result?.data as string;
                 localStorage.setItem('lms-token', lmsToken);
                 const user = verifyToken(lmsToken) as User;
                 currentUser?.setUser(user);
+                showSuccess('success', 'Success', response.result.message);
                 setPageLoading(100);
-                router.push('/');
+                router.push('/auth/login');
+            } else {
+                showSuccess('error', 'Error', response.result.message);
             }
         } catch (error: any) {
             setPageLoading(100);
-            showSuccess('error', 'Error', error?.message);
+            showSuccess('error', 'Error', error?.message || 'An unexpected error occurred'); // Show error toast
         }
     };
-
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
     const {
@@ -64,6 +66,7 @@ const LoginPage = () => {
 
     return (
         <div className={containerClassName}>
+            <Toast ref={toast} />
             <LoadingBar color="#0000FF" progress={pageLoading} onLoaderFinished={() => setPageLoading(0)} />
             <div className="flex flex-column align-items-center justify-content-center">
                 <img src={`/layout/images/logo.png`} alt="KOMRAS AI" className="mb-5 w-6rem flex-shrink-0" />
