@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Toast } from 'primereact/toast'; // Import Toast
+import { Toast } from 'primereact/toast';
 import getAllUsers from '../../context/server/users/getUsers';
 import { useRouter } from 'next/navigation';
 import deleteUser from '../../context/server/users/deleteUser';
@@ -15,12 +15,13 @@ interface User {
     role: string;
     createdAt: string;
     updatedAt: string;
+    approved: boolean;
 }
 
 const AllUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const router = useRouter();
-    const toastRef = useRef<Toast>(null); // Reference for Toast
+    const toastRef = useRef<Toast>(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -41,14 +42,11 @@ const AllUsers: React.FC = () => {
 
     const deleteProfile = async (userId: string) => {
         try {
-            const result = await deleteUser(userId);
-            console.log(result);
+            await deleteUser(userId);
             setUsers(users.filter((user) => user.id !== userId));
-            // Show success toast
             toastRef.current?.show({ severity: 'success', summary: 'Success', detail: 'User deleted successfully!', life: 3000 });
         } catch (err) {
             console.error(err);
-            // Show error toast
             toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete user!', life: 3000 });
         }
     };
@@ -62,12 +60,37 @@ const AllUsers: React.FC = () => {
         return <span>{localDate}</span>;
     };
 
+    const approvalStatusTemplate = (rowData: User) => {
+        const status = rowData.approved ? 'Approved' : 'Pending';
+        const bgColor = rowData.approved ? 'green' : 'orange';
+        const textColor = 'white';
+
+        return (
+            <span
+                style={{
+                    backgroundColor: bgColor,
+                    color: textColor,
+                    width: '5rem',
+                    height: '2rem',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '5px',
+                    margin: '0 auto', // Center the span horizontally
+                    textAlign: 'center' // Center text
+                }}
+            >
+                {status}
+            </span>
+        );
+    };
+
     const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
     const paginatorRight = <Button type="button" icon="pi pi-download" text />;
 
     return (
         <div className="card">
-            <Toast ref={toastRef} /> {/* Add Toast component */}
+            <Toast ref={toastRef} />
             <DataTable
                 value={users}
                 paginator
@@ -83,6 +106,7 @@ const AllUsers: React.FC = () => {
                 <Column field="email" header="Email" style={{ width: '25%' }} />
                 <Column field="role" header="Role" style={{ width: '15%' }} />
                 <Column body={localDateTemplate} header="Created At" style={{ width: '20%' }} />
+                <Column body={approvalStatusTemplate} header="Status" style={{ width: '15%' }} />
                 <Column body={viewProfileTemplate} header="View Profile" style={{ width: '10%' }} />
                 <Column body={deleteTemplate} header="Delete" style={{ width: '10%' }} />
             </DataTable>

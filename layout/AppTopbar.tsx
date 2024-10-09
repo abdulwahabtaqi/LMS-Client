@@ -6,17 +6,23 @@ import { LayoutContext, useAppContext } from './context/layoutcontext';
 import LoadingBar from 'react-top-loading-bar';
 import { verifyToken } from '../app/shared/common';
 import { User } from '../app/shared/types';
+import { TieredMenu } from 'primereact/tieredmenu';
+import { Button } from 'primereact/button';
+import { useRouter } from 'next/navigation';
+import { Tooltip } from 'primereact/tooltip';
 
 const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
     const [user, setUser] = useState({} as User);
+    const menuRef = useRef<TieredMenu>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
-
         setUser(userData);
     }, []);
+
     const { pageLoader } = useAppContext();
-    const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
+    const { layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menuButtonRef = useRef(null);
     const topBarMenuRef = useRef(null);
     const topBarMenuButtonRef = useRef(null);
@@ -26,6 +32,19 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
         topbarmenu: topBarMenuRef.current,
         topbarmenubutton: topBarMenuButtonRef.current
     }));
+
+    const items = [
+        { label: 'History', icon: 'pi pi-users', command: () => router.push('/lms/history') },
+        { label: 'Profile', icon: 'pi pi-user', command: () => router.push('/profile') },
+        {
+            label: 'Logout',
+            icon: 'pi pi-sign-out',
+            command: () => {
+                localStorage.removeItem('lms-token');
+                router.push('/auth/login');
+            }
+        }
+    ];
 
     return (
         <div className="layout-topbar">
@@ -48,8 +67,15 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
                         <i className="pi pi-users"></i>
                         <span>History</span>
                     </button>
-                    <strong>{user?.name}</strong>
                 </Link>
+            </div>
+
+            <div className="user-menu-container" onMouseEnter={(e) => menuRef.current?.toggle(e)}>
+                <Tooltip target=".user-image-icon" content={user?.name} position="top" />
+                <Button className="p-link layout-topbar-button">
+                    <img src={user?.image || '/images/user.png'} alt="user-icon" className="user-image-icon" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+                </Button>
+                <TieredMenu model={items} popup ref={menuRef} />
             </div>
         </div>
     );

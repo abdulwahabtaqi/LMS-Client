@@ -8,6 +8,7 @@ export interface User {
     joinDate: Date;
     exp: number;
     iat: number;
+    image?: string
 }
 export interface School {
     id: string,
@@ -73,7 +74,7 @@ export interface Question {
     question: string,
     type: QuestionType[]
     marks: number,
-    questionImage:string;
+    questionImage: string;
     difficultyLevel: DifficultyLevel[]
     answers: Answer[],
     createdAt: string,
@@ -87,13 +88,13 @@ export interface Answer {
     questionName: string,
     answer: string,
     sequenceNo: number,
-    answerImage:string,
+    answerImage: string,
     isCorrect: string,
     difficultyLevel: string,
     type: QuestionType[]
     createdAt: string,
     updatedAt: string,
-    additional:string,
+    additional: string,
     action?: React.ReactNode
 }
 
@@ -126,12 +127,12 @@ export interface ExportAnswers {
     MCQVisible: boolean;
     shortQuestionVisible: boolean;
     longQuestionVisible: boolean;
-    fillInTheBlanksVisible:boolean;
-    multiFillInTheBlanksVisible:boolean;
-    multipleShortVisible:boolean;
-    sequenceVisible:boolean;
-    multipleTrueFalseVisible:boolean;
-    multipleQuestionV2Visible:boolean;
+    fillInTheBlanksVisible: boolean;
+    multiFillInTheBlanksVisible: boolean;
+    multipleShortVisible: boolean;
+    sequenceVisible: boolean;
+    multipleTrueFalseVisible: boolean;
+    multipleQuestionV2Visible: boolean;
     exportMode: string;
 }
 
@@ -161,7 +162,7 @@ export interface ImportAnswers {
 export interface Histories {
     id: string,
     exportType: string,
-    question:Question,
+    question: Question,
     createdAt: string,
     action?: React.ReactNode
 

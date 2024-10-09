@@ -14,6 +14,7 @@ import RegistrationHandler from '../../../context/server/user/auth/registration'
 import { Toast } from 'primereact/toast';
 import { currentUser } from '../../../context/provider';
 import { verifyToken } from '../../../shared/common';
+import { Dropdown } from 'primereact/dropdown';
 
 const LoginPage = () => {
     const toast = useRef<Toast>(null);
@@ -22,9 +23,14 @@ const LoginPage = () => {
     const showSuccess = (severity: 'success' | 'error' | 'warn' | 'info', summary: string, detail: string) => {
         toast?.current?.show({ severity, summary, detail, life: 3000 });
     };
+
     const submitForm: SubmitHandler<User> = async (user: User) => {
         setPageLoading(40);
         try {
+            if (user.role === 'STUDENT') {
+                user.role = 'USER';
+            }
+
             const response = await RegistrationHandler(user, 'callback');
             setPageLoading(70);
             if (response?.status) {
@@ -40,19 +46,22 @@ const LoginPage = () => {
             showSuccess('error', 'Error', error?.message);
         }
     };
+
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
     const {
         control,
         handleSubmit,
-        reset,
-        setValue,
-        formState: { errors: UserErrors, isSubmitted, isValid, isDirty, isSubmitSuccessful, isSubmitting },
-        setError,
-        clearErrors
+        formState: { errors: UserErrors }
     } = useForm<User>({
         mode: 'onBlur'
     });
+
+    const userRoles = [
+        { label: 'Teacher', value: 'TEACHER' },
+        { label: 'Student', value: 'STUDENT' }
+    ];
+
     return (
         <div className={containerClassName}>
             <LoadingBar color="#0000FF" progress={pageLoading} onLoaderFinished={() => setPageLoading(0)} />
@@ -139,7 +148,34 @@ const LoginPage = () => {
                                     )}
                                 />
                             </div>
-                            <div></div>
+
+                            <div className="field p-fluid">
+                                <Controller
+                                    name="role"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{ required: 'Role is required' }} // Make role selection mandatory
+                                    render={({ field }) => (
+                                        <>
+                                            <label htmlFor="role" className="block text-900 text-xl font-medium mb-2">
+                                                Role
+                                            </label>
+                                            <Dropdown
+                                                id="role"
+                                                value={field.value}
+                                                options={userRoles}
+                                                onChange={(e) => {
+                                                    field.onChange(e.value);
+                                                }}
+                                                placeholder="Select Role"
+                                                className={UserErrors?.role?.message ? 'p-invalid' : ''}
+                                            />
+                                            <small className="p-error">{UserErrors?.role?.message}</small>
+                                        </>
+                                    )}
+                                />
+                            </div>
+
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
                                 <div className="flex align-items-center">
                                     <Link href={`./login`}>Sign In</Link>
