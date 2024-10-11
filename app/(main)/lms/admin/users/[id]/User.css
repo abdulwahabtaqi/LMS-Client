@@ -104,3 +104,19 @@
         font-size: 1.5rem;
     }
 }
+.custom-back-button {
+    padding: 0rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    height: 40px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #3f51b5;
+    border: none;
+}
+
+.custom-back-button:hover {
+    background-color: #303f9f;
+}

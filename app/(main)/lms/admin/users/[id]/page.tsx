@@ -1,9 +1,11 @@
 'use client';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import getUser from '../../../../../context/server/users/getUser';
 import updateUser from '../../../../../context/server/users/updateUser';
-import './User.css'; // Importing the custom CSS file
+import './User.css';
 import Loader from '../../../../../components/loader/Loader';
+import { Button } from 'primereact/button';
+import { useRouter } from 'next/navigation';
 
 interface UserParams {
     params: {
@@ -12,11 +14,13 @@ interface UserParams {
 }
 
 const User = ({ params }: UserParams) => {
+    const router = useRouter();
     const { id } = params;
     const [user, setUser] = useState<any>(null);
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [role, setRole] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [roles] = useState<string[]>(['USER', 'ADMIN', 'TEACHER']);
     const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' } | null>(null);
 
@@ -37,7 +41,11 @@ const User = ({ params }: UserParams) => {
 
     const handleUpdate = async () => {
         try {
-            await updateUser(id, { name, email, role });
+            const updateData = { name, email, role, password };
+            if (password) {
+                updateData.password = password;
+            }
+            await updateUser(id, updateData);
             setToast({ show: true, message: 'User updated successfully!', type: 'success' });
             const updatedUser = { ...user, name, email, role };
             setUser(updatedUser);
@@ -49,11 +57,21 @@ const User = ({ params }: UserParams) => {
 
     return (
         <Fragment>
-            <div className="user-container">
+            <div className="">
+                <div style={{ width: '100%', justifyContent: 'space-between', flexDirection: 'row-reverse' }} className="flex ">
+                    <Button className="p-button-sm" onClick={() => router.back()}>
+                        Back
+                    </Button>
+                    {user && (
+                        <h1 className="text-xl">
+                            Users/ <span className="text-gray-800">{name}</span>
+                        </h1>
+                    )}
+                </div>
                 <h1 className="user-title">User Details</h1>
                 {toast && toast.show && <div className={`toast toast-${toast.type}`}>{toast.message}</div>}
                 {user ? (
-                    <div className="user-card">
+                    <div className="user-card mx-auto">
                         <h2 className="user-info-title">User Information</h2>
                         <div className="form-group">
                             <label htmlFor="name">Name:</label>
@@ -73,6 +91,10 @@ const User = ({ params }: UserParams) => {
                                     </option>
                                 ))}
                             </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password (optional):</label> {/* New password field */}
+                            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" placeholder="Enter new password" />
                         </div>
                         <button onClick={handleUpdate} className="btn btn-success w-100">
                             Update

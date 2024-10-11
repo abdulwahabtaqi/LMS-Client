@@ -84,6 +84,17 @@ const AppMenu = () => {
                 items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
             }
         ] as AppMenuItem[];
+    } else {
+        model = [
+            {
+                label: 'Export',
+                items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+            },
+            {
+                label: 'Members',
+                items: [{ label: 'Connections', icon: 'pi pi-fw pi-users', to: '/lms/teacher/connection' }]
+            }
+        ] as AppMenuItem[];
     }
     return (
         <MenuProvider>

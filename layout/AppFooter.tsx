@@ -10,7 +10,9 @@ const AppFooter = () => {
         <div className="layout-footer">
             <img src={`/layout/images/logo.png`} alt="Logo" height="20" className="mr-2" />
             by
-            <span className="font-medium ml-2">Ali</span>
+            <a href="http://rowerr.com/" target="_blank" className="font-medium ml-2">
+                rowerr.com
+            </a>
         </div>
     );
 };

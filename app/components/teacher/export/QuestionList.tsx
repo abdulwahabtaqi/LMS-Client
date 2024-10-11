@@ -14,6 +14,7 @@ import FormFieldWithLabel from '../../../shared/components/FormFieldWithLabel/Fo
 import { TextField } from '../../../shared/components/TextField/TextField';
 import _ from 'lodash';
 import { Toast } from 'primereact/toast';
+import { useAppContext } from '../../../../layout/context/layoutcontext';
 
 interface QuestionListProps {
     filteredMcqQuestions: Question[];
@@ -49,6 +50,8 @@ interface QuestionListProps {
 }
 
 const QuestionList: React.FC<QuestionListProps> = (props) => {
+    const g = useAppContext();
+
     const [mcq, setMcq] = useState<TreeNode[]>([]);
     const [shortQuestions, setShortQuestions] = useState<TreeNode[]>([]);
     const [longQuestions, setLongQuestions] = useState<TreeNode[]>([]);
@@ -266,7 +269,7 @@ const QuestionList: React.FC<QuestionListProps> = (props) => {
                         {' '}
                         {mode ? `Teacher Mode` : `Exam Mode`}
                     </label>
-                    <InputSwitch checked={mode} onChange={(e) => setMode(!mode)} />
+                    {g.currentUser.user.role !== 'USER' && <InputSwitch checked={mode} onChange={(e) => setMode(!mode)} />}
                     <Button
                         onClick={() => {
                             handleGetExportName();
