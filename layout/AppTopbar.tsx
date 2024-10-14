@@ -12,17 +12,32 @@ import { useRouter } from 'next/navigation';
 import { Tooltip } from 'primereact/tooltip';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Badge } from 'primereact/badge';
+import Notification from './../app/components/notification/notification';
+import getUser from '../app/context/server/users/getUser';
+import getPendingConnections from '../app/context/server/connection/getPendingConnections';
 
 const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
     const [user, setUser] = useState({} as User);
-    const [notifications, setNotifications] = useState([]); // State for notifications
+    const [userDet, setUserDet] = useState({} as any);
+    const [pendingRequests, setPendingRequests] = useState([]);
+
+    const [notifications, setNotifications] = useState([]);
     const menuRef = useRef<TieredMenu>(null);
     const overlayPanelRef = useRef<OverlayPanel>(null);
     const router = useRouter();
 
+    let userDetail;
+
     useEffect(() => {
         const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
         setUser(userData);
+        const fetchUser = async () => {
+            userDetail = await getUser(userData?.id);
+            if (userDetail?.result?.data) {
+                setUserDet(userDetail?.result?.data);
+            }
+        };
+        fetchUser();
     }, []);
 
     const { pageLoader } = useAppContext();
@@ -30,6 +45,19 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
     const menuButtonRef = useRef(null);
     const topBarMenuRef = useRef(null);
     const topBarMenuButtonRef = useRef(null);
+
+    useEffect(() => {
+        const fetchPendingRequests = async () => {
+            if (user?.id) {
+                const result = await getPendingConnections(user.id);
+                setPendingRequests(result.result.data || []);
+            }
+        };
+
+        if (user?.id) {
+            fetchPendingRequests();
+        }
+    }, [user]);
 
     useImperativeHandle(ref, () => ({
         menubutton: menuButtonRef.current,
@@ -39,7 +67,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
 
     const items = [
         { label: 'History', icon: 'pi pi-users', command: () => router.push('/lms/history') },
-        { label: 'Profile', icon: 'pi pi-user', command: () => router.push('/profile') },
+        { label: 'Profile', icon: 'pi pi-user', command: () => router.push('/lms/profile') },
         {
             label: 'Logout',
             icon: 'pi pi-sign-out',
@@ -58,7 +86,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
         <div className="layout-topbar">
             <LoadingBar color="#0000FF" progress={pageLoader?.pageLoading} onLoaderFinished={() => pageLoader?.setPageLoading(0)} />
             <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/logo.png`} alt="logo" />
+                <img src={`/layout/images/logo.png`} alt="profile image" />
             </Link>
 
             <button ref={menuButtonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
@@ -77,20 +105,31 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
                 </Link>
             </div>
 
-            <div style={{ marginLeft: '20px' }} className="notification-container">
-                <p className=" " onClick={showNotifications}>
+            <div style={{ marginLeft: '20px', position: 'relative' }} className="notification-container">
+                <p onClick={showNotifications} style={{ display: 'flex', alignItems: 'center' }}>
                     <i className="pi pi-bell" style={{ fontSize: '1.5em' }} />
-                    {notifications.length > 0 && <Badge value={notifications.length} severity="danger" style={{ position: 'absolute', top: '0', right: '0' }} />}
+                    {pendingRequests.length > 0 && (
+                        <Badge
+                            value={pendingRequests.length}
+                            severity="danger"
+                            style={{
+                                position: 'absolute',
+                                top: '-5px',
+                                right: '-10px',
+                                zIndex: 1
+                            }}
+                        />
+                    )}
                 </p>
                 <OverlayPanel ref={overlayPanelRef} dismissable>
-                    <div style={{ padding: '1em' }}>{notifications.length === 0 ? <p>No notifications</p> : notifications.map((notification, index) => <p key={index}>{notification}</p>)}</div>
+                    <Notification />
                 </OverlayPanel>
             </div>
 
             <div style={{ marginLeft: '20px' }} className="user-menu-container" onMouseEnter={(e) => menuRef.current?.toggle(e)}>
                 <Tooltip target=".user-image-icon" position="top" />
                 <Button className="p-link layout-topbar-button">
-                    <img src={user?.image || '/images/user.png'} alt="user-icon" className="user-image-icon" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+                    <img src={userDet?.profileImage || '/images/user.png'} alt="user-icon" className="user-image-icon" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
                 </Button>
                 <TieredMenu model={items} popup ref={menuRef} />
             </div>

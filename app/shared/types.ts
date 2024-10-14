@@ -9,6 +9,7 @@ export interface User {
     exp: number;
     iat: number;
     image?: string
+    profileImage?: string
 }
 export interface School {
     id: string,

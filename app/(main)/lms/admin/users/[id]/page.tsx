@@ -69,7 +69,6 @@ const User = ({ params }: UserParams) => {
                     )}
                 </div>
                 <h1 className="user-title">User Details</h1>
-                {toast && toast.show && <div className={`toast toast-${toast.type}`}>{toast.message}</div>}
                 {user ? (
                     <div className="user-card mx-auto">
                         <h2 className="user-info-title">User Information</h2>
