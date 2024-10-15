@@ -82,6 +82,10 @@ const AppMenu = () => {
             {
                 label: 'Export',
                 items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
+            },
+            {
+                label: 'Assignments',
+                items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/teacher/assignment' }]
             }
         ] as AppMenuItem[];
     } else {
