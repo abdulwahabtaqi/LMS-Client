@@ -13,6 +13,8 @@ import sendConnection from '../../app/context/server/connection/sendConnection';
 import getSendPending from '../../app/context/server/connection/getSentPendingReq';
 import getTotalConn from '../../app/context/server/connection/getTotalConn';
 import deleteConnection from '../../app/context/server/connection/deleteConnection';
+import Image from 'next/image';
+import dp from './../../public/images/user.png';
 
 const Teachers = () => {
     const [teachers, setTeachers] = useState([] as any[]);
@@ -71,15 +73,43 @@ const Teachers = () => {
         setFilteredTeachers(filtered);
     }, [searchTerm, teachers]);
 
+    // const sendConnectionRequest = async (teacherId: string) => {
+    //     try {
+    //         const result = await sendConnection({ senderId: user.id, receiverId: teacherId });
+
+    //         if (result.success) {
+    //             toast.current?.show({ severity: 'success', summary: 'Success', detail: result.message, life: 3000 });
+
+    //             const refreshedConnections = await getSendPending(user.id);
+    //             setPendingConnections(refreshedConnections?.result?.data || []);
+    //         }
+    //     } catch (error) {
+    //         toast.current?.show({ severity: 'error', summary: 'Error', detail: 'An error occurred', life: 3000 });
+    //     }
+    // };
+
     const sendConnectionRequest = async (teacherId: string) => {
         try {
-            const result = await sendConnection({ senderId: user.id, receiverId: teacherId });
+            const isPending = pendingConnections.some((item) => teacherId === item.receiverId);
 
-            if (result.success) {
-                toast.current?.show({ severity: 'success', summary: 'Success', detail: result.message, life: 3000 });
+            if (!isPending) {
+                // Send connection request
+                const result = await sendConnection({ senderId: user.id, receiverId: teacherId });
 
-                const refreshedConnections = await getSendPending(user.id);
-                setPendingConnections(refreshedConnections?.result?.data || []);
+                if (result.success) {
+                    toast.current?.show({ severity: 'success', summary: 'Success', detail: result.message, life: 3000 });
+
+                    // Ensure a proper update to the state
+                    setPendingConnections((prevPendingConnections) => [...prevPendingConnections, { receiverId: teacherId }]);
+                }
+            } else {
+                // Withdraw the connection request
+                await deleteConnection(teacherId);
+
+                toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Connection request withdrawn.', life: 3000 });
+
+                // Remove from pending connections
+                setPendingConnections((prevPendingConnections) => prevPendingConnections.filter((item) => item.receiverId !== teacherId));
             }
         } catch (error) {
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'An error occurred', life: 3000 });
@@ -159,7 +189,7 @@ const Teachers = () => {
                     <div className="card-container">
                         {filteredTeachers?.map((teacher: any) => (
                             <div className="teacher-card" key={teacher.id}>
-                                <img src={teacher.profileImage || 'https://via.placeholder.com/100'} alt="user" className="teacher-image" />
+                                <Image width={100} height={100} src={teacher?.profileImage || dp} alt="user" className="teacher-image" />
                                 <div className="teacher-info">
                                     <h4 className="text-lg">{teacher.name}</h4>
                                     <p>Joined at: {new Date(teacher.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' })}</p>
@@ -183,6 +213,8 @@ const Teachers = () => {
                     display: flex;
                     flex-wrap: wrap;
                     gap: 20px;
+                    display: flex;
+                    justify-content: center;
                     margin-top: 20px;
                 }
                 .teacher-card {

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Message } from 'primereact/message';
 import getUser from '../../context/server/users/getUser';
+import dp from './../../../public/images/user.png';
+import Image from 'next/image';
 
 interface Connection {
     id: string;
@@ -55,10 +57,10 @@ const AcceptedConnections: React.FC<AcceptedConnectionsProps> = ({ acceptedConne
 
                         return (
                             <div key={connection.id} style={styles.card}>
-                                <img
-                                    src={userInfo?.profilePicture || 'https://via.placeholder.com/100'}
+                                <Image
+                                    src={userInfo?.profilePicture || dp}
                                     alt={userInfo?.name || 'user'}
-                                    style={styles.image} // Circular image
+                                    style={styles.image} 
                                 />
                                 <div style={styles.info}>
                                     <h4 style={styles.name}>{userInfo?.name || 'Loading...'}</h4>

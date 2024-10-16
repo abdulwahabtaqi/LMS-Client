@@ -11,6 +11,8 @@ import { Toast } from 'primereact/toast';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import './Profile.css';
+import image from './../../../../public/images/user.png';
+import Image from 'next/image';
 
 const Profile = () => {
     const [user, setUser] = useState({} as User);
@@ -96,11 +98,7 @@ const Profile = () => {
             <h1>Profile</h1>
             <form onSubmit={handleUpdate} className="profile-form">
                 <div className="profile-image-container">
-                    <img
-                        src={user?.profileImage || 'https://images.unsplash.com/photo-1519223400710-6da9e1b777ea?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvbmV8ZW58MHx8MHx8fDA%3D'}
-                        alt="Profile"
-                        className="profile-image"
-                    />
+                    <Image src={user?.profileImage || image} alt="Profile" className="profile-image" />
                     <label htmlFor="file-input" className="profile-image-overlay">
                         <i className="pi pi-camera" style={{ fontSize: '2em', color: '#007ad9' }}></i>
                     </label>

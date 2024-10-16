@@ -65,7 +65,8 @@ const LoginPage = () => {
     ];
 
     return (
-        <div className={containerClassName}>
+        <div className={``}>
+            {/* <div className={containerClassName}> */}
             <Toast ref={toast} />
             <LoadingBar color="#0000FF" progress={pageLoading} onLoaderFinished={() => setPageLoading(0)} />
             <div className="flex flex-column align-items-center justify-content-center">

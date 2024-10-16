@@ -58,7 +58,8 @@ const Registration = () => {
 
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
     return (
-        <div className={containerClassName}>
+        // <div className={containerClassName}>
+        <div className={``}>
             <Toast ref={toast} />
             <LoadingBar color="#0000FF" progress={pageLoading} onLoaderFinished={() => setPageLoading(0)} />
             <div className="flex flex-column align-items-center justify-content-center">
@@ -131,7 +132,7 @@ const Registration = () => {
                                     Forgot password?
                                 </a>
                             </div>
-                            <Button label="Sign In" className="w-full p-3 text-xl" onClick={handleSubmit(submitForm)} />
+                            <Button label="Login" className="w-full p-3 text-xl" onClick={handleSubmit(submitForm)} />
                         </div>
                     </div>
                 </div>
