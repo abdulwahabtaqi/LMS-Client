@@ -97,6 +97,10 @@ const AppMenu = () => {
             {
                 label: 'Members',
                 items: [{ label: 'Connections', icon: 'pi pi-fw pi-users', to: '/lms/teacher/connection' }]
+            },
+            {
+                label: 'Assignments',
+                items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/student/assignments' }]
             }
         ] as AppMenuItem[];
     }

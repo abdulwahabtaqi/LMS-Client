@@ -38,7 +38,7 @@ const Assignment = () => {
     };
 
     const handleViewAssignment = (assignmentId: string) => {
-        router.push(`/assignments/${assignmentId}`);
+        router.push(`/lms/teacher/assignment/${assignmentId}`);
     };
 
     const handleDeleteAssignment = async (assignmentId: string) => {
@@ -65,7 +65,7 @@ const Assignment = () => {
         <div className="assignment-container">
             <h1>Assignments</h1>
             <div className="top-bar">
-                <div className="filters">
+                <div className="filters ">
                     <Dropdown value={selectedGrade} options={uniqueGrades.map((grade) => ({ label: grade, value: grade }))} onChange={(e) => setSelectedGrade(e.value)} placeholder="Select Grade" />
                     <Dropdown value={selectedSubject} options={uniqueSubjects.map((subject) => ({ label: subject, value: subject }))} onChange={(e) => setSelectedSubject(e.value)} placeholder="Select Subject" />
                     <InputText value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by title or description" />

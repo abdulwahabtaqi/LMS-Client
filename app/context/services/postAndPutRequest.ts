@@ -6,6 +6,7 @@ import { ApiResponse, ServiceResponse } from "../types";
 const postAndPutRequest = async (method: string, data: {} | [], url: string, type = "direct" as string, contentType = "application/json" as string): Promise<ServiceResponse> => {
     try {
         // const apiUrl = "http://localhost:4040/api/v1" + url as string;
+        // const apiUrl = process.env.NEXT_PUBLIC_API_URL + "/api/v1" + url as string;
         const apiUrl = "https://lms-server-production-3667.up.railway.app/api/v1" + url as string;
 
         pageLoader?.setPageLoading(30);

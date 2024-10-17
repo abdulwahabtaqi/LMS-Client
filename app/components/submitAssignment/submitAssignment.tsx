@@ -1,0 +1,191 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import getSubmitAssign from '../../context/server/assignment/getSubmitAssignment';
+import { verifyToken } from '../../shared/common';
+import { User } from '../../shared/types';
+import { Toast } from 'primereact/toast';
+import { useRef } from 'react';
+import submitAssignment from '../../context/server/assignment/submitAssignment';
+
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { FileUpload } from 'primereact/fileupload'; // PrimeReact FileUpload component
+import './SubmitAssignment.css';
+
+// Helper function to convert file to Base64
+const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
+};
+
+const SubmitAssignment = () => {
+    const [user, setUser] = useState<User | null>(null);
+    const [assignments, setAssignments] = useState<any[]>([]);
+    const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
+    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+    const [selectedStatus, setSelectedStatus] = useState<string | null>('All');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [submitting, setSubmitting] = useState<boolean>(false);
+    const toast = useRef<Toast>(null);
+
+    useEffect(() => {
+        const fetchAssignments = async () => {
+            const userData = verifyToken(localStorage?.getItem('lms-token') as string) as User;
+            setUser(userData);
+
+            const result = await getSubmitAssign(userData?.id);
+            if (result?.status) {
+                setAssignments(result.result.data || []);
+                console.log(result);
+            }
+        };
+        fetchAssignments();
+    }, []);
+
+    const handleFileUpload = (e: any) => {
+        setSelectedFile(e.files[0]);
+    };
+
+    const handleSubmit = async (assignmentId: string) => {
+        if (!selectedFile) {
+            toast.current?.show({ severity: 'warn', summary: 'Warning', detail: 'Please select a file before submitting.', life: 3000 });
+            return;
+        }
+
+        // Convert file to Base64
+        const allowedFormats = ['.pdf', '.doc', '.docx'];
+        const fileExtension = selectedFile.name.substring(selectedFile.name.lastIndexOf('.')).toLowerCase();
+
+        if (!allowedFormats.includes(fileExtension)) {
+            toast.current?.show({ severity: 'warn', summary: 'Invalid Format', detail: 'Only .pdf, .doc, .docx files are allowed.', life: 3000 });
+            return;
+        }
+
+        setSubmitting(true);
+
+        try {
+            const base64File = await convertFileToBase64(selectedFile);
+            const result = await submitAssignment(user?.id as string, assignmentId, base64File);
+
+            if (result?.status) {
+                toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Assignment submitted successfully!', life: 3000 });
+                setSelectedFile(null);
+            } else {
+                toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error submitting the assignment.', life: 3000 });
+            }
+        } catch (error) {
+            toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error submitting the file.', life: 3000 });
+            console.error('Error submitting the file:', error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const uniqueGrades = [...new Set(assignments.map((assignment: any) => assignment.grade))];
+    const uniqueSubjects = [...new Set(assignments.map((assignment: any) => assignment.subject))];
+
+    const filteredAssignments = assignments.filter((assignment) => {
+        const matchesGrade = selectedGrade ? assignment.grade === selectedGrade : true;
+        const matchesSubject = selectedSubject ? assignment.subject === selectedSubject : true;
+        const matchesSearchTerm = assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) || assignment.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = selectedStatus === 'All' || assignment.status === selectedStatus;
+
+        return matchesGrade && matchesSubject && matchesSearchTerm && matchesStatus;
+    });
+
+    const handleResetFilters = () => {
+        setSelectedGrade(null);
+        setSelectedSubject(null);
+        setSearchTerm('');
+        setSelectedStatus('All');
+    };
+
+    return (
+        <div className="assignment-container">
+            <Toast ref={toast} />
+            <h1 className="page-title">Submit Assignments</h1>
+            <div className="top-bar">
+                <div className="filters">
+                    <Dropdown value={selectedGrade} options={uniqueGrades.map((grade) => ({ label: grade, value: grade }))} onChange={(e) => setSelectedGrade(e.value)} placeholder="Select Grade" />
+                    <Dropdown value={selectedSubject} options={uniqueSubjects.map((subject) => ({ label: subject, value: subject }))} onChange={(e) => setSelectedSubject(e.value)} placeholder="Select Subject" />
+                    <Dropdown
+                        value={selectedStatus}
+                        options={[
+                            { label: 'All', value: 'All' },
+                            { label: 'Submitted', value: 'Submitted' },
+                            { label: 'Pending', value: 'Pending' }
+                        ]}
+                        onChange={(e) => setSelectedStatus(e.value)}
+                        placeholder="Select Status"
+                    />
+                    <InputText value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by title or description" />
+                </div>
+                <div className="buttons my-4">
+                    <Button label="Reset Filters" onClick={handleResetFilters} className="reset-button" />
+                </div>
+            </div>
+
+            {filteredAssignments.length > 0 ? (
+                <div className="assignment-list">
+                    {filteredAssignments.map((assignment) => (
+                        <div key={assignment.id} className="assignment-item">
+                            <div className="assignment-header">
+                                <h3>{assignment.title}</h3>
+                                <span className={`assignment-status ${assignment.status.toLowerCase()}`}>{assignment.status}</span>
+                            </div>
+                            <p>{assignment.description}</p>
+                            <div className="assignment-details">
+                                <p>
+                                    <strong>Grade:</strong> {assignment.grade}
+                                </p>
+                                <p>
+                                    <strong>Subject:</strong> {assignment.subject}
+                                </p>
+                                <p>
+                                    <strong>Teacher:</strong> {assignment.teacher}
+                                </p>
+                                <p>
+                                    <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
+                                </p>
+                            </div>
+
+                            {assignment.status === 'Submitted' ? (
+                                <div className="submitted-info">
+                                    <p>
+                                        <strong>Submitted At:</strong> {new Date(assignment.submittedAt).toLocaleString()}
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    <FileUpload
+                                        name="file"
+                                        customUpload
+                                        auto
+                                        mode="basic"
+                                        chooseLabel="Upload Assignment"
+                                        uploadHandler={handleFileUpload}
+                                        className="file-upload"
+                                        accept=".pdf,.doc,.docx"
+                                        chooseOptions={{ icon: 'pi pi-file', label: 'Upload Assignment' }}
+                                    />
+                                    <Button label={submitting ? 'Submitting...' : 'Submit Assignment'} onClick={() => handleSubmit(assignment.id)} disabled={submitting} className="submit-button my-2" />
+                                </>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>No assignments available for submission.</p>
+            )}
+        </div>
+    );
+};
+
+export default SubmitAssignment;

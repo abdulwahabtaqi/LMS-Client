@@ -4,6 +4,7 @@ import { ApiResponse, ServiceResponse } from "../types";
 
 const getAndDeleteRequest = async (method: string, url: string, contentType = "application/json" as string): Promise<ServiceResponse> => {
   try {
+    // const apiUrl = process.env.NEXT_PUBLIC_API_URL + "/api/v1" + url as string;
     // const apiUrl = "http://localhost:4040/api/v1" + url as string;
 
     const apiUrl = "https://lms-server-production-3667.up.railway.app/api/v1" + url as string;
