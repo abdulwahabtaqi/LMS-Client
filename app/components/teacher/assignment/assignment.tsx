@@ -26,6 +26,7 @@ const Assignment = () => {
             setUser(userData);
 
             const result = await getTeacherAssign(userData?.id);
+            console.log(result);
             if (result?.status) {
                 setAssignments(result.result.data || []);
             }
@@ -42,6 +43,7 @@ const Assignment = () => {
     };
 
     const handleDeleteAssignment = async (assignmentId: string) => {
+        // Here, you should implement the delete logic, possibly sending a request to delete the assignment.
         setAssignments(assignments.filter((assignment) => assignment.id !== assignmentId));
     };
 
@@ -51,7 +53,10 @@ const Assignment = () => {
     const filteredAssignments = assignments.filter((assignment) => {
         const matchesGrade = selectedGrade ? assignment.grade === selectedGrade : true;
         const matchesSubject = selectedSubject ? assignment.subject === selectedSubject : true;
-        const matchesSearchTerm = assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) || assignment.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearchTerm = searchTerm
+            ? assignment.titles.some((title: any) => (title.name && title.name.toLowerCase().includes(searchTerm.toLowerCase())) || (title.description && title.description.toLowerCase().includes(searchTerm.toLowerCase())))
+            : true;
+
         return matchesGrade && matchesSubject && matchesSearchTerm;
     });
 
@@ -80,8 +85,18 @@ const Assignment = () => {
                 <ul className="assignment-list">
                     {filteredAssignments.map((assignment) => (
                         <li key={assignment.id} className="assignment-item">
-                            <h3>{assignment.title}</h3>
-                            <p>{assignment.description}</p>
+                            <h3>Titles:</h3>
+                            {assignment.titles.length > 0 ? (
+                                <ul>
+                                    {assignment.titles.map((title: any, index: number) => (
+                                        <p key={index}>
+                                            {index + 1}. <span style={{ fontWeight: 'bold', fontSize: '17px' }}> {title.name}</span>
+                                        </p>
+                                    ))}
+                                </ul>
+                            ) : (
+                                'No Title Available'
+                            )}
                             <p>
                                 <strong>Grade:</strong> {assignment.grade}
                             </p>
@@ -91,7 +106,13 @@ const Assignment = () => {
                             <p>
                                 <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
                             </p>
-                            <div className="assignment-buttons ">
+                            <p>
+                                <strong>Last Date to Submit:</strong> {new Date(assignment.lastSubmissionDate).toLocaleDateString()} {/* Updated here */}
+                            </p>
+                            <p>
+                                <strong>Total Marks:</strong> {assignment.totalMarks} {/* Display totalMarks here */}
+                            </p>
+                            <div className="assignment-buttons">
                                 <Button label="View" onClick={() => handleViewAssignment(assignment.id)} className="view-button" />
                                 <Button label="Delete" onClick={() => handleDeleteAssignment(assignment.id)} className="delete-button" severity="danger" />
                             </div>

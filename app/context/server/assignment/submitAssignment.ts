@@ -1,10 +1,10 @@
 import { pageLoader } from "../../provider";
 
-const submitAssignment = async (userId: string, assignmentId: string, file: File) => {
+const submitAssignment = async (userId: string, assignmentId: string, file: string) => {
     try {
-        
-        const data ={assignmentId, file, userId}
-       
+
+        const data = { assignmentId, file, userId }
+
         pageLoader?.setPageLoading(30);
 
         const url = "/assignment/submit";
@@ -12,7 +12,7 @@ const submitAssignment = async (userId: string, assignmentId: string, file: File
         const apiUrl = "https://lms-server-production-3667.up.railway.app/api/v1" + url as string;
 
 
-    
+
 
         const response = await fetch(apiUrl, {
             method: 'POST',

@@ -7,7 +7,6 @@ import { User } from '../../shared/types';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
 import submitAssignment from '../../context/server/assignment/submitAssignment';
-
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -94,7 +93,7 @@ const SubmitAssignment = () => {
     const filteredAssignments = assignments.filter((assignment) => {
         const matchesGrade = selectedGrade ? assignment.grade === selectedGrade : true;
         const matchesSubject = selectedSubject ? assignment.subject === selectedSubject : true;
-        const matchesSearchTerm = assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) || assignment.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearchTerm = assignment.titles.some((title: any) => title.name.toLowerCase().includes(searchTerm.toLowerCase()) || (title.description && title.description.toLowerCase().includes(searchTerm.toLowerCase())));
         const matchesStatus = selectedStatus === 'All' || assignment.status === selectedStatus;
 
         return matchesGrade && matchesSubject && matchesSearchTerm && matchesStatus;
@@ -134,52 +133,71 @@ const SubmitAssignment = () => {
 
             {filteredAssignments.length > 0 ? (
                 <div className="assignment-list">
-                    {filteredAssignments.map((assignment) => (
-                        <div key={assignment.id} className="assignment-item">
-                            <div className="assignment-header">
-                                <h3>{assignment.title}</h3>
-                                <span className={`assignment-status ${assignment.status.toLowerCase()}`}>{assignment.status}</span>
-                            </div>
-                            <p>{assignment.description}</p>
-                            <div className="assignment-details">
-                                <p>
-                                    <strong>Grade:</strong> {assignment.grade}
-                                </p>
-                                <p>
-                                    <strong>Subject:</strong> {assignment.subject}
-                                </p>
-                                <p>
-                                    <strong>Teacher:</strong> {assignment.teacher}
-                                </p>
-                                <p>
-                                    <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
-                                </p>
-                            </div>
-
-                            {assignment.status === 'Submitted' ? (
-                                <div className="submitted-info">
+                    {filteredAssignments.map((assignment) => {
+                        const isPastDueDate = new Date() > new Date(assignment.lastSubmissionDate); // Check if the date has passed
+                        return (
+                            <div key={assignment.id} className="assignment-item">
+                                <div className="assignment-header">
+                                    {assignment.titles.map((title: any, index: number) => (
+                                        <div key={index}>
+                                            <h3>{title.name}</h3>
+                                            {title.description && <p>{title.description}</p>}
+                                        </div>
+                                    ))}
+                                    <span className={`assignment-status ${assignment.status.toLowerCase()}`}>{assignment.status}</span>
+                                </div>
+                                <div className="assignment-details">
                                     <p>
-                                        <strong>Submitted At:</strong> {new Date(assignment.submittedAt).toLocaleString()}
+                                        <strong>Grade:</strong> {assignment.grade}
+                                    </p>
+                                    <p>
+                                        <strong>Subject:</strong> {assignment.subject}
+                                    </p>
+                                    <p>
+                                        <strong>Teacher:</strong> {assignment.teacher}
+                                    </p>
+                                    <p>
+                                        <strong>Total Marks:</strong> {assignment.totalMarks}
+                                    </p>
+                                    <p>
+                                        <strong>Last Submission Date:</strong> <span style={{ color: isPastDueDate ? 'red' : 'inherit' }}>{new Date(assignment.lastSubmissionDate).toLocaleDateString()}</span>
+                                    </p>
+                                    <p>
+                                        <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>
-                            ) : (
-                                <>
-                                    <FileUpload
-                                        name="file"
-                                        customUpload
-                                        auto
-                                        mode="basic"
-                                        chooseLabel="Upload Assignment"
-                                        uploadHandler={handleFileUpload}
-                                        className="file-upload"
-                                        accept=".pdf,.doc,.docx"
-                                        chooseOptions={{ icon: 'pi pi-file', label: 'Upload Assignment' }}
-                                    />
-                                    <Button label={submitting ? 'Submitting...' : 'Submit Assignment'} onClick={() => handleSubmit(assignment.id)} disabled={submitting} className="submit-button my-2" />
-                                </>
-                            )}
-                        </div>
-                    ))}
+
+                                {assignment.status === 'Submitted' ? (
+                                    <div className="submitted-info">
+                                        <p>
+                                            <strong>Submitted At:</strong> {new Date(assignment.submittedAt).toLocaleString()}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {!isPastDueDate ? ( // Only show if the date hasn't passed
+                                            <>
+                                                <FileUpload
+                                                    name="file"
+                                                    customUpload
+                                                    auto
+                                                    mode="basic"
+                                                    chooseLabel="Upload Assignment"
+                                                    uploadHandler={handleFileUpload}
+                                                    className="file-upload"
+                                                    accept=".pdf,.doc,.docx"
+                                                    chooseOptions={{ icon: 'pi pi-file', label: 'Upload Assignment' }}
+                                                />
+                                                <Button label={submitting ? 'Submitting...' : 'Submit Assignment'} onClick={() => handleSubmit(assignment.id)} disabled={submitting} className="submit-button my-2" />
+                                            </>
+                                        ) : (
+                                            <p style={{ color: 'red', fontWeight: 'bold' }}>Submission period has ended for this assignment.</p>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             ) : (
                 <p>No assignments available for submission.</p>

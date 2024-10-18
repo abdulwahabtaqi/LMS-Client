@@ -134,3 +134,8 @@
         width: 100%; /* Full width button on mobile */
     }
 }
+
+.assignment-details span {
+    font-weight: bold;
+    color: red; /* Adjust based on your design */
+}

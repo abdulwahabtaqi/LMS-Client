@@ -28,10 +28,14 @@ const NewAssignment = () => {
         reset,
         setValue,
         formState: { errors: ExportErrors },
-        register
+        register,
+        getValues,
+        watch
     } = useForm<any>({
         mode: 'onBlur'
     });
+
+    const [assignmentTitles, setAssignmentTitles] = useState([{ name: '', description: '' }]); // Initialize with one title
 
     const fetchSchools = async () => {
         try {
@@ -95,28 +99,42 @@ const NewAssignment = () => {
         }
     };
 
+    const handleAddTitle = () => {
+        setAssignmentTitles([...assignmentTitles, { name: '', description: '' }]);
+    };
+
+    const handleRemoveTitle = (index: number) => {
+        const newTitles = assignmentTitles.filter((_, i) => i !== index);
+        setAssignmentTitles(newTitles);
+    };
+
     const onSubmit = async (data: any) => {
-        const { title, description, gradeId, subjectId } = data;
+        const { gradeId, subjectId, totalMarks, lastSubmissionDate } = data;
         const teacherId = user?.id;
 
         if (!teacherId) return;
 
+        const titles = assignmentTitles.map((title) => ({
+            name: title.name,
+            description: title.description
+        }));
+
         const response = await createAssignment({
-            title,
-            description,
+            titles,
             teacherId,
             subjectId,
-            gradeId
+            gradeId,
+            totalMarks,
+            lastSubmissionDate
         });
-        console.log(response);
 
         if (response.status) {
             toastRef.current?.show({ severity: 'success', summary: 'Success', detail: 'Assignment created successfully' });
             reset();
+            setAssignmentTitles([{ name: '', description: '' }]); // Reset titles to initial state
+        } else {
+            toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to create assignment' });
         }
-        // else {
-        //     toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to create assignment' });
-        // }
     };
 
     useEffect(() => {
@@ -211,10 +229,60 @@ const NewAssignment = () => {
                         <ErrorMessage text={(ExportErrors?.subjectId?.message as string) || ''} />
                     </div>
                 </div>
-                <FormFieldWithLabel label="Assignment Title" formField={<input type="text" {...register('title', { required: 'Title is required' })} className={`input ${ExportErrors?.title?.message ? 'p-invalid' : ''}`} />} />
-                <ErrorMessage text={(ExportErrors?.title?.message as string) || ''} />
-                <FormFieldWithLabel label="Assignment Description" formField={<textarea {...register('description', { required: 'Description is required' })} className={`textarea ${ExportErrors?.description?.message ? 'p-invalid' : ''}`} />} />
-                <ErrorMessage text={(ExportErrors?.description?.message as string) || ''} />
+                {/* Dynamic Titles Input */}
+                {assignmentTitles.map((title, index) => (
+                    <div key={index} className="title-input-group">
+                        <FormFieldWithLabel
+                            label={`Assignment Title ${index + 1}`}
+                            formField={
+                                <input
+                                    type="text"
+                                    value={title.name}
+                                    onChange={(e) => {
+                                        const newTitles = [...assignmentTitles];
+                                        newTitles[index].name = e.target.value;
+                                        setAssignmentTitles(newTitles);
+                                    }}
+                                    className={`input ${(ExportErrors as any)?.titles?.[index]?.name ? 'p-invalid' : ''}`}
+                                    required
+                                />
+                            }
+                        />
+                        <ErrorMessage text={(ExportErrors as any)?.titles?.[index]?.name?.message} />
+                        <FormFieldWithLabel
+                            label={`Assignment Description ${index + 1}`}
+                            formField={
+                                <textarea
+                                    value={title.description}
+                                    onChange={(e) => {
+                                        const newTitles = [...assignmentTitles];
+                                        newTitles[index].description = e.target.value;
+                                        setAssignmentTitles(newTitles);
+                                    }}
+                                    className={`textarea ${(ExportErrors as any)?.titles?.[index]?.description ? 'p-invalid' : ''}`}
+                                    required
+                                />
+                            }
+                        />
+                        <ErrorMessage text={(ExportErrors as any)?.titles?.[index]?.description?.message} />
+                        <button type="button" onClick={() => handleRemoveTitle(index)} className="remove-button">
+                            Remove
+                        </button>
+                    </div>
+                ))}
+                <button type="button" onClick={handleAddTitle} className="add-button">
+                    Add More Titles
+                </button>
+
+                <FormFieldWithLabel label="Total Marks" formField={<input type="number" {...register('totalMarks', { required: 'Total Marks is required' })} className={`input ${ExportErrors?.totalMarks?.message ? 'p-invalid' : ''}`} />} />
+                <ErrorMessage text={ExportErrors?.totalMarks?.message as string} />
+
+                <FormFieldWithLabel
+                    label="Last Submission Date"
+                    formField={<input type="date" {...register('lastSubmissionDate', { required: 'Last Submission Date is required' })} className={`input ${ExportErrors?.lastSubmissionDate?.message ? 'p-invalid' : ''}`} />}
+                />
+                <ErrorMessage text={ExportErrors?.lastSubmissionDate?.message as string} />
+
                 <button type="submit" className="submit-button">
                     Create Assignment
                 </button>
