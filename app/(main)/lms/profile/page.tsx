@@ -98,7 +98,7 @@ const Profile = () => {
             <h1>Profile</h1>
             <form onSubmit={handleUpdate} className="profile-form">
                 <div className="profile-image-container">
-                    <Image src={user?.profileImage || image} alt="Profile" className="profile-image" />
+                    <Image src={user?.profileImage || image} alt="Profile" width={150} height={150} className="profile-image" style={{ borderRadius: '50%' }} />
                     <label htmlFor="file-input" className="profile-image-overlay">
                         <i className="pi pi-camera" style={{ fontSize: '2em', color: '#007ad9' }}></i>
                     </label>

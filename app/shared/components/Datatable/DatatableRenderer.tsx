@@ -5,14 +5,12 @@ import DataTableWithSearch from './DataTableWithSearch'; // Adjust the import pa
 import { TableColumns } from './types';
 
 interface DataTableRendererProps<T> {
-  data: T[];
-  tableColumns: TableColumns[];
+    data: T[];
+    tableColumns: TableColumns[];
 }
 
 const DataTableRenderer = <T,>({ data, tableColumns }: DataTableRendererProps<T>) => {
-  return (
-    <DataTableWithSearch<T> data={data} tableColumns={tableColumns} />
-  );
+    return <DataTableWithSearch<T> data={data} tableColumns={tableColumns} />;
 };
 
 export default DataTableRenderer;

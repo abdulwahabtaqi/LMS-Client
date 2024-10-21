@@ -127,7 +127,7 @@ const Assignment = () => {
                 <>
                     <div className="modal-overlay" onClick={() => setShowNewAssignment(false)}></div>
                     <div className="new-assignment-modal">
-                        <NewAssignment />
+                        <NewAssignment onClick={handleCreateAssignmentClick} />
                     </div>
                 </>
             )}

@@ -1,16 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import React, { useEffect, useState } from 'react'
-import { Answer } from '../../shared/types'
-import DataTableRenderer from '../../shared/components/Datatable/DatatableRenderer'
-import { TableColumns } from '../../shared/components/Datatable/types'
-import { Dialog } from 'primereact/dialog'
-import fetchAnswerHandler from '../../context/server/answer/fetchAnswersHandler'
-import { useAppContext } from '../../../layout/context/layoutcontext'
-import { Button } from 'primereact/button'
-import { convertTimeStamps } from '../../shared/common'
+import React, { useEffect, useState } from 'react';
+import { Answer } from '../../shared/types';
+import DataTableRenderer from '../../shared/components/Datatable/DatatableRenderer';
+import { TableColumns } from '../../shared/components/Datatable/types';
+import { Dialog } from 'primereact/dialog';
+import fetchAnswerHandler from '../../context/server/answer/fetchAnswersHandler';
+import { useAppContext } from '../../../layout/context/layoutcontext';
+import { Button } from 'primereact/button';
+import { convertTimeStamps } from '../../shared/common';
 import AddAndEditAnswer from './addAndEditAnswer';
-
 
 const ViewAnswer = () => {
     const g = useAppContext();
@@ -30,7 +29,7 @@ const ViewAnswer = () => {
                 setAnswers(response?.result?.data as Answer[]);
             }
         } catch (error) {
-            g?.setToaster({ severity: 'error', summary: 'Error', detail: "Something Went Wrong While Fetching Answer" });
+            g?.setToaster({ severity: 'error', summary: 'Error', detail: 'Something Went Wrong While Fetching Answer' });
         }
     };
     const tableColumns: TableColumns[] = [
@@ -38,43 +37,43 @@ const ViewAnswer = () => {
             header: 'Answer',
             field: 'answer',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Type',
             field: 'type',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Dificulty Level',
             field: 'difficultyLevel',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Question',
             field: 'questionName',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Created At',
             field: 'createdAt',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Last Updated',
             field: 'updatedAt',
             sortable: true,
-            style: { width: '15rem' },
+            style: { width: '15rem' }
         },
         {
             header: 'Action',
             field: 'action',
-            style: { width: '15rem' },
-        },
+            style: { width: '15rem' }
+        }
     ];
 
     useEffect(() => {
@@ -83,16 +82,15 @@ const ViewAnswer = () => {
     }, []);
     useEffect(() => {
         let newAnswer = [] as Answer[];
-        answers?.forEach(x => {
+        answers?.forEach((x) => {
             newAnswer?.push({
                 ...x,
-                action: <Button label="Edit" className="p-button-info" onClick={() => editAnswer(x)
-                } />,
+                action: <Button label="Edit" className="p-button-info" onClick={() => editAnswer(x)} />,
                 questionName: x?.question?.question,
                 difficultyLevel: x?.question?.difficultyLevel as unknown as string,
                 createdAt: convertTimeStamps(x?.createdAt),
                 updatedAt: convertTimeStamps(x?.updatedAt)
-            })
+            });
         });
         setUIAnswers(newAnswer);
     }, [answers]);
@@ -102,12 +100,10 @@ const ViewAnswer = () => {
                 <Dialog visible={visible} maximizable style={{ width: '50vw' }} onHide={() => setVisible(false)}>
                     <AddAndEditAnswer isNew={false} answer={answer} />
                 </Dialog>
-                <div className="col-12">
-                    {UIanswers?.length > 0 && <DataTableRenderer<Answer> data={UIanswers} tableColumns={tableColumns} />}
-                </div>
+                <div className="col-12">{UIanswers?.length > 0 && <DataTableRenderer<Answer> data={UIanswers} tableColumns={tableColumns} />}</div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default ViewAnswer
+export default ViewAnswer;

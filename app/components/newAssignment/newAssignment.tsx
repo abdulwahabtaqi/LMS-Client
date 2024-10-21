@@ -12,8 +12,13 @@ import { verifyToken } from '../../shared/common';
 import { useAppContext } from '../../../layout/context/layoutcontext';
 import './NewAssignment.css';
 import { Toast } from 'primereact/toast';
+import { Button } from 'primereact/button';
 
-const NewAssignment = () => {
+interface NewAssignmentProps {
+    onClick: () => void;
+}
+
+const NewAssignment: React.FC<NewAssignmentProps> = ({ onClick }) => {
     const [user, setUser] = useState<any>(null);
     const g = useAppContext();
     const [schools, setSchools] = useState<any[]>([]);
@@ -132,9 +137,8 @@ const NewAssignment = () => {
             toastRef.current?.show({ severity: 'success', summary: 'Success', detail: 'Assignment created successfully' });
             reset();
             setAssignmentTitles([{ name: '', description: '' }]); // Reset titles to initial state
-        } else {
-            toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to create assignment' });
         }
+        onClick();
     };
 
     useEffect(() => {
@@ -265,14 +269,14 @@ const NewAssignment = () => {
                             }
                         />
                         <ErrorMessage text={(ExportErrors as any)?.titles?.[index]?.description?.message} />
-                        <button type="button" onClick={() => handleRemoveTitle(index)} className="remove-button">
+                        <Button type="button" onClick={() => handleRemoveTitle(index)} className="remove-button">
                             Remove
-                        </button>
+                        </Button>
                     </div>
                 ))}
-                <button type="button" onClick={handleAddTitle} className="add-button">
-                    Add More Titles
-                </button>
+                <Button type="button" style={{ width: 'max-content', margin: 'auto' }} onClick={handleAddTitle} className="add-button">
+                    Add More Questions
+                </Button>
 
                 <FormFieldWithLabel label="Total Marks" formField={<input type="number" {...register('totalMarks', { required: 'Total Marks is required' })} className={`input ${ExportErrors?.totalMarks?.message ? 'p-invalid' : ''}`} />} />
                 <ErrorMessage text={ExportErrors?.totalMarks?.message as string} />

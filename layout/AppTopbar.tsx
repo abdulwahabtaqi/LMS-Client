@@ -15,6 +15,7 @@ import { Badge } from 'primereact/badge';
 import Notification from './../app/components/notification/notification';
 import getUser from '../app/context/server/users/getUser';
 import getPendingConnections from '../app/context/server/connection/getPendingConnections';
+import Image from 'next/image';
 
 const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
     const [user, setUser] = useState({} as User);
@@ -128,9 +129,9 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
 
             <div style={{ marginLeft: '20px' }} className="user-menu-container" onMouseEnter={(e) => menuRef.current?.toggle(e)}>
                 <Tooltip target=".user-image-icon" position="top" />
-                <Button className="p-link layout-topbar-button">
-                    <img src={userDet?.profileImage || '/images/user.png'} alt="user-icon" className="user-image-icon" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
-                </Button>
+                <div className="p-link layout-topbar-button">
+                    <Image src={userDet?.profileImage || '/images/user.png'} alt="user-icon" width={30} height={30} className="user-image-icon" style={{ borderRadius: '50%' }} />
+                </div>
                 <TieredMenu model={items} popup ref={menuRef} />
             </div>
         </div>

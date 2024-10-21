@@ -12,6 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload'; // PrimeReact FileUpload component
 import './SubmitAssignment.css';
+import Analytics from './../analytics/Analytics';
 
 // Helper function to convert file to Base64
 const convertFileToBase64 = (file: File): Promise<string> => {
@@ -32,6 +33,7 @@ const SubmitAssignment = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [analytics, setAnalytics] = useState(false);
     const toast = useRef<Toast>(null);
 
     useEffect(() => {
@@ -87,10 +89,10 @@ const SubmitAssignment = () => {
         }
     };
 
-    const uniqueGrades = [...new Set(assignments.map((assignment: any) => assignment.grade))];
-    const uniqueSubjects = [...new Set(assignments.map((assignment: any) => assignment.subject))];
+    const uniqueGrades = [...new Set(assignments?.map((assignment: any) => assignment?.grade))];
+    const uniqueSubjects = [...new Set(assignments?.map((assignment: any) => assignment?.subject))];
 
-    const filteredAssignments = assignments.filter((assignment) => {
+    const filteredAssignments = assignments?.filter((assignment) => {
         const matchesGrade = selectedGrade ? assignment.grade === selectedGrade : true;
         const matchesSubject = selectedSubject ? assignment.subject === selectedSubject : true;
         const matchesSearchTerm = assignment.titles.some((title: any) => title.name.toLowerCase().includes(searchTerm.toLowerCase()) || (title.description && title.description.toLowerCase().includes(searchTerm.toLowerCase())));
@@ -111,96 +113,115 @@ const SubmitAssignment = () => {
             <Toast ref={toast} />
             <h1 className="page-title">Submit Assignments</h1>
             <div className="top-bar">
-                <div className="filters">
-                    <Dropdown value={selectedGrade} options={uniqueGrades.map((grade) => ({ label: grade, value: grade }))} onChange={(e) => setSelectedGrade(e.value)} placeholder="Select Grade" />
-                    <Dropdown value={selectedSubject} options={uniqueSubjects.map((subject) => ({ label: subject, value: subject }))} onChange={(e) => setSelectedSubject(e.value)} placeholder="Select Subject" />
-                    <Dropdown
-                        value={selectedStatus}
-                        options={[
-                            { label: 'All', value: 'All' },
-                            { label: 'Submitted', value: 'Submitted' },
-                            { label: 'Pending', value: 'Pending' }
-                        ]}
-                        onChange={(e) => setSelectedStatus(e.value)}
-                        placeholder="Select Status"
-                    />
-                    <InputText value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by title or description" />
-                </div>
-                <div className="buttons my-4">
-                    <Button label="Reset Filters" onClick={handleResetFilters} className="reset-button" />
+                {!analytics && (
+                    <div className="filters">
+                        <Dropdown value={selectedGrade} options={uniqueGrades.map((grade) => ({ label: grade, value: grade }))} onChange={(e) => setSelectedGrade(e.value)} placeholder="Select Grade" />
+                        <Dropdown value={selectedSubject} options={uniqueSubjects.map((subject) => ({ label: subject, value: subject }))} onChange={(e) => setSelectedSubject(e.value)} placeholder="Select Subject" />
+                        <Dropdown
+                            value={selectedStatus}
+                            options={[
+                                { label: 'All', value: 'All' },
+                                { label: 'Submitted', value: 'Submitted' },
+                                { label: 'Pending', value: 'Pending' }
+                            ]}
+                            onChange={(e) => setSelectedStatus(e.value)}
+                            placeholder="Select Status"
+                        />
+                        <InputText value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by title or description" />
+                    </div>
+                )}
+                <div className="buttons my-4 flex gap-6">
+                    {!analytics && <Button label="Reset Filters" onClick={handleResetFilters} className="reset-button p-button-outlined" />}
+                    <Button label={analytics ? 'Back to Assignments' : 'View Analytics'} onClick={() => setAnalytics(!analytics)} className="analytics-button p-button-secondary" />
                 </div>
             </div>
-
-            {filteredAssignments.length > 0 ? (
-                <div className="assignment-list">
-                    {filteredAssignments.map((assignment) => {
-                        const isPastDueDate = new Date() > new Date(assignment.lastSubmissionDate); // Check if the date has passed
-                        return (
-                            <div key={assignment.id} className="assignment-item">
-                                <div className="assignment-header">
-                                    {assignment.titles.map((title: any, index: number) => (
-                                        <div key={index}>
-                                            <h3>{title.name}</h3>
-                                            {title.description && <p>{title.description}</p>}
-                                        </div>
-                                    ))}
-                                    <span className={`assignment-status ${assignment.status.toLowerCase()}`}>{assignment.status}</span>
-                                </div>
-                                <div className="assignment-details">
-                                    <p>
-                                        <strong>Grade:</strong> {assignment.grade}
-                                    </p>
-                                    <p>
-                                        <strong>Subject:</strong> {assignment.subject}
-                                    </p>
-                                    <p>
-                                        <strong>Teacher:</strong> {assignment.teacher}
-                                    </p>
-                                    <p>
-                                        <strong>Total Marks:</strong> {assignment.totalMarks}
-                                    </p>
-                                    <p>
-                                        <strong>Last Submission Date:</strong> <span style={{ color: isPastDueDate ? 'red' : 'inherit' }}>{new Date(assignment.lastSubmissionDate).toLocaleDateString()}</span>
-                                    </p>
-                                    <p>
-                                        <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
-                                    </p>
-                                </div>
-
-                                {assignment.status === 'Submitted' ? (
-                                    <div className="submitted-info">
-                                        <p>
-                                            <strong>Submitted At:</strong> {new Date(assignment.submittedAt).toLocaleString()}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <>
-                                        {!isPastDueDate ? ( // Only show if the date hasn't passed
-                                            <>
-                                                <FileUpload
-                                                    name="file"
-                                                    customUpload
-                                                    auto
-                                                    mode="basic"
-                                                    chooseLabel="Upload Assignment"
-                                                    uploadHandler={handleFileUpload}
-                                                    className="file-upload"
-                                                    accept=".pdf,.doc,.docx"
-                                                    chooseOptions={{ icon: 'pi pi-file', label: 'Upload Assignment' }}
-                                                />
-                                                <Button label={submitting ? 'Submitting...' : 'Submit Assignment'} onClick={() => handleSubmit(assignment.id)} disabled={submitting} className="submit-button my-2" />
-                                            </>
-                                        ) : (
-                                            <p style={{ color: 'red', fontWeight: 'bold' }}>Submission period has ended for this assignment.</p>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
+            {analytics ? (
+                <Analytics assignments={assignments} />
             ) : (
-                <p>No assignments available for submission.</p>
+                <>
+                    {' '}
+                    {filteredAssignments.length > 0 ? (
+                        <div className="assignment-list">
+                            {filteredAssignments.map((assignment) => {
+                                const isPastDueDate = new Date() > new Date(assignment.lastSubmissionDate); // Check if the date has passed
+                                return (
+                                    <div key={assignment.id} className="assignment-item">
+                                        <div className="assignment-header">
+                                            {assignment.titles.map((title: any, index: number) => (
+                                                <div key={index}>
+                                                    <h3>{title.name}</h3>
+                                                    {title.description && <p>{title.description}</p>}
+                                                </div>
+                                            ))}
+                                            <span className={`assignment-status ${assignment.status.toLowerCase()}`}>{assignment.status}</span>
+                                        </div>
+                                        <div className="assignment-details">
+                                            <p>
+                                                <strong>Grade:</strong> {assignment.grade}
+                                            </p>
+                                            <p>
+                                                <strong>Subject:</strong> {assignment.subject}
+                                            </p>
+                                            <p>
+                                                <strong>Teacher:</strong> {assignment.teacher}
+                                            </p>
+                                            <p>
+                                                <strong>Total Marks:</strong> {assignment.totalMarks}
+                                            </p>
+                                            <p>
+                                                <strong>Last Submission Date:</strong> <span style={{ color: isPastDueDate ? 'red' : 'inherit' }}>{new Date(assignment.lastSubmissionDate).toLocaleDateString()}</span>
+                                            </p>
+                                            <p>
+                                                <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+
+                                        {assignment.status === 'Submitted' ? (
+                                            <div className="submitted-info">
+                                                <p>
+                                                    <strong>Submitted At:</strong> {new Date(assignment.submittedAt).toLocaleString()}
+                                                </p>
+                                                <p className="marks-container">
+                                                    <strong>Marks Obtained:</strong>
+                                                    <span className="marks-value">{assignment.marks} </span>
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {!isPastDueDate ? ( // Only show if the date hasn't passed
+                                                    <>
+                                                        <FileUpload
+                                                            name="file"
+                                                            customUpload
+                                                            auto
+                                                            mode="basic"
+                                                            chooseLabel="Upload Assignment"
+                                                            uploadHandler={handleFileUpload}
+                                                            className="file-upload"
+                                                            accept=".pdf,.doc,.docx"
+                                                            chooseOptions={{ icon: 'pi pi-file', label: 'Upload Assignment' }}
+                                                        />
+                                                        <Button
+                                                            style={{ width: 'max-content', margin: 'auto' }}
+                                                            label={submitting ? 'Submitting...' : 'Submit Assignment'}
+                                                            onClick={() => handleSubmit(assignment.id)}
+                                                            disabled={submitting}
+                                                            className="submit-button my-2"
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    <p style={{ color: 'red', fontWeight: 'bold' }}>Submission period has ended for this assignment.</p>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p>No assignments available for submission.</p>
+                    )}
+                </>
             )}
         </div>
     );

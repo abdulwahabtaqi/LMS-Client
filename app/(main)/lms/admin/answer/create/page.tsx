@@ -5,8 +5,6 @@ import PageHeader from '../../../../../components/pageHeader';
 import ViewAnswer from '../../../../../components/answer/viewAnswers';
 import AddAndEditAnswer from '../../../../../components/answer/addAndEditAnswer';
 
-
-
 const AddTopic = () => {
     return (
         <div className="grid">

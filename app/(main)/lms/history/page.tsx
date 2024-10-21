@@ -1,6 +1,5 @@
-import React from 'react'
-import ViewHistory from '../../../components/history/viewHistory'
-
+import React from 'react';
+import ViewHistory from '../../../components/history/viewHistory';
 
 const Exports = () => {
     return (
@@ -12,7 +11,7 @@ const Exports = () => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default Exports
+export default Exports;
