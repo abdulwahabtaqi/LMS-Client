@@ -25,81 +25,64 @@ const AppMenu = () => {
     if (user?.role === Role.ADMIN) {
         model = [
             {
-                label: 'Home',
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
             },
             {
-                label: 'School',
                 items: [{ label: 'School', icon: 'pi pi-fw pi-building', to: '/lms/admin/school/create' }]
             },
             {
-                label: 'Grade',
                 items: [{ label: 'Grade', icon: 'pi pi-fw pi-arrow-up-right', to: '/lms/admin/grade/create', badge: 'NEW' }]
             },
             {
-                label: 'Subject',
                 items: [{ label: 'Subject', icon: 'pi pi-fw pi-palette', to: '/lms/admin/subject/create' }]
             },
             {
-                label: 'Topic',
                 items: [{ label: 'Topic', icon: 'pi pi-fw pi-table', to: '/lms/admin/topic/create' }]
             },
             {
-                label: 'Sub Topic',
                 items: [{ label: 'Sub Topic', icon: 'pi pi-fw pi-book', to: '/lms/admin/sub-topic/create' }]
             },
             {
-                label: 'Question',
                 items: [{ label: 'Question', icon: 'pi pi-fw pi-question', to: '/lms/admin/question/create' }]
             },
             {
-                label: 'Answer',
                 items: [{ label: 'Answer', icon: 'pi pi-fw pi-eject', to: '/lms/admin/answer/create' }]
             },
 
             {
-                label: 'Imports',
                 items: [{ label: 'Import', icon: 'pi pi-file-import', to: '/lms/admin/answer/import' }]
             },
             {
-                label: 'Media',
                 items: [{ label: 'Media', icon: 'pi pi-image', to: '/lms/admin/question/media' }]
             },
             {
-                label: 'Export',
                 items: [
                     { label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' },
                     { label: 'History', icon: 'pi pi-clock', to: '/lms/history/' }
                 ]
             },
             {
-                label: 'Manage',
                 items: [{ label: 'Users', icon: 'pi pi-users', to: '/lms/admin/users' }]
             }
         ] as AppMenuItem[];
     } else if (user?.role === Role.TEACHER) {
         model = [
             {
-                label: 'Export',
                 items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
             },
             {
-                label: 'Assignments',
                 items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/teacher/assignment' }]
             }
         ] as AppMenuItem[];
     } else {
         model = [
             {
-                label: 'Export',
                 items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
             },
             {
-                label: 'Members',
                 items: [{ label: 'Connections', icon: 'pi pi-fw pi-users', to: '/lms/teacher/connection' }]
             },
             {
-                label: 'Assignments',
                 items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/student/assignments' }]
             }
         ] as AppMenuItem[];
