@@ -12,9 +12,9 @@ interface QuestionPaperProps {
     filteredSequenceQuestions: Question[];
     filteredMultipleTrueFalseQuestions: Question[];
     filteredMultipleQuestionV2Questions: Question[];
-    download: boolean;
-    mode: boolean;
-    exportName: string;
+    download?: boolean;
+    mode?: boolean;
+    exportName?: string;
 }
 let counter = 0;
 const QuestionPaper: React.FC<QuestionPaperProps> = ({
@@ -31,7 +31,6 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
     download,
     exportName
 }) => {
-    console.log('filteredMcqQuestions', filteredMcqQuestions);
     const [globalCounter, setGlobalCounter] = useState<number>(0);
     const processInputStringV2 = (inputString: string): [string, string] => {
         const extractedPattern = inputString.match(/--\s*(.*?)\s*--/)?.[1] || '';
@@ -82,7 +81,8 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
         return (
             <>
                 {filteredMcqQuestions?.flatMap((question, index) => {
-                    console.log('questionData', question);
+                    console.log('sdsds', question);
+
                     counter++;
                     return (
                         <>

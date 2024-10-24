@@ -48,10 +48,10 @@ const Connection = () => {
     const handleAccept = async (requestId: string) => {
         console.log(`Accepted request ID: ${requestId}`);
         const response = await acceptReq({ requestId });
+        setPendingRequests((prev) => prev.filter((req) => req.id !== requestId));
         console.log(response);
         if (response.success) {
             // Optionally, you can remove the accepted request from the state or refetch
-            setPendingRequests((prev) => prev.filter((req) => req.id !== requestId));
         } else {
             console.error('Error accepting request:', response.message);
         }

@@ -7,6 +7,7 @@ import 'primeicons/primeicons.css';
 import '../styles/layout/layout.scss';
 import '../styles/demo/Demos.scss';
 import AppProvider from './context/provider';
+import { RefetchProvider } from '../layout/context/refetch';
 
 interface RootLayoutProps {
     children: React.ReactNode;
@@ -20,9 +21,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </head>
             <body>
                 <AppProvider>
-                    <PrimeReactProvider>
-                        <LayoutProvider>{children}</LayoutProvider>
-                    </PrimeReactProvider>
+                    <RefetchProvider>
+                        <PrimeReactProvider>
+                            <LayoutProvider>{children}</LayoutProvider>
+                        </PrimeReactProvider>
+                    </RefetchProvider>
                 </AppProvider>
             </body>
         </html>

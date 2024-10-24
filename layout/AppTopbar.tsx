@@ -16,8 +16,11 @@ import Notification from './../app/components/notification/notification';
 import getUser from '../app/context/server/users/getUser';
 import getPendingConnections from '../app/context/server/connection/getPendingConnections';
 import Image from 'next/image';
+import { RefetchContext } from './context/refetch';
 
 const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
+    const data = useContext(RefetchContext);
+
     const [user, setUser] = useState({} as User);
     const [userDet, setUserDet] = useState({} as any);
     const [pendingRequests, setPendingRequests] = useState([]);
@@ -39,7 +42,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
             }
         };
         fetchUser();
-    }, []);
+    }, [data?.refetch]);
 
     const { pageLoader } = useAppContext();
     const { layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
@@ -101,7 +104,7 @@ const AppTopBar = forwardRef<AppTopbarRef>((props, ref) => {
             <div ref={topBarMenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
                 <Link href="/lms/history">
                     <button type="button" className="p-link p-5 layout-topbar-button">
-                        {user?.name}
+                        {userDet?.name}
                     </button>
                 </Link>
             </div>

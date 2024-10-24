@@ -71,7 +71,7 @@ const AppMenu = () => {
                 items: [{ label: 'Export', icon: 'pi pi-fw pi-home', to: '/lms/teacher/export' }]
             },
             {
-                items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/teacher/assignment' }]
+                items: [{ label: 'Assignments', icon: 'pi pi-fw pi-pencil', to: '/lms/teacher/assign' }]
             }
         ] as AppMenuItem[];
     } else {
@@ -91,7 +91,7 @@ const AppMenu = () => {
         <MenuProvider>
             <ul className="layout-menu">
                 {model?.map((item, i) => {
-                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
+                    return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={i} /> : <li className="menu-separator"></li>;
                 })}
 
                 {/* <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>

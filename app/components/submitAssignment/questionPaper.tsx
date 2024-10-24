@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Question } from '../../../shared/types';
+import { Question } from '../../shared/types';
 import _ from 'lodash';
 type ProcessedStrings = [string, string];
 interface QuestionPaperProps {
@@ -12,9 +12,9 @@ interface QuestionPaperProps {
     filteredSequenceQuestions: Question[];
     filteredMultipleTrueFalseQuestions: Question[];
     filteredMultipleQuestionV2Questions: Question[];
-    download: boolean;
-    mode: boolean;
-    exportName: string;
+    download?: boolean;
+    mode?: boolean;
+    exportName?: string;
 }
 let counter = 0;
 const QuestionPaper: React.FC<QuestionPaperProps> = ({
@@ -31,7 +31,6 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
     download,
     exportName
 }) => {
-    console.log('filteredMcqQuestions', filteredMcqQuestions);
     const [globalCounter, setGlobalCounter] = useState<number>(0);
     const processInputStringV2 = (inputString: string): [string, string] => {
         const extractedPattern = inputString.match(/--\s*(.*?)\s*--/)?.[1] || '';
@@ -39,8 +38,8 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
         const cleanedString = inputString.replace(/--\s*(.*?)\s*--/, '').replace(/d22/g, '_');
         return [modifiedPattern, cleanedString];
     };
-    const [isDownloadFirstTime, setIsDownloadFirstTime] = useState<boolean>(false);
-    const downloadable = useRef<HTMLDivElement>(null);
+    // const [isDownloadFirstTime, setIsDownloadFirstTime] = useState<boolean>(false);
+    // const downloadable = useRef<HTMLDivElement>(null);
     const extractWordsBetweenMarkers = (inputString: string): string[] => {
         // Regular expression to match words between "-- --"
         const regex = /--\s*(.*?)\s*--/g;
@@ -82,7 +81,6 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
         return (
             <>
                 {filteredMcqQuestions?.flatMap((question, index) => {
-                    console.log('questionData', question);
                     counter++;
                     return (
                         <>
@@ -485,36 +483,36 @@ const QuestionPaper: React.FC<QuestionPaperProps> = ({
     useEffect(() => {
         setGlobalCounter(counter);
     }, []);
-    useEffect(() => {
-        if (isDownloadFirstTime) {
-            const printable = downloadable?.current?.innerHTML;
-            const printWindow = window.open('', '', 'height=400,width=800');
-            printWindow?.document.write('<html><head><title>Question Paper</title>');
-            printWindow?.document.write('</head><body >');
-            printWindow?.document.write(printable || '');
-            printWindow?.document.write('</body></html>');
-            printWindow?.print();
-            printWindow?.document.close();
-            if (printable) {
-                const blob = new Blob([printable], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `questionPaper/${exportName}`;
-                document.body.appendChild(a);
-                a.click();
-                URL.revokeObjectURL(url);
-                document.body.removeChild(a); // Clean up
-            }
-        }
-        setIsDownloadFirstTime(true);
+    // useEffect(() => {
+    //     if (isDownloadFirstTime) {
+    //         const printable = downloadable?.current?.innerHTML;
+    //         const printWindow = window.open('', '', 'height=400,width=800');
+    //         printWindow?.document.write('<html><head><title>Question Paper</title>');
+    //         printWindow?.document.write('</head><body >');
+    //         printWindow?.document.write(printable || '');
+    //         printWindow?.document.write('</body></html>');
+    //         printWindow?.print();
+    //         printWindow?.document.close();
+    //         if (printable) {
+    //             const blob = new Blob([printable], { type: 'text/html' });
+    //             const url = URL.createObjectURL(blob);
+    //             const a = document.createElement('a');
+    //             a.style.display = 'none';
+    //             a.href = url;
+    //             a.download = `questionPaper/${exportName}`;
+    //             document.body.appendChild(a);
+    //             a.click();
+    //             URL.revokeObjectURL(url);
+    //             document.body.removeChild(a); // Clean up
+    //         }
+    //     }
+    //     setIsDownloadFirstTime(true);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [download]);
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [download]);
     return (
         <>
-            <div ref={downloadable} contentEditable={true} style={{ position: 'sticky', top: 0, zIndex: 1000, width: '850px', marginLeft: 'auto', marginRight: 'auto' }}>
+            <div contentEditable={true} style={{ position: 'sticky', top: 0, zIndex: 1000, width: '850px', marginLeft: 'auto', marginRight: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #a6a6a6' }}>
                     <p style={{ color: '#a6a6a6', fontWeight: 600 }}>Way in LISTENING</p>
                     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>

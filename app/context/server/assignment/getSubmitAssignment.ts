@@ -3,7 +3,7 @@ import getAndDeleteRequest from "../../services/getAndDeleteRequest";
 const getSubmitAssign = async (id: string) => {
 
 
-    const result = await getAndDeleteRequest("GET", `/assignment/allAssignments/${id}`);
+    const result = await getAndDeleteRequest("GET", `/assign/all/${id}`);
     return result as any;
 };
 

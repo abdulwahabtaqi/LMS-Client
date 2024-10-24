@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { verifyToken } from '../../../shared/common';
 import { User } from '../../../shared/types';
 import getUser from '../../../context/server/users/getUser';
@@ -13,6 +13,7 @@ import 'primereact/resources/primereact.min.css';
 import './Profile.css';
 import image from './../../../../public/images/user.png';
 import Image from 'next/image';
+import { RefetchContext } from '../../../../layout/context/refetch';
 
 const Profile = () => {
     const [user, setUser] = useState({} as User);
@@ -21,6 +22,7 @@ const Profile = () => {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const toast = useRef<Toast>(null);
+    const data = useContext(RefetchContext);
 
     useEffect(() => {
         const token = localStorage.getItem('lms-token');
@@ -77,6 +79,7 @@ const Profile = () => {
             if (result) {
                 setToastMessage('User updated successfully');
                 toast.current?.show({ severity: 'success', summary: 'Success', detail: 'User updated successfully', life: 3000 });
+                data?.callRefetch();
             }
         } catch (error) {
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Error updating user', life: 3000 });
