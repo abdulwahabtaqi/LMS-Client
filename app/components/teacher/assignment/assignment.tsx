@@ -1,24 +1,51 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import getTeacherAssign from '../../../context/server/assignment/getTeacherAssignment';
+import deleteAssignApi from '../../../context/server/assignment/deleteAssign';
 import { verifyToken } from '../../../shared/common';
 import { User } from '../../../shared/types';
-import NewAssignment from './../../../components/newAssignment/newAssignment';
-import { useRouter } from 'next/navigation';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import './Assignment.css';
+import { Toast } from 'primereact/toast';
+import QuestionPaper from './questionPaper';
+import { Dialog } from 'primereact/dialog';
+import { Paginator } from 'primereact/paginator';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 const Assignment = () => {
     const [user, setUser] = useState<User | null>(null);
     const [assignments, setAssignments] = useState<any[]>([]);
-    const [showNewAssignment, setShowNewAssignment] = useState(false);
-    const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
-    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const router = useRouter();
+    const [visible, setVisible] = useState(false);
+    const [confirmationVisible, setConfirmationVisible] = useState(false); // For confirmation dialog
+    const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null); // Store assignment to delete
+    const toast = useRef<Toast>(null);
+    const router = useRouter(); // Initialize useRouter
+
+    const [filteredQuestions, setFilteredQuestions] = useState<{
+        mcq: any[];
+        short: any[];
+        long: any[];
+        fillInTheBlanks: any[];
+        multiFillInTheBlanks: any[];
+        multipleShort: any[];
+        sequence: any[];
+        multipleTrueFalse: any[];
+        multipleQuestionV2: any[];
+    }>({
+        mcq: [],
+        short: [],
+        long: [],
+        fillInTheBlanks: [],
+        multiFillInTheBlanks: [],
+        multipleShort: [],
+        sequence: [],
+        multipleTrueFalse: [],
+        multipleQuestionV2: []
+    });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const assignmentsPerPage = 5;
 
     useEffect(() => {
         const getAssignments = async () => {
@@ -26,7 +53,6 @@ const Assignment = () => {
             setUser(userData);
 
             const result = await getTeacherAssign(userData?.id);
-            console.log(result);
             if (result?.status) {
                 setAssignments(result.result.data || []);
             }
@@ -34,103 +60,157 @@ const Assignment = () => {
         getAssignments();
     }, []);
 
-    const handleCreateAssignmentClick = () => {
-        setShowNewAssignment(!showNewAssignment);
+    const solveAssign = (assignment: any) => {
+        const newFilteredQuestions: any = {
+            mcq: [],
+            short: [],
+            long: [],
+            fillInTheBlanks: [],
+            multiFillInTheBlanks: [],
+            multipleShort: [],
+            sequence: [],
+            multipleTrueFalse: [],
+            multipleQuestionV2: []
+        };
+
+        assignment?.questions?.forEach((question: any) => {
+            switch (question.type) {
+                case 'LONG':
+                    newFilteredQuestions.long.push(question);
+                    break;
+                case 'FILLINTHEBLANK':
+                    newFilteredQuestions.fillInTheBlanks.push(question);
+                    break;
+                case 'MULTIFILLINTHEBLANK':
+                    newFilteredQuestions.multiFillInTheBlanks.push(question);
+                    break;
+                case 'MULTIPLSHORT':
+                    newFilteredQuestions.multipleShort.push(question);
+                    break;
+                case 'MCQ':
+                    newFilteredQuestions.mcq.push(question);
+                    break;
+                case 'SEQUENCE':
+                    newFilteredQuestions.sequence.push(question);
+                    break;
+                case 'MULTIPLETRUEFALSE':
+                    newFilteredQuestions.multipleTrueFalse.push(question);
+                    break;
+                case 'MULTIPLSHORTV2':
+                    newFilteredQuestions.multipleQuestionV2.push(question);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        setFilteredQuestions(newFilteredQuestions);
+        setVisible(true);
     };
 
-    const handleViewAssignment = (assignmentId: string) => {
-        router.push(`/lms/teacher/assignment/${assignmentId}`);
+    const indexOfLastAssignment = currentPage * assignmentsPerPage;
+    const indexOfFirstAssignment = indexOfLastAssignment - assignmentsPerPage;
+    const currentAssignments = assignments.slice(indexOfFirstAssignment, indexOfLastAssignment);
+
+    const handlePageChange = (event: { first: number; rows: number }) => {
+        setCurrentPage(event.first / event.rows + 1);
     };
 
-    const handleDeleteAssignment = async (assignmentId: string) => {
-        // Here, you should implement the delete logic, possibly sending a request to delete the assignment.
-        setAssignments(assignments.filter((assignment) => assignment.id !== assignmentId));
+    // Function to confirm deletion
+    const confirmDelete = (assignment: any) => {
+        setAssignmentToDelete(assignment);
+        setConfirmationVisible(true);
     };
 
-    const uniqueGrades = [...new Set(assignments.map((assignment: any) => assignment.grade))];
-    const uniqueSubjects = [...new Set(assignments.map((assignment: any) => assignment.subject))];
-
-    const filteredAssignments = assignments.filter((assignment) => {
-        const matchesGrade = selectedGrade ? assignment.grade === selectedGrade : true;
-        const matchesSubject = selectedSubject ? assignment.subject === selectedSubject : true;
-        const matchesSearchTerm = searchTerm
-            ? assignment.titles.some((title: any) => (title.name && title.name.toLowerCase().includes(searchTerm.toLowerCase())) || (title.description && title.description.toLowerCase().includes(searchTerm.toLowerCase())))
-            : true;
-
-        return matchesGrade && matchesSubject && matchesSearchTerm;
-    });
-
-    const handleResetFilters = () => {
-        setSelectedGrade(null);
-        setSelectedSubject(null);
-        setSearchTerm('');
+    // Function to delete assignment
+    const deleteAssign = async () => {
+        if (assignmentToDelete) {
+            const result = await deleteAssignApi({ id: assignmentToDelete.id, teacherId: user?.id || '' });
+            if (result?.status) {
+                toast.current?.show({ severity: 'success', summary: 'Success', detail: result?.result?.message, life: 3000 });
+                setAssignments(assignments.filter((assignment) => assignment.id !== assignmentToDelete.id));
+            } else {
+                toast.current?.show({ severity: 'error', summary: 'Error', detail: result?.message || 'Failed to delete assignment', life: 3000 });
+            }
+            setConfirmationVisible(false); // Close confirmation dialog
+            setAssignmentToDelete(null); // Reset assignment to delete
+        }
     };
 
     return (
         <div className="assignment-container">
-            <h1>Assignments</h1>
-            <div className="top-bar">
-                <div className="filters ">
-                    <Dropdown value={selectedGrade} options={uniqueGrades.map((grade) => ({ label: grade, value: grade }))} onChange={(e) => setSelectedGrade(e.value)} placeholder="Select Grade" />
-                    <Dropdown value={selectedSubject} options={uniqueSubjects.map((subject) => ({ label: subject, value: subject }))} onChange={(e) => setSelectedSubject(e.value)} placeholder="Select Subject" />
-                    <InputText value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by title or description" />
-                </div>
-                <div className="buttons my-4">
-                    <Button label="Reset Filters" onClick={handleResetFilters} className="reset-button" />
-                    <Button label={showNewAssignment ? 'Cancel' : 'Create Assignment'} icon="pi pi-plus" onClick={handleCreateAssignmentClick} className="create-button" />
-                </div>
+            <Toast ref={toast} />
+            <div className="flex justify-content-between">
+                <h1>Assignments</h1>
+
+                <Button label="Back" icon="pi pi-arrow-left" onClick={() => router.back()} className="p-button-secondary mb-4" />
             </div>
 
-            {filteredAssignments.length > 0 ? (
-                <ul className="assignment-list">
-                    {filteredAssignments.map((assignment) => (
-                        <li key={assignment.id} className="assignment-item">
-                            <h3>Titles:</h3>
-                            {assignment.titles.length > 0 ? (
-                                <ul>
-                                    {assignment.titles.map((title: any, index: number) => (
-                                        <p key={index}>
-                                            {index + 1}. <span style={{ fontWeight: 'bold', fontSize: '17px' }}> {title.name}</span>
-                                        </p>
-                                    ))}
-                                </ul>
-                            ) : (
-                                'No Title Available'
-                            )}
-                            <p>
-                                <strong>Grade:</strong> {assignment.grade}
-                            </p>
-                            <p>
-                                <strong>Subject:</strong> {assignment.subject}
-                            </p>
-                            <p>
-                                <strong>Created At:</strong> {new Date(assignment.createdAt).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Last Date to Submit:</strong> {new Date(assignment.lastSubmissionDate).toLocaleDateString()} {/* Updated here */}
-                            </p>
-                            <p>
-                                <strong>Total Marks:</strong> {assignment.totalMarks} {/* Display totalMarks here */}
-                            </p>
-                            <div className="assignment-buttons">
-                                <Button label="View" onClick={() => handleViewAssignment(assignment.id)} className="view-button" />
-                                <Button label="Delete" onClick={() => handleDeleteAssignment(assignment.id)} className="delete-button" severity="danger" />
+            {currentAssignments.length > 0 ? (
+                <div className="assignment-list">
+                    {currentAssignments.map((assignment) => (
+                        <div key={assignment.id} className="assignment-item">
+                            <div className="assignment-header">
+                                <h3>{assignment.name}</h3>
                             </div>
-                        </li>
+
+                            <div className="assignment-details">
+                                <p>
+                                    <strong>Grade:</strong> {assignment?.grade?.grade}
+                                </p>
+                                <div className="divider"></div>
+                                <p>
+                                    <strong>Topic:</strong> {assignment?.topic?.topic}
+                                </p>
+                                <div className="divider"></div>
+                                <p>
+                                    <strong>SubTopic:</strong> {assignment?.subTopic?.subTopic}
+                                </p>
+                                <div className="divider"></div>
+                                <p>
+                                    <strong>School:</strong> {assignment?.school?.type}
+                                </p>
+                                <div className="divider"></div>
+                                <p>
+                                    <strong>Assigned by:</strong> {assignment?.user?.name}
+                                </p>
+                            </div>
+                            <div className="w-full flex justify-content-end gap-4">
+                                <Button label="View" onClick={() => solveAssign(assignment)} />
+                                <Button label="Delete" onClick={() => confirmDelete(assignment)} className="p-button-danger" icon="pi pi-times" />
+                            </div>
+                        </div>
                     ))}
-                </ul>
+                </div>
             ) : (
-                <p>No assignments available.</p>
+                <p>No assignments available for submission.</p>
             )}
 
-            {showNewAssignment && (
-                <>
-                    <div className="modal-overlay" onClick={() => setShowNewAssignment(false)}></div>
-                    <div className="new-assignment-modal">
-                        <NewAssignment onClick={handleCreateAssignmentClick} />
+            <Paginator first={(currentPage - 1) * assignmentsPerPage} rows={assignmentsPerPage} totalRecords={assignments.length} onPageChange={handlePageChange} />
+
+            <Dialog header="Confirm Deletion" visible={confirmationVisible} style={{ width: '30vw' }} onHide={() => setConfirmationVisible(false)}>
+                <div>
+                    <p>Are you sure you want to delete this assignment?</p>
+                    <div className="flex justify-content-end">
+                        <Button label="No" onClick={() => setConfirmationVisible(false)} className="p-button-text" />
+                        <Button label="Yes" onClick={deleteAssign} className="p-button-danger" />
                     </div>
-                </>
-            )}
+                </div>
+            </Dialog>
+
+            <Dialog header="Assignment" visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
+                <QuestionPaper
+                    filteredMcqQuestions={filteredQuestions.mcq}
+                    filteredShortQuestions={filteredQuestions.short}
+                    filteredLongQuestions={filteredQuestions.long}
+                    filteredFillInTheBlanksQuestions={filteredQuestions.fillInTheBlanks}
+                    filteredMultiFillInTheBlanksQuestions={filteredQuestions.multiFillInTheBlanks}
+                    filteredMultipleShortQuestions={filteredQuestions.multipleShort}
+                    filteredSequenceQuestions={filteredQuestions.sequence}
+                    filteredMultipleTrueFalseQuestions={filteredQuestions.multipleTrueFalse}
+                    filteredMultipleQuestionV2Questions={filteredQuestions.multipleQuestionV2}
+                />
+            </Dialog>
         </div>
     );
 };

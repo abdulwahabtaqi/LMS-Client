@@ -4,17 +4,17 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
-import AcceptedConnections from './../../app/components/acceptedConnections/AcceptedConnections';
+import AcceptedConnections from '../acceptedConnections/AcceptedConnections';
 
-import getAllTeachers from '../../app/context/server/connection/getAllTeacher';
-import { verifyToken } from '../../app/shared/common';
-import { User } from '../../app/shared/types';
-import sendConnection from '../../app/context/server/connection/sendConnection';
-import getSendPending from '../../app/context/server/connection/getSentPendingReq';
-import getTotalConn from '../../app/context/server/connection/getTotalConn';
-import deleteConnection from '../../app/context/server/connection/deleteConnection';
+import getAllTeachers from '../../context/server/connection/getAllTeacher';
+import { verifyToken } from '../../shared/common';
+import { User } from '../../shared/types';
+import sendConnection from '../../context/server/connection/sendConnection';
+import getSendPending from '../../context/server/connection/getSentPendingReq';
+import getTotalConn from '../../context/server/connection/getTotalConn';
+import deleteConnection from '../../context/server/connection/deleteConnection';
 import Image from 'next/image';
-import dp from './../../public/images/user.png';
+import dp from './../../../public/images/user.png';
 
 const Teachers = () => {
     const [teachers, setTeachers] = useState([] as any[]);

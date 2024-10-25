@@ -4,16 +4,21 @@ import getSubmitAssign from '../../context/server/assignment/getSubmitAssignment
 import { verifyToken } from '../../shared/common';
 import { User } from '../../shared/types';
 import { Toast } from 'primereact/toast';
-import './SubmitAssignment.css';
 import { Dialog } from 'primereact/dialog';
-import QuestionPaper from './questionPaper';
 import { Button } from 'primereact/button';
+import { Paginator } from 'primereact/paginator';
+import './SubmitAssignment.css';
+import QuestionPaper from './questionPaper';
 
 const SubmitAssignment = () => {
     const [user, setUser] = useState<User | null>(null);
     const [assignments, setAssignments] = useState<any[]>([]);
     const [visible, setVisible] = useState(false);
     const toast = useRef<Toast>(null);
+
+    // Pagination state
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(5); // Items per page
 
     const [filteredMcqQuestions, setFilteredMcqQuestions] = useState<any>([]);
     const [filteredShortQuestions, setFilteredShortQuestions] = useState<any>([]);
@@ -57,6 +62,9 @@ const SubmitAssignment = () => {
                 case 'FILLINTHEBLANK':
                     newFilteredFillInTheBlanksQuestions.push(question);
                     break;
+                case 'SHORT':
+                    newFilteredShortQuestions.push(question);
+                    break;
                 case 'MULTIFILLINTHEBLANK':
                     newFilteredMultiFillInTheBlanksQuestions.push(question);
                     break;
@@ -80,7 +88,6 @@ const SubmitAssignment = () => {
             }
         });
 
-        // Set the state with the new arrays
         setFilteredMcqQuestions(newFilteredMcqQuestions);
         setFilteredShortQuestions(newFilteredShortQuestions);
         setFilteredLongQuestions(newFilteredLongQuestions);
@@ -91,16 +98,13 @@ const SubmitAssignment = () => {
         setFilteredMultipleTrueFalseQuestions(newFilteredMultipleTrueFalseQuestions);
         setFilteredMultipleQuestionV2Questions(newFilteredMultipleQuestionV2Questions);
 
-        console.log('filteredLongQuestions', newFilteredLongQuestions);
-        console.log('filteredFillInTheBlanksQuestions', newFilteredFillInTheBlanksQuestions);
-        console.log('filteredMultiFillInTheBlanksQuestions', newFilteredMultiFillInTheBlanksQuestions);
-        console.log('filteredMultipleShortQuestions', newFilteredMultipleShortQuestions);
-        console.log('filteredMcqQuestions', newFilteredMcqQuestions);
-        console.log('filteredSequenceQuestions', newFilteredSequenceQuestions);
-        console.log('filteredMultipleTrueFalseQuestions', newFilteredMultipleTrueFalseQuestions);
-        console.log('filteredMultipleQuestionV2Questions', newFilteredMultipleQuestionV2Questions);
-
         setVisible(!visible);
+    };
+
+    // Handle pagination change
+    const onPageChange = (e: any) => {
+        setFirst(e.first);
+        setRows(e.rows);
     };
 
     return (
@@ -109,43 +113,46 @@ const SubmitAssignment = () => {
             <h1 className="page-title">Submit Assignments</h1>
 
             {assignments.length > 0 ? (
-                <div className="assignment-list">
-                    {assignments.map((assignment) => (
-                        <div key={assignment.id} className="assignment-item">
-                            <div className="assignment-header">
-                                <h3>{assignment.name}</h3>
+                <>
+                    <div className="assignment-list">
+                        {assignments.slice(first, first + rows).map((assignment) => (
+                            <div key={assignment.id} className="assignment-item">
+                                <div className="assignment-header">
+                                    <h3>{assignment.name}</h3>
+                                </div>
+                                <div className="assignment-details">
+                                    <p>
+                                        <strong>Grade:</strong> {assignment?.grade?.grade}
+                                    </p>
+                                    <div className="divider"></div>
+                                    <p>
+                                        <strong>Topic:</strong> {assignment?.topic?.topic}
+                                    </p>
+                                    <div className="divider"></div>
+                                    <p>
+                                        <strong>SubTopic:</strong> {assignment?.subTopic?.subTopic}
+                                    </p>
+                                    <div className="divider"></div>
+                                    <p>
+                                        <strong>School:</strong> {assignment?.school?.type}
+                                    </p>
+                                    <div className="divider"></div>
+                                    <p>
+                                        <strong>Assigned by:</strong> {assignment?.user?.name}
+                                    </p>
+                                </div>
+                                <Button label="Solve" onClick={() => solveAssign(assignment)} />
                             </div>
+                        ))}
+                    </div>
 
-                            <div className="assignment-details">
-                                <p>
-                                    <strong>Grade:</strong> {assignment?.grade?.grade}
-                                </p>
-                                <div className="divider"></div>
-                                <p>
-                                    <strong>Topic:</strong> {assignment?.topic?.topic}
-                                </p>
-                                <div className="divider"></div>
-                                <p>
-                                    <strong>SubTopic:</strong> {assignment?.subTopic?.subTopic}
-                                </p>
-                                <div className="divider"></div>
-                                <p>
-                                    <strong>School:</strong> {assignment?.school?.type}
-                                </p>
-                                <div className="divider"></div>
-                                <p>
-                                    <strong>Assigned by:</strong> {assignment?.user?.name}
-                                </p>
-                            </div>
-                            <Button label="Solve" onClick={() => solveAssign(assignment)} />
-                        </div>
-                    ))}
-                </div>
+                    <Paginator first={first} rows={rows} totalRecords={assignments.length} onPageChange={onPageChange} rowsPerPageOptions={[5, 10, 20]} />
+                </>
             ) : (
                 <p>No assignments available for submission.</p>
             )}
 
-            <Dialog header="Assigment" visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
+            <Dialog header="Assignment" visible={visible} maximizable style={{ width: '80vw', height: '100vh' }} onHide={() => setVisible(false)}>
                 <QuestionPaper
                     filteredMcqQuestions={filteredMcqQuestions}
                     filteredShortQuestions={filteredShortQuestions}
@@ -156,7 +163,7 @@ const SubmitAssignment = () => {
                     filteredSequenceQuestions={filteredSequenceQuestions}
                     filteredMultipleTrueFalseQuestions={filteredMultipleTrueFalseQuestions}
                     filteredMultipleQuestionV2Questions={filteredMultipleQuestionV2Questions}
-                    // exportName={exportName}
+                    setVisible={setVisible}
                 />
             </Dialog>
         </div>

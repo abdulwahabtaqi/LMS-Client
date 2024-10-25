@@ -21,6 +21,7 @@ import QuestionList from './QuestionList';
 import { TreeTableSelectionKeysType } from 'primereact/treetable';
 import fetchQuestionsForExportHandler from '../../../context/server/export/fetchQuestionsForExportHandler';
 import { ExportTypes } from './types';
+import { useRouter } from 'next/navigation';
 
 const Export: React.FC = () => {
     const g = useAppContext();
@@ -81,6 +82,7 @@ const Export: React.FC = () => {
     const [selectedMultipleQuestionV2, setSelectedMultipleQuestionV2] = useState<TreeTableSelectionKeysType>({} as TreeTableSelectionKeysType);
     const [filterQuestionsLoading, setFilterQuestionsLoading] = useState<boolean>(false);
 
+    const router = useRouter();
     const dificultyLevel = [
         { label: 'EASY', value: 'EASY' },
         { label: 'MEDIUM', value: 'MEDIUM' },
@@ -274,7 +276,10 @@ const Export: React.FC = () => {
                     assignData={assignmentDetail}
                 />
             </Dialog>
-            <h5>Create Assignment</h5>
+            <div className="flex w-full justify-content-between ">
+                <h3>Create Assignment</h3>
+                <Button onClick={() => router.push('/lms/teacher/assignment')} label="History" className="mb-2" />
+            </div>
             <div className="card">
                 <div className="grid p-fluid mt-3">
                     <div className="field col-12 md:col-3">

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import Teachers from '../../../../../components/teachers/teachers';
+import Teachers from '../../../../components/connection/teachers';
 
 const Connection = () => {
     return (

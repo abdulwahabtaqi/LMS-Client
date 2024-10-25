@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast';
 import getAllUsers from '../../context/server/users/getUsers';
 import { useRouter } from 'next/navigation';
 import deleteUser from '../../context/server/users/deleteUser';
+import { Dialog } from 'primereact/dialog';
 
 interface User {
     id: string;
@@ -20,6 +21,8 @@ interface User {
 
 const AllUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
+    const [visible, setVisible] = useState(false);
+    const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
     const router = useRouter();
     const toastRef = useRef<Toast>(null);
 
@@ -40,20 +43,28 @@ const AllUsers: React.FC = () => {
         router.push(`/lms/admin/users/${userId}`);
     };
 
-    const deleteProfile = async (userId: string) => {
-        try {
-            await deleteUser(userId);
-            setUsers(users.filter((user) => user.id !== userId));
-            toastRef.current?.show({ severity: 'success', summary: 'Success', detail: 'User deleted successfully!', life: 3000 });
-        } catch (err) {
-            console.error(err);
-            toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete user!', life: 3000 });
+    const deleteProfile = async () => {
+        if (userIdToDelete) {
+            try {
+                await deleteUser(userIdToDelete);
+                setUsers(users.filter((user) => user.id !== userIdToDelete));
+                toastRef.current?.show({ severity: 'success', summary: 'Success', detail: 'User deleted successfully!', life: 3000 });
+            } catch (err) {
+                console.error(err);
+                toastRef.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete user!', life: 3000 });
+            }
+            setVisible(false); // Hide dialog after deletion
         }
+    };
+
+    const confirmDelete = (userId: string) => {
+        setUserIdToDelete(userId);
+        setVisible(true); // Show confirmation dialog
     };
 
     const viewProfileTemplate = (rowData: User) => <Button label="View" icon="pi pi-user" className="p-button-info" onClick={() => viewProfile(rowData.id)} />;
 
-    const deleteTemplate = (rowData: User) => <Button label="Delete" icon="pi pi-times" className="p-button-danger" onClick={() => deleteProfile(rowData.id)} />;
+    const deleteTemplate = (rowData: User) => <Button label="Delete" icon="pi pi-times" className="p-button-danger" onClick={() => confirmDelete(rowData.id)} />;
 
     const localDateTemplate = (rowData: User) => {
         const localDate = new Date(rowData.createdAt).toLocaleString();
@@ -76,8 +87,8 @@ const AllUsers: React.FC = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     borderRadius: '5px',
-                    margin: '0 auto', // Center the span horizontally
-                    textAlign: 'center' // Center text
+                    margin: '0 auto',
+                    textAlign: 'center'
                 }}
             >
                 {status}
@@ -110,6 +121,14 @@ const AllUsers: React.FC = () => {
                 <Column body={viewProfileTemplate} header="View Profile" style={{ width: '10%' }} />
                 <Column body={deleteTemplate} header="Delete" style={{ width: '10%' }} />
             </DataTable>
+
+            <Dialog header="Confirm Deletion" visible={visible} style={{ width: '30vw' }} onHide={() => setVisible(false)}>
+                <p>Are you sure you want to delete this user?</p>
+                <div className="flex justify-content-end">
+                    <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+                    <Button label="Yes" icon="pi pi-check" onClick={deleteProfile} autoFocus />
+                </div>
+            </Dialog>
         </div>
     );
 };

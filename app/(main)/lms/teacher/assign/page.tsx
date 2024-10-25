@@ -6,7 +6,6 @@ const Exports = () => {
         <>
             <div className="p-grid">
                 <div className="p-col-12">
-                    <h1>Assignment</h1>
                     <Export />
                 </div>
             </div>

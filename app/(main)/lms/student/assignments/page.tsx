@@ -6,7 +6,6 @@ const Assignment = () => {
         <Fragment>
             <div className="p-grid">
                 <div className="p-col-12">
-                    <h1>Assigments</h1>
                     <SubmitAssignment />
                 </div>
             </div>
