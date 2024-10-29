@@ -68,18 +68,18 @@ export interface SubTopic {
 }
 
 export interface Question {
-    id: string,
-    subTopic: SubTopic,
-    subTopicId: string,
-    subTopicName: string,
-    question: string,
-    type: QuestionType[]
-    marks: number,
+    id: string;
+    subTopic: SubTopic;
+    subTopicId: string;
+    subTopicName: string;
+    question: string;
+    type: string;
+    marks: number;
     questionImage: string;
-    difficultyLevel: DifficultyLevel[]
-    answers: Answer[],
-    createdAt: string,
-    updatedAt: string,
+    difficultyLevel: DifficultyLevel[];
+    answers: Answer[];
+    createdAt: string;
+    updatedAt: string;
     action?: React.ReactNode
 }
 export interface Answer {

@@ -84,8 +84,9 @@ const DataTableWithSearch = <T,>({ data, tableColumns, loading }: DatatableWithS
                 <div className="p-d-flex p-flex-column p-md-flex-row p-jc-md-between p-ai-center p-w-full">
                     <InputText value={globalFilter} onChange={onInputChange} placeholder="Keyword Search" className="mx-2 my-2" />
                     {subTopicOptions.length > 1 && <Dropdown value={selectedSubTopic} options={subTopicOptions} onChange={(e) => setSelectedSubTopic(e.value)} placeholder="Filter by SubTopic" className="mx-2 my-2" />}
-                    {selectedDifficultyLevel && <Dropdown value={selectedDifficultyLevel} options={difficultyLevelOptions} onChange={(e) => setSelectedDifficultyLevel(e.value)} placeholder="Filter by Difficulty" className="mx-2 my-2" />}
-                    {selectedType && <Dropdown value={selectedType} options={typeOptions} onChange={(e) => setSelectedType(e.value)} placeholder="Filter by Type" className="mx-2 my-2" />}
+                    <Dropdown value={selectedDifficultyLevel} options={difficultyLevelOptions} onChange={(e) => setSelectedDifficultyLevel(e.value)} placeholder="Filter by Difficulty" className="mx-2 my-2" />
+                    {/* {selectedDifficultyLevel && <Dropdown value={selectedDifficultyLevel} options={difficultyLevelOptions} onChange={(e) => setSelectedDifficultyLevel(e.value)} placeholder="Filter by Difficulty" className="mx-2 my-2" />} */}
+                    <Dropdown value={selectedType} options={typeOptions} onChange={(e) => setSelectedType(e.value)} placeholder="Filter by Type" className="mx-2 my-2" />
                     {selectedType && <Button label="Reset All Filters" icon="pi pi-refresh" onClick={resetFilters} className="mx-2 my-2 p-button-danger" />}
                     <SplitButton label="Export" icon="pi pi-download" model={actions} className="mx-2 my-2" />
                 </div>

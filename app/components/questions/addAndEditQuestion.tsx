@@ -19,6 +19,7 @@ interface AddAndEditQuestionProps {
 const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
     const [subTopics, setSubTopics] = useState<SubTopic[]>([] as SubTopic[]);
     const [image, setImage] = useState<string>('');
+    const [answerText, setAnswerText] = useState<string>('');
     const questionTypes = [
         { label: 'MCQ', value: 'MCQ' },
         { label: 'SHORT', value: 'SHORT' },
@@ -39,6 +40,10 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
     } = useForm<Question>({
         mode: 'onBlur'
     });
+
+    const editAnswer = (e: any) => {
+        setAnswerText(e);
+    };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -65,7 +70,8 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
     };
 
     const updateQuestion = async (question: Question) => {
-        await updateQuestionHandler({ ...question, questionImages: image }, question?.id);
+        console.log(answerText);
+        await updateQuestionHandler({ ...question, questionImages: image, answer: answerText }, question?.id);
     };
 
     const submitForm: SubmitHandler<Question> = async (question: Question) => {
@@ -85,6 +91,7 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
             setValue('question', props?.question?.question);
             setValue('id', props?.question?.id);
             reset(props.question);
+            setAnswerText(props?.question?.answers?.[0]?.answer || '');
 
             setImage(props?.question?.questionImage || '');
         }
@@ -217,6 +224,12 @@ const AddAndEditQuestion: React.FC<AddAndEditQuestionProps> = (props) => {
                             )}
                         />
                     </div>
+
+                    {!props.isNew && props.question?.type === 'LONG' && (
+                        <div className="field col-12 md:col-5">
+                            <FormFieldWithLabel label="Answer" formField={<TextField placeholder="Provide the answer here" errorMessage="Error updating answer" value={answerText} onChange={(e) => editAnswer(e)} />} />
+                        </div>
+                    )}
                 </div>
                 <div className="field col-4">
                     <label htmlFor="file-upload" className="p-button " style={{ cursor: 'pointer' }}>
