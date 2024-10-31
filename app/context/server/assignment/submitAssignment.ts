@@ -8,8 +8,8 @@ const submitAssignment = async (userId: string, assignmentId: string, file: stri
         pageLoader?.setPageLoading(30);
 
         const url = "/assignment/submit";
-        // const apiUrl = "http://localhost:4040/api/v1" + url;
-        const apiUrl = "https://lms-server-production-3667.up.railway.app/api/v1" + url as string;
+        const apiUrl = "http://localhost:4040/api/v1" + url;
+        // const apiUrl = "https://lms-server-production-3667.up.railway.app/api/v1" + url as string;
 
 
 
